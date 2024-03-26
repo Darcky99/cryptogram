@@ -20,13 +20,14 @@ public class GameBrain : Singleton<GameBrain>
     #region Callbacks
     private void onLoadLevel(int levelIndex)
     {
-        
+        LifePanel.Instance.SetLifeCount(_Lifes);
+        HintPanel.Instance.SetHintCount(_Hints);
     }
     #endregion
 
     public int HyperCasualLevelsCount => _HyperCasualLevels.Count;
 
-    [SerializeField] private int _Lifes;
+    [SerializeField] private int _Lifes, _Hints;
     [SerializeField] private List<LevelData_Scriptable> _HyperCasualLevels;
 
     public ILevelData GetCurrentHyperCasualLevel() => _HyperCasualLevels[_GameManager.LevelIndex % HyperCasualLevelsCount];

@@ -50,6 +50,8 @@ public class GameLetter : MonoBehaviour
         else
             diselect();
     }
+
+
     #endregion
 
     public bool IsCompleted => _LetterInText == _AssignedLetter;
@@ -75,13 +77,36 @@ public class GameLetter : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _LetterText;
     [SerializeField] private TextMeshProUGUI _NumberText;
     [SerializeField] private Image _ColorBackGroundImage;
-    [SerializeField] private Button _Button; 
-    
+    [SerializeField] private Button _Button;
+    [SerializeField] private Image _HintHighlight;
+
+    #region Init
+    private void initialize(GameWord parent, char assignedLetter, byte assignedNumber, Color assignedColor)
+    {
+        PhraseManager.OnLetterCompleted += onLetterCompleted;
+        PhraseManager.OnSelection += onSelection;
+
+        _GameWord = parent;
+        _AssignedLetter = assignedLetter;
+        setAssignedNumber(assignedNumber);
+        setAssignedColor(assignedColor);
+
+        if (_PhraseManager.LevelData.HidenLetters.Contains(_AssignedLetter))
+            return;
+        if (_PhraseManager.LevelData.PartiallyHiddenLetters.Contains(_AssignedLetter))
+        {
+            int random = _PhraseManager.RandomGenerator.Next(0, 100);
+            if (random < 50)
+                return;
+        }
+        TrySetLetterInText(_AssignedLetter);
+    }
     private void discard()
     {
         //polling in the future
         Destroy(gameObject);
     }
+    #endregion
 
     #region Selection
     private void hardSelected()
@@ -143,6 +168,15 @@ public class GameLetter : MonoBehaviour
     #endregion
 
     #region Assign and complete
+    private bool trySetLetterInText(char character)
+    {
+        bool isCorrect = compare(character);
+
+        if (isCorrect)
+            completeSingle();
+
+        return isCorrect;
+    }
     private void setAssignedNumber(byte assignedNumber)
     {
         _AssignedNumber = assignedNumber;
@@ -190,39 +224,16 @@ public class GameLetter : MonoBehaviour
         }
     }
 
-    public void Initialize(GameWord parent, char assignedLetter, byte assignedNumber, Color assignedColor)
-    {
-        PhraseManager.OnLetterCompleted += onLetterCompleted;
-        PhraseManager.OnSelection += onSelection;
-
-        _GameWord = parent;
-        _AssignedLetter = assignedLetter;
-        setAssignedNumber(assignedNumber);
-        setAssignedColor(assignedColor);
-
-        if (_PhraseManager.LevelData.HidenLetters.Contains(_AssignedLetter))
-            return;
-        if (_PhraseManager.LevelData.PartiallyHiddenLetters.Contains(_AssignedLetter))
-        {
-            int random = _PhraseManager.RandomGenerator.Next(0, 100);
-            if (random < 50)
-                return;
-        }
-        TrySetLetterInText(_AssignedLetter);
-    }
-    public bool TrySetLetterInText(char character)
-    {
-        bool isCorrect = compare(character);
-
-        if (isCorrect)
-            completeSingle();
-
-        return isCorrect;
-    }
+    public void Initialize(GameWord parent, char assignedLetter, byte assignedNumber, Color assignedColor) => initialize(parent, assignedLetter, assignedNumber, assignedColor);
+    public bool TrySetLetterInText(char character) => trySetLetterInText(character);
     public void SetAsSelected()
     {
         if (IsCompleted)
             return;
         PhraseManager.Instance.SetSelection(this);
+    }
+    public void ForceCompleteLetter()
+    {
+        //tell the phrase manager to complete this one!
     }
 }

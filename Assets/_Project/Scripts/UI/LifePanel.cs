@@ -7,7 +7,7 @@ public class LifePanel : Singleton<LifePanel>
 {
     [SerializeField] private TextMeshProUGUI _Counter;
 
-    public void setLifeCount(int count)
+    public void SetLifeCount(int count)
     {
         _Counter.text = count.ToString();
     }
