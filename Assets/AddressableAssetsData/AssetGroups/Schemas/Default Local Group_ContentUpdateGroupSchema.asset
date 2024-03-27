@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cedd74813ef23644840430594678ad7, type: 3}
-  m_Name: Level 1
+  m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
+  m_Name: Default Local Group_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
-  _Phrase: "LOS \xC1SC\xC9NT\xD3S SON REALSE"
-  _Author: EL PEPE
-  _PartiallyHiddenLetters: 4f0043004500
-  _HidenLetters: 410044004700
+  m_Group: {fileID: 11400000, guid: e5b7b275b24e3e94bbba8e3c2bb82433, type: 2}
+  m_StaticContent: 0

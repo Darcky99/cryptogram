@@ -10,70 +10,12 @@ public class Keyboard : MonoBehaviour
     private void Awake()
     {
         _EsensialKeys = new List<char>();
-        //_Keys = GetComponentsInChildren<Key>(true);
+        _Forbidden = new List<char>();
         _TopKeys = _TopLine.GetComponentsInChildren<Key>(true);
         _MidKeys = _MidLine.GetComponentsInChildren<Key>(true);
         _BotKeys = _BotLine.GetComponentsInChildren<Key>(true);
     }
-    private void OnEnable()
-    {
-        //GameManager.OnLoadLevel += onLoadLevel;
-    }
-    private void OnDisable()
-    {
-        //GameManager.OnLoadLevel -= onLoadLevel;
-    }
     #endregion
-
-    #region Callbacks
-    //private void onLoadLevel(int index)
-    //{
-    //    initializeKeyboard();
-    //}
-    #endregion
-
-    private int KeysInTopLine
-    {
-        get
-        {
-            int count = 0;
-            for(int i = 0; i < _TopKeys.Length; i++)
-            {
-                Key key = _TopKeys[i];
-                if (key.gameObject.activeInHierarchy)
-                    count++;
-            }
-            return count;
-        }
-    }
-    private int KeysInMidLine
-    {
-        get
-        {
-            int count = 0;
-            for (int i = 0; i < _MidKeys.Length; i++)
-            {
-                Key key = _MidKeys[i];
-                if (key.gameObject.activeInHierarchy)
-                    count++;
-            }
-            return count;
-        }
-    }
-    private int KeysInBotLine
-    {
-        get
-        {
-            int count = 0;
-            for (int i = 0; i < _BotKeys.Length; i++)
-            {
-                Key key = _BotKeys[i];
-                if (key.gameObject.activeInHierarchy)
-                    count++;
-            }
-            return count;
-        }
-    }
 
     private List<char> _EsensialKeys;
 
@@ -85,15 +27,7 @@ public class Keyboard : MonoBehaviour
     [SerializeField] private RectTransform _MidLine;
     [SerializeField] private RectTransform _BotLine;
 
-    private void disableAllKeys()
-    {
-        foreach (Key key in _TopKeys)
-            key.gameObject.SetActive(false);
-        foreach (Key key in _MidKeys)
-            key.gameObject.SetActive(false);
-        foreach (Key key in _BotKeys)
-            key.gameObject.SetActive(false);
-    }
+    #region Keys state
     private Key getKey(char character)
     {
         foreach (Key key in _TopKeys)
@@ -135,6 +69,18 @@ public class Keyboard : MonoBehaviour
             return;
         keyToEnable.gameObject.SetActive(true);
     }
+    private void disableAllKeys()
+    {
+        foreach (Key key in _TopKeys)
+            key.gameObject.SetActive(false);
+        foreach (Key key in _MidKeys)
+            key.gameObject.SetActive(false);
+        foreach (Key key in _BotKeys)
+            key.gameObject.SetActive(false);
+    }
+    #endregion
+
+    #region Esencial keys
     private void enableEsencialKeys()
     {
         foreach (char character in _PhraseManager.LevelData.Phrase)
@@ -147,9 +93,57 @@ public class Keyboard : MonoBehaviour
             enableKey(character);
         }
     }
+    private void enableNonEsencialKeys()
+    {
+        forceKeyCount(_TopKeys, 10);
+        forceKeyCount(_MidKeys, 9);
+        forceKeyCount(_BotKeys, 7);
+    }
+    #endregion
 
+    #region Language
+    private List<char> _Forbidden;
 
-    private int keyCount(Key[] keys)
+    private void forbit(params char[] characters)
+    {
+        foreach (char character in characters)
+            if (_Forbidden.Contains(character) == false)
+                _Forbidden.Add(character);
+    }
+    private void invertYZ()
+    {
+        Key Y = getKey('Y');
+        Key Z = getKey('Z');
+        Transform YParent = Y.transform.parent;
+        Transform ZParent = Z.transform.parent;
+        int YsinblingIndex = Y.transform.GetSiblingIndex();
+        int ZsinblingIndex = Z.transform.GetSiblingIndex();
+
+        Y.transform.SetParent(ZParent);
+        Z.transform.SetParent(YParent);
+        Y.transform.SetSiblingIndex(ZsinblingIndex);
+        Z.transform.SetSiblingIndex(YsinblingIndex);
+    }
+    private void setLanguajeConfiguration()
+    {
+        switch (Application.systemLanguage)
+        {
+            case SystemLanguage.Spanish:
+                forbit('Ä', 'Ö', 'Ü');
+                break;
+            case SystemLanguage.German:
+                forbit('Ñ');
+                invertYZ();
+                break;
+            default:
+                forbit('Ñ', 'Ä', 'Ö', 'Ü');
+                break;
+        }
+    }
+    #endregion
+
+    #region Key count
+    private int enabledKeysCount(Key[] keys)
     {
         int count = 0;
         for (int i = 0; i < keys.Length; i++)
@@ -164,11 +158,11 @@ public class Keyboard : MonoBehaviour
     {
         int breakHold = 0;
 
-        for (; keyCount(keys) < target;)
+        for ( ; enabledKeysCount(keys) < target; )
         {
             int index = _PhraseManager.RandomGenerator.Next(0, keys.Length);
             Key key = keys[index];
-            if (!key.gameObject.activeInHierarchy)
+            if (!key.gameObject.activeInHierarchy && _Forbidden.Contains(key.KeyLetter) == false)
             {
                 key.gameObject.SetActive(true);
                 if (_PhraseManager.RandomGenerator.Next(0, 100) < 30)
@@ -176,23 +170,22 @@ public class Keyboard : MonoBehaviour
                 else
                     key.SetInteractuable();
             }
+            #region Loop breaker
             breakHold++;
             if (breakHold > 500)
             {
                 Debug.LogError("Too much!");
                 return;
             }
+            #endregion
         }
     }
-    private void enableNonEsencialKeys()
-    {
-        forceKeyCount(_TopKeys, 10);
-        forceKeyCount(_MidKeys, 9);
-        forceKeyCount(_BotKeys, 7);
-    }
+    #endregion
+
     private void initializeKeyboard()
     {
         disableAllKeys();
+        setLanguajeConfiguration();
         enableEsencialKeys();
         enableNonEsencialKeys();
     }

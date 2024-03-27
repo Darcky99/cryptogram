@@ -27,6 +27,31 @@ public class GameBrain : Singleton<GameBrain>
 
     public int HyperCasualLevelsCount => _HyperCasualLevels.Count;
 
+    public int Lifes 
+    { 
+        set
+        {
+            _Lifes = value;
+            LifePanel.Instance.SetLifeCount(_Lifes);
+        }
+        get
+        {
+            return _Lifes;
+        }
+    }
+    public int Hints
+    {
+        set
+        {
+            _Hints = value;
+            HintPanel.Instance.SetHintCount(_Hints);
+        }
+        get
+        {
+            return _Hints;
+        }
+    }
+
     [SerializeField] private int _Lifes, _Hints;
     [SerializeField] private List<LevelData_Scriptable> _HyperCasualLevels;
 

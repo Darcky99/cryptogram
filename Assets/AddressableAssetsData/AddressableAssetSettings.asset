@@ -1,0 +1,403 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
+  m_Name: AddressableAssetSettings
+  m_EditorClassIdentifier: 
+  <DenyEntryCollectionPermission>k__BackingField: 0
+  m_CachedAssetPath: Assets/AddressableAssetsData/AddressableAssetSettings.asset
+  m_CachedConfigFolder: Assets\AddressableAssetsData
+  m_DefaultGroup: 045be7edcb002854a81f23c469a760cd
+  m_currentHash:
+    bytes[0]: 230
+    bytes[1]: 161
+    bytes[2]: 169
+    bytes[3]: 64
+    bytes[4]: 211
+    bytes[5]: 231
+    bytes[6]: 251
+    bytes[7]: 235
+    bytes[8]: 254
+    bytes[9]: 193
+    bytes[10]: 225
+    bytes[11]: 98
+    bytes[12]: 129
+    bytes[13]: 74
+    bytes[14]: 128
+    bytes[15]: 236
+  m_selfHash:
+    bytes[0]: 127
+    bytes[1]: 152
+    bytes[2]: 17
+    bytes[3]: 37
+    bytes[4]: 137
+    bytes[5]: 116
+    bytes[6]: 4
+    bytes[7]: 101
+    bytes[8]: 239
+    bytes[9]: 39
+    bytes[10]: 42
+    bytes[11]: 161
+    bytes[12]: 157
+    bytes[13]: 12
+    bytes[14]: 8
+    bytes[15]: 143
+  m_IsTemporary: 0
+  m_OptimizeCatalogSize: 0
+  m_BuildRemoteCatalog: 0
+  m_BundleLocalCatalog: 0
+  m_CatalogRequestsTimeout: 0
+  m_DisableCatalogUpdateOnStart: 0
+  m_IgnoreUnsupportedFilesInBuild: 0
+  m_UniqueBundleIds: 0
+  m_NonRecursiveBuilding: 1
+  m_CCDEnabled: 0
+  m_maxConcurrentWebRequests: 3
+  m_ContiguousBundles: 1
+  m_StripUnityVersionFromBundleBuild: 0
+  m_DisableVisibleSubAssetRepresentations: 0
+  m_ShaderBundleNaming: 0
+  m_ShaderBundleCustomNaming: 
+  m_MonoScriptBundleNaming: 0
+  m_CheckForContentUpdateRestrictionsOption: 0
+  m_MonoScriptBundleCustomNaming: 
+  m_RemoteCatalogBuildPath:
+    m_Id: 
+  m_RemoteCatalogLoadPath:
+    m_Id: 
+  m_ContentStateBuildPathProfileVariableName: 
+  m_CustomContentStateBuildPath: 
+  m_ContentStateBuildPath: 
+  m_BuildAddressablesWithPlayerBuild: 0
+  m_GroupsHash:
+    bytes[0]: 56
+    bytes[1]: 191
+    bytes[2]: 21
+    bytes[3]: 125
+    bytes[4]: 41
+    bytes[5]: 10
+    bytes[6]: 77
+    bytes[7]: 244
+    bytes[8]: 42
+    bytes[9]: 62
+    bytes[10]: 173
+    bytes[11]: 136
+    bytes[12]: 115
+    bytes[13]: 225
+    bytes[14]: 28
+    bytes[15]: 151
+  m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
+  m_GroupAssets:
+  - {fileID: 11400000, guid: c97d10f35e385bf419333d6a93639a51, type: 2}
+  - {fileID: 11400000, guid: e5b7b275b24e3e94bbba8e3c2bb82433, type: 2}
+  - {fileID: 11400000, guid: 1365b4be9fb8caf4988cd2c99bae0db8, type: 2}
+  m_BuildSettings:
+    m_CompileScriptsInVirtualMode: 0
+    m_CleanupStreamingAssetsAfterBuilds: 1
+    m_LogResourceManagerExceptions: 1
+    m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles
+    m_CurrentHash:
+      bytes[0]: 35
+      bytes[1]: 89
+      bytes[2]: 88
+      bytes[3]: 147
+      bytes[4]: 105
+      bytes[5]: 227
+      bytes[6]: 1
+      bytes[7]: 101
+      bytes[8]: 74
+      bytes[9]: 232
+      bytes[10]: 19
+      bytes[11]: 34
+      bytes[12]: 154
+      bytes[13]: 214
+      bytes[14]: 211
+      bytes[15]: 60
+  m_ProfileSettings:
+    m_Profiles:
+    - m_InheritedParent: 
+      m_Id: 24c842bb67a681747b5420972ae76ef3
+      m_ProfileName: Default
+      m_Values:
+      - m_Id: 01947f34cfc5117479a8066a0b0103c0
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+        m_CurrentHash:
+          bytes[0]: 236
+          bytes[1]: 155
+          bytes[2]: 52
+          bytes[3]: 169
+          bytes[4]: 155
+          bytes[5]: 93
+          bytes[6]: 178
+          bytes[7]: 107
+          bytes[8]: 185
+          bytes[9]: 248
+          bytes[10]: 195
+          bytes[11]: 148
+          bytes[12]: 130
+          bytes[13]: 216
+          bytes[14]: 68
+          bytes[15]: 211
+      - m_Id: c7e988fb16407eb4d8feb96413854fd5
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
+        m_CurrentHash:
+          bytes[0]: 101
+          bytes[1]: 220
+          bytes[2]: 194
+          bytes[3]: 48
+          bytes[4]: 24
+          bytes[5]: 167
+          bytes[6]: 164
+          bytes[7]: 121
+          bytes[8]: 173
+          bytes[9]: 132
+          bytes[10]: 122
+          bytes[11]: 108
+          bytes[12]: 96
+          bytes[13]: 1
+          bytes[14]: 35
+          bytes[15]: 141
+      - m_Id: a3521d0a55016564c9c72585c8083915
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+        m_CurrentHash:
+          bytes[0]: 157
+          bytes[1]: 212
+          bytes[2]: 86
+          bytes[3]: 134
+          bytes[4]: 7
+          bytes[5]: 112
+          bytes[6]: 200
+          bytes[7]: 67
+          bytes[8]: 191
+          bytes[9]: 1
+          bytes[10]: 157
+          bytes[11]: 146
+          bytes[12]: 216
+          bytes[13]: 56
+          bytes[14]: 125
+          bytes[15]: 107
+      - m_Id: 97a53326cd1e6de40b0668719f3d9ccd
+        m_Value: ServerData/[BuildTarget]
+        m_CurrentHash:
+          bytes[0]: 96
+          bytes[1]: 30
+          bytes[2]: 252
+          bytes[3]: 35
+          bytes[4]: 6
+          bytes[5]: 37
+          bytes[6]: 44
+          bytes[7]: 106
+          bytes[8]: 175
+          bytes[9]: 162
+          bytes[10]: 207
+          bytes[11]: 252
+          bytes[12]: 22
+          bytes[13]: 193
+          bytes[14]: 223
+          bytes[15]: 50
+      - m_Id: 673b3f0683a0a434c965ee1584f9b95e
+        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+        m_CurrentHash:
+          bytes[0]: 210
+          bytes[1]: 227
+          bytes[2]: 63
+          bytes[3]: 175
+          bytes[4]: 237
+          bytes[5]: 207
+          bytes[6]: 16
+          bytes[7]: 41
+          bytes[8]: 189
+          bytes[9]: 122
+          bytes[10]: 28
+          bytes[11]: 20
+          bytes[12]: 48
+          bytes[13]: 206
+          bytes[14]: 38
+          bytes[15]: 165
+      m_CurrentHash:
+        bytes[0]: 130
+        bytes[1]: 251
+        bytes[2]: 153
+        bytes[3]: 145
+        bytes[4]: 28
+        bytes[5]: 122
+        bytes[6]: 34
+        bytes[7]: 40
+        bytes[8]: 186
+        bytes[9]: 189
+        bytes[10]: 62
+        bytes[11]: 65
+        bytes[12]: 22
+        bytes[13]: 120
+        bytes[14]: 215
+        bytes[15]: 91
+    m_ProfileEntryNames:
+    - m_Id: 01947f34cfc5117479a8066a0b0103c0
+      m_Name: BuildTarget
+      m_CurrentHash:
+        bytes[0]: 75
+        bytes[1]: 154
+        bytes[2]: 192
+        bytes[3]: 149
+        bytes[4]: 93
+        bytes[5]: 243
+        bytes[6]: 10
+        bytes[7]: 202
+        bytes[8]: 152
+        bytes[9]: 66
+        bytes[10]: 217
+        bytes[11]: 95
+        bytes[12]: 204
+        bytes[13]: 21
+        bytes[14]: 22
+        bytes[15]: 235
+      m_InlineUsage: 0
+    - m_Id: c7e988fb16407eb4d8feb96413854fd5
+      m_Name: Local.BuildPath
+      m_CurrentHash:
+        bytes[0]: 108
+        bytes[1]: 196
+        bytes[2]: 70
+        bytes[3]: 170
+        bytes[4]: 17
+        bytes[5]: 10
+        bytes[6]: 205
+        bytes[7]: 52
+        bytes[8]: 159
+        bytes[9]: 205
+        bytes[10]: 33
+        bytes[11]: 231
+        bytes[12]: 94
+        bytes[13]: 22
+        bytes[14]: 147
+        bytes[15]: 66
+      m_InlineUsage: 0
+    - m_Id: a3521d0a55016564c9c72585c8083915
+      m_Name: Local.LoadPath
+      m_CurrentHash:
+        bytes[0]: 154
+        bytes[1]: 91
+        bytes[2]: 47
+        bytes[3]: 246
+        bytes[4]: 15
+        bytes[5]: 17
+        bytes[6]: 214
+        bytes[7]: 227
+        bytes[8]: 224
+        bytes[9]: 46
+        bytes[10]: 172
+        bytes[11]: 88
+        bytes[12]: 37
+        bytes[13]: 247
+        bytes[14]: 139
+        bytes[15]: 230
+      m_InlineUsage: 0
+    - m_Id: 97a53326cd1e6de40b0668719f3d9ccd
+      m_Name: Remote.BuildPath
+      m_CurrentHash:
+        bytes[0]: 57
+        bytes[1]: 115
+        bytes[2]: 29
+        bytes[3]: 105
+        bytes[4]: 157
+        bytes[5]: 52
+        bytes[6]: 119
+        bytes[7]: 187
+        bytes[8]: 81
+        bytes[9]: 142
+        bytes[10]: 45
+        bytes[11]: 80
+        bytes[12]: 73
+        bytes[13]: 165
+        bytes[14]: 159
+        bytes[15]: 236
+      m_InlineUsage: 0
+    - m_Id: 673b3f0683a0a434c965ee1584f9b95e
+      m_Name: Remote.LoadPath
+      m_CurrentHash:
+        bytes[0]: 116
+        bytes[1]: 1
+        bytes[2]: 148
+        bytes[3]: 184
+        bytes[4]: 171
+        bytes[5]: 236
+        bytes[6]: 89
+        bytes[7]: 138
+        bytes[8]: 128
+        bytes[9]: 203
+        bytes[10]: 174
+        bytes[11]: 61
+        bytes[12]: 129
+        bytes[13]: 194
+        bytes[14]: 235
+        bytes[15]: 88
+      m_InlineUsage: 0
+    m_ProfileVersion: 1
+    m_CurrentHash:
+      bytes[0]: 88
+      bytes[1]: 198
+      bytes[2]: 105
+      bytes[3]: 176
+      bytes[4]: 158
+      bytes[5]: 153
+      bytes[6]: 248
+      bytes[7]: 138
+      bytes[8]: 70
+      bytes[9]: 111
+      bytes[10]: 99
+      bytes[11]: 182
+      bytes[12]: 249
+      bytes[13]: 94
+      bytes[14]: 153
+      bytes[15]: 158
+  m_LabelTable:
+    m_LabelNames:
+    - default
+    - Locale
+    m_CurrentHash:
+      bytes[0]: 156
+      bytes[1]: 149
+      bytes[2]: 238
+      bytes[3]: 193
+      bytes[4]: 167
+      bytes[5]: 62
+      bytes[6]: 150
+      bytes[7]: 130
+      bytes[8]: 136
+      bytes[9]: 129
+      bytes[10]: 252
+      bytes[11]: 12
+      bytes[12]: 248
+      bytes[13]: 119
+      bytes[14]: 213
+      bytes[15]: 168
+  m_SchemaTemplates: []
+  m_GroupTemplateObjects:
+  - {fileID: 11400000, guid: 0aead3c922041ae4db6eb2ffd9dda605, type: 2}
+  m_InitializationObjects: []
+  m_CertificateHandlerType:
+    m_AssemblyName: 
+    m_ClassName: 
+    <ValueChanged>k__BackingField: 0
+  m_ActivePlayerDataBuilderIndex: 3
+  m_DataBuilders:
+  - {fileID: 11400000, guid: 49f5a8518fb833a499c79e636d3f433c, type: 2}
+  - {fileID: 11400000, guid: 908be5d670f96ca4c903c4d97eeecfad, type: 2}
+  - {fileID: 11400000, guid: 574c90fe68ef4734c931458945884d69, type: 2}
+  - {fileID: 11400000, guid: f24b51bbfb775a244bd314695be8540d, type: 2}
+  m_ActiveProfileId: 24c842bb67a681747b5420972ae76ef3
+  m_HostingServicesManager:
+    m_HostingServiceInfos: []
+    m_Settings: {fileID: 11400000}
+    m_NextInstanceId: 0
+    m_RegisteredServiceTypeRefs: []
+    m_PingTimeoutInMilliseconds: 5000
+  m_DefaultGroupTemplateName: Packed Assets

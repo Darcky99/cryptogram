@@ -13,6 +13,9 @@ public class GameLetter : MonoBehaviour
     {
         GameManager.OnLoadLevel += onLoadLevel;
         GameManager.OnGameOver += onGameOver;
+
+        PhraseManager.OnLetterCompleted += onLetterCompleted;
+        PhraseManager.OnSelection += onSelection;
     }
     private void OnDisable()
     {
@@ -50,15 +53,12 @@ public class GameLetter : MonoBehaviour
         else
             diselect();
     }
-
-
     #endregion
 
     public bool IsCompleted => _LetterInText == _AssignedLetter;
     public char AssignedLetter => _AssignedLetter;
     public Vector2 AbsoluteAnchoredPosition => _GameWord.AbsoluteAnchoredPosition + _RectTransform.anchoredPosition;
     public float Width => _RectTransform.sizeDelta.x;
-    public RectTransform RectTransform => _RectTransform;
 
     private float _ColorAlpha => _ColorBackGroundImage.color.a;
     private bool _IsHighlight => _ColorAlpha == 1f;
@@ -83,9 +83,6 @@ public class GameLetter : MonoBehaviour
     #region Init
     private void initialize(GameWord parent, char assignedLetter, byte assignedNumber, Color assignedColor)
     {
-        PhraseManager.OnLetterCompleted += onLetterCompleted;
-        PhraseManager.OnSelection += onSelection;
-
         _GameWord = parent;
         _AssignedLetter = assignedLetter;
         setAssignedNumber(assignedNumber);
@@ -103,7 +100,6 @@ public class GameLetter : MonoBehaviour
     }
     private void discard()
     {
-        //polling in the future
         Destroy(gameObject);
     }
     #endregion
@@ -200,6 +196,8 @@ public class GameLetter : MonoBehaviour
     }
     private void complete()
     {
+        _LetterText.text = _AssignedLetter.ToString();
+        _HintHighlight.gameObject.SetActive(false);
         _NumberText.gameObject.SetActive(false);
         _ColorBackGroundImage.gameObject.SetActive(false);
     }
@@ -223,17 +221,28 @@ public class GameLetter : MonoBehaviour
                 return character == _AssignedLetter;
         }
     }
+    private void setAsSelected()
+    {
+        PhraseManager.Instance.SetSelection(this);
+    }
+    private void forceCompleteLetter()
+    {
+        PhraseManager.Instance.ForceCompletition(_AssignedLetter);
+    }
 
     public void Initialize(GameWord parent, char assignedLetter, byte assignedNumber, Color assignedColor) => initialize(parent, assignedLetter, assignedNumber, assignedColor);
     public bool TrySetLetterInText(char character) => trySetLetterInText(character);
-    public void SetAsSelected()
+
+    public void OnButtonDown()
     {
         if (IsCompleted)
             return;
-        PhraseManager.Instance.SetSelection(this);
-    }
-    public void ForceCompleteLetter()
-    {
-        //tell the phrase manager to complete this one!
+        if (HintPanel.Instance.IsHint)
+        {
+            forceCompleteLetter();
+            return;
+        }
+
+        setAsSelected();
     }
 }

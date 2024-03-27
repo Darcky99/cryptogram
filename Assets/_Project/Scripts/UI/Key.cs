@@ -5,10 +5,6 @@ using UnityEngine;
 public class Key : MonoBehaviour
 {
     #region Unity
-    private void Awake()
-    {
-        _KeyLetter = gameObject.name[0];
-    }
     private void OnEnable()
     {
         GameManager.OnLoadLevel += onLoadLevel;
@@ -22,7 +18,7 @@ public class Key : MonoBehaviour
     #endregion
 
     #region Callbacks
-    private void onLoadLevel(int obj)
+    private void onLoadLevel(int levelIndex)
     {
         _Button.interactable = true;
     }
@@ -32,10 +28,10 @@ public class Key : MonoBehaviour
     }
     #endregion
 
-    private char _KeyLetter;
+    public char KeyLetter => gameObject.name[0];
     [SerializeField] private Button _Button;
 
-    public void TypeKey() => PhraseManager.Instance.TrySetLetter(_KeyLetter);
+    public void TypeKey() => PhraseManager.Instance.TrySetLetter(KeyLetter);
 
     public void SetInteractuable() => _Button.interactable = true;
     public void SetNonInteractuable() => _Button.interactable = false;

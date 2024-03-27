@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1cedd74813ef23644840430594678ad7, type: 3}
-  m_Name: Level 1
+  m_Name: Level 4 - German
   m_EditorClassIdentifier: 
-  _Phrase: "LOS \xC1SC\xC9NT\xD3S SON REALSE"
+  _Phrase: "GL\xDCCK, VERGISST, WAS DOCH NICHT ZU \xC4NDERN."
   _Author: EL PEPE
-  _PartiallyHiddenLetters: 4f0043004500
-  _HidenLetters: 410044004700
+  _PartiallyHiddenLetters: 4500520053004e004400
+  _HidenLetters: 5700dc00c400

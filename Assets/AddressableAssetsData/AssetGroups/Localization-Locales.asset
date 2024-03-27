@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Locales
+  m_EditorClassIdentifier: 
+  m_GroupName: Localization-Locales
+  m_Data:
+    m_SerializedData: []
+  m_GUID: be58aff12185c21408dc98989b6b3a18
+  m_SerializeEntries:
+  - m_GUID: 14ac7fe9a6998fb429cafa2eaad48d2c
+    m_Address: German (de)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    FlaggedDuringContentUpdateRestriction: 0
+    <IsFolder>k__BackingField: 0
+    <BundleFileId>k__BackingField: 
+    <IsInResources>k__BackingField: 0
+    <IsInSceneList>k__BackingField: 0
+    <IsSubAsset>k__BackingField: 0
+    m_CheckedIsScene: 0
+    m_IsScene: 0
+    m_CurrentHash:
+      bytes[0]: 31
+      bytes[1]: 152
+      bytes[2]: 223
+      bytes[3]: 166
+      bytes[4]: 3
+      bytes[5]: 48
+      bytes[6]: 233
+      bytes[7]: 145
+      bytes[8]: 162
+      bytes[9]: 87
+      bytes[10]: 10
+      bytes[11]: 7
+      bytes[12]: 44
+      bytes[13]: 56
+      bytes[14]: 180
+      bytes[15]: 14
+    m_cachedAssetPath: Assets/Localization/Languages/German (de).asset
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: df834f7e6500e13498fead4700cf4f1b
+    m_Address: English (en)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    FlaggedDuringContentUpdateRestriction: 0
+    <IsFolder>k__BackingField: 0
+    <BundleFileId>k__BackingField: 
+    <IsInResources>k__BackingField: 0
+    <IsInSceneList>k__BackingField: 0
+    <IsSubAsset>k__BackingField: 0
+    m_CheckedIsScene: 0
+    m_IsScene: 0
+    m_CurrentHash:
+      bytes[0]: 63
+      bytes[1]: 211
+      bytes[2]: 247
+      bytes[3]: 230
+      bytes[4]: 191
+      bytes[5]: 113
+      bytes[6]: 194
+      bytes[7]: 152
+      bytes[8]: 65
+      bytes[9]: 68
+      bytes[10]: 185
+      bytes[11]: 218
+      bytes[12]: 47
+      bytes[13]: 30
+      bytes[14]: 72
+      bytes[15]: 144
+    m_cachedAssetPath: Assets/Localization/Languages/English (en).asset
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 94af0e168068f8f47bdd83ee8bd44b7f
+    m_Address: Spanish (es)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    FlaggedDuringContentUpdateRestriction: 0
+    <IsFolder>k__BackingField: 0
+    <BundleFileId>k__BackingField: 
+    <IsInResources>k__BackingField: 0
+    <IsInSceneList>k__BackingField: 0
+    <IsSubAsset>k__BackingField: 0
+    m_CheckedIsScene: 0
+    m_IsScene: 0
+    m_CurrentHash:
+      bytes[0]: 138
+      bytes[1]: 254
+      bytes[2]: 113
+      bytes[3]: 81
+      bytes[4]: 224
+      bytes[5]: 148
+      bytes[6]: 142
+      bytes[7]: 197
+      bytes[8]: 132
+      bytes[9]: 196
+      bytes[10]: 89
+      bytes[11]: 105
+      bytes[12]: 14
+      bytes[13]: 51
+      bytes[14]: 30
+      bytes[15]: 136
+    m_cachedAssetPath: Assets/Localization/Languages/Spanish (es).asset
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: c8c1b77575ba1c84aa3ab53e13c23f3f, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: bbdefed441a8c8c43bb0aee88d8ffc09, type: 2}
+    - {fileID: 11400000, guid: dc561b7e73097d342868c9e235ba6200, type: 2}
+  m_FolderEntryCache: []
+  m_AssetCollectionEntryCache: []
+  <FlaggedDuringContentUpdateRestriction>k__BackingField: 0
+  m_CurrentHash:
+    bytes[0]: 28
+    bytes[1]: 28
+    bytes[2]: 161
+    bytes[3]: 27
+    bytes[4]: 182
+    bytes[5]: 50
+    bytes[6]: 242
+    bytes[7]: 218
+    bytes[8]: 239
+    bytes[9]: 239
+    bytes[10]: 188
+    bytes[11]: 163
+    bytes[12]: 127
+    bytes[13]: 85
+    bytes[14]: 193
+    bytes[15]: 117

@@ -319,6 +319,18 @@ public class PhraseManager : Singleton<PhraseManager>
         //else if (isCompleted(letter))
         //    ClearSelection();
     }
+    public void ForceCompletition(char letter)
+    {
+        if (_IsGeneratingLevelFlag)
+            return;
+
+        OnLetterCompleted?.Invoke(letter);
+        ClearSelection();
+        GameBrain.Instance.Hints--;
+
+        if (IsLevelCompleted)
+            GameManager.Instance.LevelCompleted();
+    }
     public void CheckCompletition(char letter)
     {
         if (_IsGeneratingLevelFlag)
