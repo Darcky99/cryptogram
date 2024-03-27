@@ -50,7 +50,6 @@ public class PhraseManager : Singleton<PhraseManager>
     {
         displayQuote();
     }
-    //both onlevel Completed and gameOver should disable player interaction.
     private void onGameOver()
     {
         ClearSelection();
@@ -60,6 +59,7 @@ public class PhraseManager : Singleton<PhraseManager>
     public static event Action<GameLetter> OnSelection;
     public static event Action<char> OnLetterCompleted;
 
+    public bool IsGeneratingLevelFlag => _IsGeneratingLevelFlag;
     public bool IsLevelCompleted
     {
         get
@@ -184,12 +184,11 @@ public class PhraseManager : Singleton<PhraseManager>
     private void completeLetters()
     {
         foreach (char character in _LevelData.Phrase)
-            CheckCompletition(character);
+            checkCompletition(character);
     }
     private IEnumerator generateLevel()
     {
         _IsGeneratingLevelFlag = true;
-
         generateLettersIndex();
         string[] words = _LevelData.Phrase.Split(' ');
         for (int i = 0; i < words.Length; i++)
@@ -200,9 +199,9 @@ public class PhraseManager : Singleton<PhraseManager>
             if (!_LastLine.TryAddWord(words[i]))
                 Debug.LogError($"This word seems to be to long {words[i]}");
         }
-        _IsGeneratingLevelFlag = false;
-        fixHeight();
         completeLetters();
+        fixHeight();
+        _IsGeneratingLevelFlag = false;
     }
     #endregion
 
@@ -296,7 +295,50 @@ public class PhraseManager : Singleton<PhraseManager>
     }
     #endregion
 
+    #region Hints
+    private WaitForSeconds _ForceCompleteDelay = new WaitForSeconds(0.378f);
+
+    private GameLetter[] getIncomplete(char character)
+    {
+        List<GameLetter> incomplete = new List<GameLetter>();
+        foreach(GameLetter gameLetter in _GameLetters)
+            if(gameLetter.AssignedLetter == character && !gameLetter.IsCompleted)
+                incomplete.Add(gameLetter);
+        return incomplete.ToArray();
+    }
+    private IEnumerator forceCompletition(char character)
+    {
+        if (_IsGeneratingLevelFlag)
+            yield break;
+
+        ClearSelection();
+        GameBrain.Instance.Hints--;
+
+        GameLetter[] incomplete = getIncomplete(character);
+        yield return _ForceCompleteDelay;
+
+        foreach (GameLetter gameLetter in incomplete)
+        {
+            gameLetter.TrySetLetterInText(character);
+            yield return _ForceCompleteDelay;
+        }
+        if (IsLevelCompleted)
+            GameManager.Instance.LevelCompleted();
+    }
+    #endregion
+
     #region Selection and setting
+    private void checkCompletition(char character)
+    {
+        if (isCompleted(character))
+        {
+            OnLetterCompleted?.Invoke(character);
+            ClearSelection();
+        }
+        if (IsLevelCompleted)
+            GameManager.Instance.LevelCompleted();
+    }
+
     public void SetSelection(GameLetter selected)
     {
         _LetterSelected = selected;
@@ -307,42 +349,23 @@ public class PhraseManager : Singleton<PhraseManager>
         setVerticalScrollPosition();
     }
     public void ClearSelection() => SetSelection(null);
-    public void TrySetLetter(char letter)
+    public void TrySetLetter(char character)
     {
-        if (_LetterSelected == null || _LetterSelected.IsCompleted)
+        if (_LetterSelected == null || _LetterSelected.IsCompleted || _LetterSelected.IsWrong)
             return;
 
-        bool isCorrect = _LetterSelected.TrySetLetterInText(letter);
+        bool isCorrect = _LetterSelected.TrySetLetterInText(character);
 
         if (!isCorrect)
             mistake(++_MistakeCount);
-        //else if (isCompleted(letter))
-        //    ClearSelection();
     }
-    public void ForceCompletition(char letter)
+    public void ForceCompletition(char character) => StartCoroutine(forceCompletition(character));
+    public void CheckCompletition(char character)
     {
         if (_IsGeneratingLevelFlag)
             return;
 
-        OnLetterCompleted?.Invoke(letter);
-        ClearSelection();
-        GameBrain.Instance.Hints--;
-
-        if (IsLevelCompleted)
-            GameManager.Instance.LevelCompleted();
-    }
-    public void CheckCompletition(char letter)
-    {
-        if (_IsGeneratingLevelFlag)
-            return;
-
-        if (isCompleted(letter))
-        {
-            OnLetterCompleted?.Invoke(letter);
-            ClearSelection();
-        }
-        if (IsLevelCompleted)
-            GameManager.Instance.LevelCompleted();
+        checkCompletition(character);
     }
     public void AddGameLetter(GameLetter gameLetter) => _GameLetters.Add(gameLetter);
     public void ChangeSelection(eChangeSelectionMode changeSelectionMode) => changeSelection(changeSelectionMode);

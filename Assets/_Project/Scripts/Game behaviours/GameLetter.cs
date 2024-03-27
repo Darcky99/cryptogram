@@ -72,7 +72,6 @@ public class GameLetter : MonoBehaviour
     private Color _AssignedColor;
     private Sequence _ScaleAnimation;
 
-
     [SerializeField] private RectTransform _RectTransform;
     [SerializeField] private TextMeshProUGUI _LetterText;
     [SerializeField] private TextMeshProUGUI _NumberText;
@@ -80,7 +79,7 @@ public class GameLetter : MonoBehaviour
     [SerializeField] private Button _Button;
     [SerializeField] private Image _HintHighlight;
 
-    #region Init
+    #region Init & Disc
     private void initialize(GameWord parent, char assignedLetter, byte assignedNumber, Color assignedColor)
     {
         _GameWord = parent;
@@ -96,10 +95,14 @@ public class GameLetter : MonoBehaviour
             if (random < 50)
                 return;
         }
-        TrySetLetterInText(_AssignedLetter);
+        completeSingle(false);
     }
     private void discard()
     {
+        _FadeIn?.Kill();
+        _ScaleUpDown?.Kill();
+        _PunchUp?.Kill();
+        _NumberText.transform.localScale = Vector3.one;
         Destroy(gameObject);
     }
     #endregion
@@ -163,16 +166,63 @@ public class GameLetter : MonoBehaviour
     }
     #endregion
 
-    #region Assign and complete
-    private bool trySetLetterInText(char character)
+    #region Animation
+    public bool IsWrong => _Wrong == null ? false : _Wrong.IsPlaying();
+
+    private float _AnimationDuration => _ScaleUp + _ScaleDown;
+
+    private float _ScaleUp = 0.09f;
+    private float _ScaleDown = 0.28f;
+
+    private Tween _FadeIn;
+    private Tween _ScaleUpDown;
+    private Tween _PunchUp;
+    private Tween _Wrong;
+
+    [SerializeField] private Color _Error;
+
+    private void fadeIn()
     {
-        bool isCorrect = compare(character);
-
-        if (isCorrect)
-            completeSingle();
-
-        return isCorrect;
+        Color color = _LetterText.color;
+        _FadeIn = DOVirtual.Float(0, 1, _AnimationDuration, (float value) =>
+        {
+            color.a = value;
+            _LetterText.color = color;
+        }).SetEase(Ease.InOutBounce);
     }
+    private void scaleUpDown()
+    {
+        _LetterText.transform.localScale = Vector3.zero;
+        Sequence sequence = DOTween.Sequence();
+        sequence
+            .Append(_LetterText.rectTransform.DOScale(1.2f, _ScaleUp).SetEase(Ease.InBounce))
+            .Append(_LetterText.rectTransform.DOScale(1f, _ScaleDown).SetEase(Ease.OutBounce));
+        _ScaleUpDown = sequence;
+    }
+    private void punchUp()
+    {
+        if (_ScaleUpDown != null && _ScaleUpDown.IsPlaying())
+            return;
+        _PunchUp = _LetterText.rectTransform.DOPunchScale(Vector3.one * 0.3f, _AnimationDuration, elasticity : 0.25f);
+    }
+    private void wrong(char character)
+    {
+        _LetterText.text = character.ToString();
+        _LetterText.color = _Error;
+
+        Sequence sequence = DOTween.Sequence();
+        sequence
+            .Append(_LetterText.transform.DOPunchScale(Vector3.one * 0.12f, 0.248f).SetEase(Ease.InBounce))
+            .Join(_LetterText.transform.DOPunchRotation(Vector3.forward * 45f, 0.248f).SetEase(Ease.InBounce))
+            .OnComplete(() => {
+                _LetterText.text = "";
+                _LetterText.color = Color.black;
+            });
+        _Wrong = sequence;
+    }
+    #endregion
+
+    #region Assign and complete
     private void setAssignedNumber(byte assignedNumber)
     {
         _AssignedNumber = assignedNumber;
@@ -189,9 +239,15 @@ public class GameLetter : MonoBehaviour
         color.a = alpha;
         _ColorBackGroundImage.color = color;
     }
-    private void completeSingle()
+    private void completeSingle(bool animate = true)
     {
         _LetterText.text = _AssignedLetter.ToString();
+
+        if(animate)
+        {
+            fadeIn();
+            scaleUpDown();
+        }
         PhraseManager.Instance.CheckCompletition(_AssignedLetter);
     }
     private void complete()
@@ -200,6 +256,18 @@ public class GameLetter : MonoBehaviour
         _HintHighlight.gameObject.SetActive(false);
         _NumberText.gameObject.SetActive(false);
         _ColorBackGroundImage.gameObject.SetActive(false);
+
+        if (_PhraseManager.IsGeneratingLevelFlag == false)
+            punchUp();
+    }
+    private bool trySetLetterInText(char character)
+    {
+        bool isCorrect = compare(character);
+        if (isCorrect)
+            completeSingle();
+        else
+            wrong(character);
+        return isCorrect;
     }
     #endregion
 
@@ -208,15 +276,15 @@ public class GameLetter : MonoBehaviour
         switch (_AssignedLetter)
         {
             case 'Á':
-                return character == 'A';
+                return character == 'A' || character == 'Á';
             case 'É':
-                return character == 'E';
+                return character == 'E' || character == 'É';
             case 'Í':
-                return character == 'I';
+                return character == 'I' || character == 'Í';
             case 'Ó':
-                return character == 'O';
+                return character == 'O' || character == 'Ó';
             case 'Ú':
-                return character == 'U';
+                return character == 'U' || character == 'Ú';
             default:
                 return character == _AssignedLetter;
         }
@@ -227,6 +295,7 @@ public class GameLetter : MonoBehaviour
     }
     private void forceCompleteLetter()
     {
+        trySetLetterInText(_AssignedLetter);
         PhraseManager.Instance.ForceCompletition(_AssignedLetter);
     }
 
