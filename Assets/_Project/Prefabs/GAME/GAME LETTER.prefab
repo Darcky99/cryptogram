@@ -411,7 +411,7 @@ MonoBehaviour:
   _ColorBackGroundImage: {fileID: 5611634913993957546}
   _Button: {fileID: 6178596151319891859}
   _HintHighlight: {fileID: 8466857310852412582}
-  _Error: {r: 0.9622642, g: 0.25962973, b: 0.25962973, a: 1}
+  _Error: {r: 0.93962264, g: 0.18450744, b: 0.14714837, a: 1}
 --- !u!1001 &1165576796986975446
 PrefabInstance:
   m_ObjectHideFlags: 0

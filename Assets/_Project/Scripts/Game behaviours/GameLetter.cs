@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
 
 public class GameLetter : MonoBehaviour
 {
@@ -70,7 +71,7 @@ public class GameLetter : MonoBehaviour
     private char _AssignedLetter;
     private byte _AssignedNumber;
     private Color _AssignedColor;
-    private Sequence _ScaleAnimation;
+    private Sequence _ScaleRectangleAnimation;
 
     [SerializeField] private RectTransform _RectTransform;
     [SerializeField] private TextMeshProUGUI _LetterText;
@@ -110,14 +111,14 @@ public class GameLetter : MonoBehaviour
     #region Selection
     private void hardSelected()
     {
-        _ScaleAnimation?.Kill();
+        _ScaleRectangleAnimation?.Kill();
         _LetterText.rectTransform.localScale = Vector3.one;
         _ColorBackGroundImage.rectTransform.localScale = Vector3.one;
         Sequence sequence = DOTween.Sequence();
         Vector3 scaleUp = Vector3.one * 1.4f;
         Vector3 scaleDown = new Vector3(1.25f, 1.3f);
 
-        _ScaleAnimation = sequence
+        _ScaleRectangleAnimation = sequence
             .Append(_LetterText.rectTransform.DOScale(scaleUp, 0.08f).SetEase(Ease.OutExpo))
             .Join(_ColorBackGroundImage.rectTransform.DOScale(scaleUp, 0.08f).SetEase(Ease.OutExpo))
 
@@ -128,7 +129,7 @@ public class GameLetter : MonoBehaviour
     }
     private void softSelected()
     {
-        _ScaleAnimation?.Kill();
+        _ScaleRectangleAnimation?.Kill();
         Sequence sequence = DOTween.Sequence();
         Vector3 scaleUp = Vector3.one * 1.4f;
         Vector3 scaleDown = new Vector3(1f, 1f);
@@ -140,39 +141,37 @@ public class GameLetter : MonoBehaviour
 
             float scaleUp_Duration = 0.08f;
 
-            _ScaleAnimation = sequence
+            _ScaleRectangleAnimation = sequence
                 .Append(_LetterText.rectTransform.DOScale(scaleUp, scaleUp_Duration).SetEase(Ease.OutExpo))
                 .Join(_ColorBackGroundImage.rectTransform.DOScale(scaleUp, scaleUp_Duration).SetEase(Ease.OutExpo));
-                //.Join(DOVirtual.Float(_ColorAlpha, 1f, scaleUp_Duration, setBackGroundColorAlpha).SetEase(Ease.OutExpo));
         }
         float scaleDown_Duration = 0.04f;
         sequence
             .Append(_LetterText.rectTransform.DOScale(scaleDown, scaleDown_Duration).SetEase(Ease.OutQuart))
             .Join(_ColorBackGroundImage.rectTransform.DOScale(scaleDown, scaleDown_Duration).SetEase(Ease.OutQuart));
-            //.Join(DOVirtual.Float(_ColorAlpha, _DiselectedAlpha, scaleDown_Duration, setBackGroundColorAlpha).SetEase(Ease.OutExpo));
 
-        _ScaleAnimation = sequence;
-        _ScaleAnimation.Play();
+        _ScaleRectangleAnimation = sequence;
+        _ScaleRectangleAnimation.Play();
         setBackGroundColorAlpha(1f);
-        //in case this is wrong, uncoment this one above and comment the 2 DOVirtual lines above
     }
     private void diselect()
     {
-        _ScaleAnimation?.Kill();
-        _LetterText.rectTransform.DOScale(1f, 0.08f);
+        _ScaleRectangleAnimation?.Kill();
         _ColorBackGroundImage.rectTransform.DOScale(1f, 0.16f);
+        _LetterText.rectTransform.DOScale(1f, 0.08f);
 
         setBackGroundColorAlpha(_DiselectedAlpha);
     }
     #endregion
 
     #region Animation
+    public bool IsScaleUpDown => _ScaleUpDown != null && _ScaleUpDown.IsPlaying();
     public bool IsWrong => _Wrong == null ? false : _Wrong.IsPlaying();
 
-    private float _AnimationDuration => _ScaleUp + _ScaleDown;
+    private float _AnimationDuration => _ScaleUpDuration + _ScaleDownDuration;
 
-    private float _ScaleUp = 0.09f;
-    private float _ScaleDown = 0.28f;
+    private float _ScaleUpDuration = 0.28f;
+    private float _ScaleDownDuration = 0.28f;
 
     private Tween _FadeIn;
     private Tween _ScaleUpDown;
@@ -181,23 +180,39 @@ public class GameLetter : MonoBehaviour
 
     [SerializeField] private Color _Error;
 
-    private void fadeIn()
+    private Tween fadeIn()
     {
         Color color = _LetterText.color;
         _FadeIn = DOVirtual.Float(0, 1, _AnimationDuration, (float value) =>
         {
             color.a = value;
             _LetterText.color = color;
-        }).SetEase(Ease.InOutBounce);
+        }).SetEase(Ease.InOutSine);
+        return _FadeIn;
     }
-    private void scaleUpDown()
+    private Tween fadeOut()
+    {
+        Color color = _LetterText.color;
+        Sequence sequence = DOTween.Sequence();
+        sequence
+            .Append(DOVirtual.Float(1, 0, _AnimationDuration, (float value) =>
+            {
+                color.a = value;
+                _LetterText.color = color;
+            })
+            .SetEase(Ease.InOutSine))
+            .Join(_LetterText.rectTransform.DOScale(0, _ScaleDownDuration).SetEase(Ease.OutSine));
+        return sequence;
+    }
+    private Tween scaleUpDown()
     {
         _LetterText.transform.localScale = Vector3.zero;
         Sequence sequence = DOTween.Sequence();
         sequence
-            .Append(_LetterText.rectTransform.DOScale(1.2f, _ScaleUp).SetEase(Ease.InBounce))
-            .Append(_LetterText.rectTransform.DOScale(1f, _ScaleDown).SetEase(Ease.OutBounce));
+            .Append(_LetterText.rectTransform.DOScale(1.2f, _ScaleUpDuration).SetEase(Ease.InSine))
+            .Append(_LetterText.rectTransform.DOScale(1f, _ScaleDownDuration).SetEase(Ease.OutSine));
         _ScaleUpDown = sequence;
+        return _ScaleUpDown;
     }
     private void punchUp()
     {
@@ -212,8 +227,11 @@ public class GameLetter : MonoBehaviour
 
         Sequence sequence = DOTween.Sequence();
         sequence
-            .Append(_LetterText.transform.DOPunchScale(Vector3.one * 0.12f, 0.248f).SetEase(Ease.InBounce))
-            .Join(_LetterText.transform.DOPunchRotation(Vector3.forward * 45f, 0.248f).SetEase(Ease.InBounce))
+            .Append(scaleUpDown())
+            .Join(fadeIn())
+            .Append(_LetterText.transform.DOPunchRotation(Vector3.forward * 45f, 0.248f, elasticity : 2).SetEase(Ease.InBounce))
+            .Join(_LetterText.transform.DOPunchScale(Vector3.one * 0.12f, 0.248f).SetEase(Ease.InBounce))
+            .Append(fadeOut())
             .OnComplete(() => {
                 _LetterText.text = "";
                 _LetterText.color = Color.black;
@@ -242,13 +260,16 @@ public class GameLetter : MonoBehaviour
     private void completeSingle(bool animate = true)
     {
         _LetterText.text = _AssignedLetter.ToString();
-
-        if(animate)
+        if (animate)
         {
-            fadeIn();
-            scaleUpDown();
+            Sequence sequence = DOTween.Sequence();
+            sequence
+                .Append(fadeIn())
+                .Join(scaleUpDown());
+            sequence.OnComplete(() => PhraseManager.Instance.CheckCompletition(_AssignedLetter));
         }
-        PhraseManager.Instance.CheckCompletition(_AssignedLetter);
+        else
+            PhraseManager.Instance.CheckCompletition(_AssignedLetter);
     }
     private void complete()
     {
@@ -256,7 +277,6 @@ public class GameLetter : MonoBehaviour
         _HintHighlight.gameObject.SetActive(false);
         _NumberText.gameObject.SetActive(false);
         _ColorBackGroundImage.gameObject.SetActive(false);
-
         if (_PhraseManager.IsGeneratingLevelFlag == false)
             punchUp();
     }
