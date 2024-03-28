@@ -52,7 +52,7 @@ public class PhraseManager : Singleton<PhraseManager>
     }
     private void onGameOver()
     {
-        Invoke(nameof(clearSelection), 0.248f * 2f);
+        Invoke(nameof(clearSelection), 0.248f * 6f);
     }
     #endregion
 
@@ -367,9 +367,7 @@ public class PhraseManager : Singleton<PhraseManager>
     {
         if (_LetterSelected == null || _LetterSelected.IsCompleted || _LetterSelected.IsWrong)
             return;
-
         bool isCorrect = _LetterSelected.TrySetLetterInText(character);
-
         if (!isCorrect)
             mistake(++_MistakeCount);
     }

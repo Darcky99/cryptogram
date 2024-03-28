@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1cedd74813ef23644840430594678ad7, type: 3}
-  m_Name: Level 3
+  m_Name: Spanish Level 2
   m_EditorClassIdentifier: 
-  _Phrase: AHORA TODO IMPORTA
-  _Author: EL PEPE
-  _PartiallyHiddenLetters: 4f004300
-  _HidenLetters: 410048004900
+  _Phrase: "S\xD3LO S\xC9 QUE NO S\xC9 NADA."
+  _Author: "S\xD3CRATES"
+  _PartiallyHiddenLetters: d3004f00530051005500
+  _HidenLetters: c9004100

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cedd74813ef23644840430594678ad7, type: 3}
   m_Name: Level 1
   m_EditorClassIdentifier: 
-  _Phrase: "LOS \xC1SC\xC9NT\xD3S SON REALSE"
-  _Author: EL PEPE
-  _PartiallyHiddenLetters: 4f0043004500c100c900d300
-  _HidenLetters: 410044004700
+  _Phrase: 'TO BE, OR NOT TO BE: THAT IS THE QUESTION.'
+  _Author: WILLIAM SHAKESPEARE
+  _PartiallyHiddenLetters: 4f005100550049004200
+  _HidenLetters: 54004e005100

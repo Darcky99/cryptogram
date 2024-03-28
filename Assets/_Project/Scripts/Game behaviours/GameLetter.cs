@@ -193,7 +193,7 @@ public class GameLetter : MonoBehaviour
         Color color = _LetterText.color;
         Sequence sequence = DOTween.Sequence();
         sequence
-            .Append(DOVirtual.Float(1, 0, _AnimationDuration, (float value) =>
+            .Append(DOVirtual.Float(1, 0, _ScaleDownDuration, (float value) =>
             {
                 color.a = value;
                 _LetterText.color = color;
@@ -222,16 +222,23 @@ public class GameLetter : MonoBehaviour
     private void wrong(char character)
     {
         _LetterText.text = character.ToString();
-        _LetterText.color = _Error;
+        _LetterText.color = Color.white;
+        _ColorBackGroundImage.color = _Error;
 
         Sequence sequence = DOTween.Sequence();
         sequence
             .Append(scaleUpDown())
             .Join(fadeIn())
+            .Join(DOVirtual.Color(_ColorBackGroundImage.color, _Error, _ScaleUpDuration, (Color color) => {
+                _ColorBackGroundImage.color = color;
+            }))
             .Append(_LetterText.rectTransform.DOPunchRotation(Vector3.forward * 45f, 0.248f, elasticity : 2).SetEase(Ease.InBounce))
             .Join(_ColorBackGroundImage.rectTransform.DOPunchRotation(Vector3.forward * 45f, 0.248f, elasticity: 2).SetEase(Ease.InBounce))
             .Join(_LetterText.rectTransform.DOPunchScale(Vector3.one * 0.12f, 0.248f).SetEase(Ease.InBounce))
             .Append(fadeOut())
+            .Append(DOVirtual.Color(_Error, _PhraseManager.CharacterColor[_AssignedLetter], _ScaleDownDuration, (Color color) => {
+                _ColorBackGroundImage.color = color;
+            }))
             .OnComplete(() => {
                 _LetterText.text = "";
                 _LetterText.color = Color.black;

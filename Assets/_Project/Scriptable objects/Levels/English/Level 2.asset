@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cedd74813ef23644840430594678ad7, type: 3}
   m_Name: Level 2
   m_EditorClassIdentifier: 
-  _Phrase: NADA ES REAL, SOLO YO
-  _Author: NADIE
-  _PartiallyHiddenLetters: 45004c00
-  _HidenLetters: 4f0041005200
+  _Phrase: THE ONLY WAY TO DO GREAT WORK IS TO LOVE WHAT YOU DO.
+  _Author: STEVE JOBS
+  _PartiallyHiddenLetters: 4800570054004f005200
+  _HidenLetters: 4700450041004c00
