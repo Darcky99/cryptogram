@@ -1,9 +1,7 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
-using System;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameLetter : MonoBehaviour
 {
@@ -100,9 +98,13 @@ public class GameLetter : MonoBehaviour
     }
     private void discard()
     {
+        _LetterText.rectTransform.DOKill();
+        _ColorBackGroundImage.rectTransform.DOKill();
         _FadeIn?.Kill();
+        _FadeOut?.Kill();
         _ScaleUpDown?.Kill();
         _PunchUp?.Kill();
+        _Wrong?.Kill();
         _NumberText.transform.localScale = Vector3.one;
         Destroy(gameObject);
     }
@@ -165,7 +167,6 @@ public class GameLetter : MonoBehaviour
     #endregion
 
     #region Animation
-    public bool IsScaleUpDown => _ScaleUpDown != null && _ScaleUpDown.IsPlaying();
     public bool IsWrong => _Wrong == null ? false : _Wrong.IsPlaying();
 
     private float _AnimationDuration => _ScaleUpDuration + _ScaleDownDuration;
@@ -173,10 +174,7 @@ public class GameLetter : MonoBehaviour
     private float _ScaleUpDuration = 0.28f;
     private float _ScaleDownDuration = 0.28f;
 
-    private Tween _FadeIn;
-    private Tween _ScaleUpDown;
-    private Tween _PunchUp;
-    private Tween _Wrong;
+    private Tween _FadeIn, _FadeOut, _ScaleUpDown, _PunchUp, _Wrong;
 
     [SerializeField] private Color _Error;
 
@@ -202,6 +200,7 @@ public class GameLetter : MonoBehaviour
             })
             .SetEase(Ease.InOutSine))
             .Join(_LetterText.rectTransform.DOScale(0, _ScaleDownDuration).SetEase(Ease.OutSine));
+        _FadeOut = sequence;
         return sequence;
     }
     private Tween scaleUpDown()
@@ -229,8 +228,9 @@ public class GameLetter : MonoBehaviour
         sequence
             .Append(scaleUpDown())
             .Join(fadeIn())
-            .Append(_LetterText.transform.DOPunchRotation(Vector3.forward * 45f, 0.248f, elasticity : 2).SetEase(Ease.InBounce))
-            .Join(_LetterText.transform.DOPunchScale(Vector3.one * 0.12f, 0.248f).SetEase(Ease.InBounce))
+            .Append(_LetterText.rectTransform.DOPunchRotation(Vector3.forward * 45f, 0.248f, elasticity : 2).SetEase(Ease.InBounce))
+            .Join(_ColorBackGroundImage.rectTransform.DOPunchRotation(Vector3.forward * 45f, 0.248f, elasticity: 2).SetEase(Ease.InBounce))
+            .Join(_LetterText.rectTransform.DOPunchScale(Vector3.one * 0.12f, 0.248f).SetEase(Ease.InBounce))
             .Append(fadeOut())
             .OnComplete(() => {
                 _LetterText.text = "";

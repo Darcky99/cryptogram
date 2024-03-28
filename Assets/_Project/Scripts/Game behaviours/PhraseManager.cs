@@ -52,7 +52,7 @@ public class PhraseManager : Singleton<PhraseManager>
     }
     private void onGameOver()
     {
-        ClearSelection();
+        Invoke(nameof(clearSelection), 0.248f * 2f);
     }
     #endregion
 
@@ -220,37 +220,6 @@ public class PhraseManager : Singleton<PhraseManager>
         if (_MistakeCount >= 3)
             _GameManager.GameOver();
     }
-    private void changeSelection(eChangeSelectionMode selectionMode)
-    {
-        if (_GameLetters == null || _LetterSelected == null)
-            return;
-
-        int increase = 0;
-        switch (selectionMode)
-        {
-            case eChangeSelectionMode.Previous:
-                increase = -1;
-                break;
-            case eChangeSelectionMode.Next:
-                increase = 1;
-                break;
-        }
-
-        int letterIndex = 0;
-        for (int c = 0; c < _GameLetters.Count; c++)
-            if (_GameLetters[c] == _LetterSelected)
-                letterIndex = c;
-        for (int n = increase; n < _GameLetters.Count; n += increase)
-        {
-            int index = wrapAround(letterIndex + n, 0, _GameLetters.Count - 1);
-            GameLetter gameLetter = _GameLetters[index];
-            if (gameLetter.IsCompleted == false && _LetterSelected.AssignedLetter == gameLetter.AssignedLetter)
-            {
-                SetSelection(gameLetter);
-                return;
-            }
-        }
-    }
     #endregion
 
     #region Vertical scrolling
@@ -311,7 +280,7 @@ public class PhraseManager : Singleton<PhraseManager>
         if (_IsGeneratingLevelFlag)
             yield break;
 
-        ClearSelection();
+        clearSelection();
         GameBrain.Instance.Hints--;
 
         GameLetter[] incomplete = getIncomplete(character);
@@ -325,21 +294,12 @@ public class PhraseManager : Singleton<PhraseManager>
         if (IsLevelCompleted)
             GameManager.Instance.LevelCompleted();
     }
+    
+    public void ForceCompletition(char character) => StartCoroutine(forceCompletition(character));
     #endregion
 
     #region Selection and setting
-    private void checkCompletition(char character)
-    {
-        if (isCompleted(character))
-        {
-            OnLetterCompleted?.Invoke(character);
-            ClearSelection();
-        }
-        if (IsLevelCompleted)
-            GameManager.Instance.LevelCompleted();
-    }
-
-    public void SetSelection(GameLetter selected)
+    private void setSelection(GameLetter selected)
     {
         _LetterSelected = selected;
         OnSelection?.Invoke(_LetterSelected);
@@ -348,7 +308,61 @@ public class PhraseManager : Singleton<PhraseManager>
             return;
         setVerticalScrollPosition();
     }
-    public void ClearSelection() => SetSelection(null);
+    private void clearSelection() => setSelection(null);
+    private void checkCompletition(char character)
+    {
+        if (isCompleted(character))
+        {
+            OnLetterCompleted?.Invoke(character);
+            clearSelection();
+        }
+        if (IsLevelCompleted)
+            GameManager.Instance.LevelCompleted();
+    }
+    private void changeSelection(eChangeSelectionMode selectionMode)
+    {
+        if (_GameLetters == null || _LetterSelected == null)
+            return;
+
+        int increase = 0, breaker = 0;
+        switch (selectionMode)
+        {
+            case eChangeSelectionMode.Previous:
+                increase = -1;
+                break;
+            case eChangeSelectionMode.Next:
+                increase = 1;
+                break;
+        }
+
+        int letterIndex = 0;
+        for (int c = 0; c < _GameLetters.Count; c++)
+            if (_GameLetters[c] == _LetterSelected)
+            {
+                letterIndex = c;
+                break;
+            }
+        for (int n = increase; Mathf.Abs(n) < _GameLetters.Count; n += increase)
+        {
+            breaker++;
+            int index = wrapAround(letterIndex + n, 0, _GameLetters.Count - 1);
+            GameLetter gameLetter = _GameLetters[index];
+            if (gameLetter.IsCompleted == false && _LetterSelected.AssignedLetter == gameLetter.AssignedLetter)
+            {
+                setSelection(gameLetter);
+                return;
+            }
+
+            if (breaker > 500)
+            {
+                Debug.LogError("Ya wey!");
+                return;
+            }
+        }
+    }
+
+    public void SetSelection(GameLetter selected) => setSelection(selected);
+    public void ClearSelection() => clearSelection();
     public void TrySetLetter(char character)
     {
         if (_LetterSelected == null || _LetterSelected.IsCompleted || _LetterSelected.IsWrong)
@@ -359,7 +373,6 @@ public class PhraseManager : Singleton<PhraseManager>
         if (!isCorrect)
             mistake(++_MistakeCount);
     }
-    public void ForceCompletition(char character) => StartCoroutine(forceCompletition(character));
     public void CheckCompletition(char character)
     {
         if (_IsGeneratingLevelFlag)

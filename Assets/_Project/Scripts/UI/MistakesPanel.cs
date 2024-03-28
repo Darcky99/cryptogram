@@ -35,7 +35,6 @@ public class MistakesPanel : Singleton<MistakesPanel>
             cross.gameObject.SetActive(condition);
             if (!condition)
                 continue;
-            
             cross.localScale = Vector3.zero;
             Sequence sequence = DOTween.Sequence();
             float scaleUpDuration = 0.25f;

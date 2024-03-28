@@ -4466,6 +4466,10 @@ PrefabInstance:
       propertyPath: ChangeSelectionMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6493222083011265157, guid: 881c87729be8eb549b6e495ec5e08e77, type: 3}
+      propertyPath: _ChangeSelectionMode
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

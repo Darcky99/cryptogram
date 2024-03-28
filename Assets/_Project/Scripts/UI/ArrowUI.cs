@@ -1,10 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ArrowUI : MonoBehaviour
 {
-    [SerializeField] public eChangeSelectionMode ChangeSelectionMode;
+    #region Unity
+    private void OnEnable()
+    {
+        GameManager.OnLoadLevel += onLoadLevel;
+        GameManager.OnGameOver += onGameOver;
+    }
+    private void OnDisable()
+    {
+        GameManager.OnLoadLevel -= onLoadLevel;
+        GameManager.OnGameOver -= onGameOver;
+    }
+    #endregion
 
-    public void ChangeSelection() => PhraseManager.Instance.ChangeSelection(ChangeSelectionMode);
+    #region Callbacks
+    private void onLoadLevel(int levelIndex)
+    {
+        _Button.interactable = true;
+    }
+    private void onGameOver()
+    {
+        _Button.interactable = false;
+    }
+    #endregion
+
+    [SerializeField] private eChangeSelectionMode _ChangeSelectionMode;
+    [SerializeField] private Button _Button;
+
+    public void ChangeSelection() => PhraseManager.Instance.ChangeSelection(_ChangeSelectionMode);
 }
