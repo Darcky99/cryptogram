@@ -34,7 +34,8 @@ public class MistakesPanel : Singleton<MistakesPanel>
             RectTransform cross = _MistakeDots[i].CrossImage.rectTransform;
             cross.gameObject.SetActive(condition);
             if (!condition)
-                return;
+                continue;
+            
             cross.localScale = Vector3.zero;
             Sequence sequence = DOTween.Sequence();
             float scaleUpDuration = 0.25f;
