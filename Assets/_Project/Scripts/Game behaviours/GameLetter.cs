@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
 using UnityEngine.UI;
 
 public class GameLetter : MonoBehaviour
@@ -39,7 +40,7 @@ public class GameLetter : MonoBehaviour
     private void onLetterCompleted(char completed)
     {
         if (_AssignedLetter == completed)
-            complete();
+            completeCharacter();
     }
     private void onSelection(GameLetter gameLetter)
     {
@@ -54,13 +55,13 @@ public class GameLetter : MonoBehaviour
     }
     #endregion
 
-    public bool IsCompleted => _LetterInText == _AssignedLetter;
+    public bool IsCompleted => FixCharacter(_LetterInText) == _AssignedLetter;
     public char AssignedLetter => _AssignedLetter;
     public Vector2 AbsoluteAnchoredPosition => _GameWord.AbsoluteAnchoredPosition + _RectTransform.anchoredPosition;
     public float Width => _RectTransform.sizeDelta.x;
 
-    private float _ColorAlpha => _ColorBackGroundImage.color.a;
     private bool _IsHighlight => _ColorAlpha == 1f;
+    private float _ColorAlpha => _ColorBackGroundImage.color.a;
     private char _LetterInText => _LetterText.text.Length > 0 ? _LetterText.text[0] : ' ';
 
     private const float _DiselectedAlpha = 0.5f;
@@ -86,7 +87,7 @@ public class GameLetter : MonoBehaviour
         setAssignedNumber(assignedNumber);
         setAssignedColor(assignedColor);
 
-        if (_PhraseManager.LevelData.HidenLetters.Contains(_AssignedLetter))
+        if (_PhraseManager.LevelData.HiddenLetters.Contains(_AssignedLetter))
             return;
         if (_PhraseManager.LevelData.PartiallyHiddenLetters.Contains(_AssignedLetter))
         {
@@ -178,10 +179,11 @@ public class GameLetter : MonoBehaviour
 
     [SerializeField] private Color _Error;
 
+
     private Tween fadeIn()
     {
         Color color = _LetterText.color;
-        _FadeIn = DOVirtual.Float(0, 1, _AnimationDuration, (float value) =>
+        _FadeIn = DOVirtual.Float(0, 1, _ScaleUpDuration, (float value) =>
         {
             color.a = value;
             _LetterText.color = color;
@@ -232,8 +234,8 @@ public class GameLetter : MonoBehaviour
             .Join(DOVirtual.Color(_ColorBackGroundImage.color, _Error, _ScaleUpDuration, (Color color) => {
                 _ColorBackGroundImage.color = color;
             }))
-            .Append(_LetterText.rectTransform.DOPunchRotation(Vector3.forward * 45f, 0.248f, elasticity : 2).SetEase(Ease.InBounce))
-            .Join(_ColorBackGroundImage.rectTransform.DOPunchRotation(Vector3.forward * 45f, 0.248f, elasticity: 2).SetEase(Ease.InBounce))
+            .Append(_LetterText.rectTransform.DOPunchRotation(Vector3.forward * 15, 0.248f, 20, elasticity : 4).SetEase(Ease.InBounce))
+            .Join(_ColorBackGroundImage.rectTransform.DOPunchRotation(Vector3.forward * 15, 0.248f, 20, elasticity: 4).SetEase(Ease.InBounce))
             .Join(_LetterText.rectTransform.DOPunchScale(Vector3.one * 0.12f, 0.248f).SetEase(Ease.InBounce))
             .Append(fadeOut())
             .Append(DOVirtual.Color(_Error, _PhraseManager.CharacterColor[_AssignedLetter], _ScaleDownDuration, (Color color) => {
@@ -247,7 +249,7 @@ public class GameLetter : MonoBehaviour
     }
     #endregion
 
-    #region Assign and complete
+    #region Assign
     private void setAssignedNumber(byte assignedNumber)
     {
         _AssignedNumber = assignedNumber;
@@ -264,9 +266,20 @@ public class GameLetter : MonoBehaviour
         color.a = alpha;
         _ColorBackGroundImage.color = color;
     }
+    #endregion
+
+    #region Complete
+    private void useCorrectCharacter()
+    {
+        _HintHighlight.gameObject.SetActive(false);
+
+        int index = _RectTransform.GetSiblingIndex() - 1;
+        _LetterText.text = _GameWord.AssignedWord[index].ToString();
+    }
     private void completeSingle(bool animate = true)
     {
-        _LetterText.text = _AssignedLetter.ToString();
+        useCorrectCharacter();
+
         if (animate)
         {
             Sequence sequence = DOTween.Sequence();
@@ -278,10 +291,10 @@ public class GameLetter : MonoBehaviour
         else
             PhraseManager.Instance.CheckCompletition(_AssignedLetter);
     }
-    private void complete()
+    private void completeCharacter()
     {
-        _LetterText.text = _AssignedLetter.ToString();
-        _HintHighlight.gameObject.SetActive(false);
+        useCorrectCharacter();
+        
         _NumberText.gameObject.SetActive(false);
         _ColorBackGroundImage.gameObject.SetActive(false);
         if (_PhraseManager.IsGeneratingLevelFlag == false)
@@ -289,7 +302,7 @@ public class GameLetter : MonoBehaviour
     }
     private bool trySetLetterInText(char character)
     {
-        bool isCorrect = compare(character);
+        bool isCorrect = character == _AssignedLetter;
         if (isCorrect)
             completeSingle();
         else
@@ -298,24 +311,6 @@ public class GameLetter : MonoBehaviour
     }
     #endregion
 
-    private bool compare(char character)
-    {
-        switch (_AssignedLetter)
-        {
-            case 'Á':
-                return character == 'A' || character == 'Á';
-            case 'É':
-                return character == 'E' || character == 'É';
-            case 'Í':
-                return character == 'I' || character == 'Í';
-            case 'Ó':
-                return character == 'O' || character == 'Ó';
-            case 'Ú':
-                return character == 'U' || character == 'Ú';
-            default:
-                return character == _AssignedLetter;
-        }
-    }
     private void setAsSelected()
     {
         PhraseManager.Instance.SetSelection(this);
@@ -331,14 +326,33 @@ public class GameLetter : MonoBehaviour
 
     public void OnButtonDown()
     {
-        if (IsCompleted)
+        if (IsCompleted || _PhraseManager.IsHintSequenceFlag)
             return;
-        if (HintPanel.Instance.IsHint)
+
+        if (HintPanel.Instance.IsHintInterfaceEnabled)
         {
             forceCompleteLetter();
             return;
         }
-
         setAsSelected();
+    }
+
+    public static char FixCharacter(char character)
+    {
+        switch (character)
+        {
+            case 'Á':
+                return 'A';
+            case 'É':
+                return 'E';
+            case 'Í':
+                return 'I';
+            case 'Ó':
+                return 'O';
+            case 'Ú':
+                return 'U';
+            default:
+                return character;
+        }
     }
 }

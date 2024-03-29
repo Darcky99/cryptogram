@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,10 +11,14 @@ public class GameBrain : Singleton<GameBrain>
     private void OnEnable()
     {
         GameManager.OnLoadLevel += onLoadLevel;
+        GameManager.OnGameOver += onGameOver;
+        TimeManager.OnNewDay += onNewDay;
     }
     private void OnDisable()
     {
         GameManager.OnLoadLevel -= onLoadLevel;
+        GameManager.OnGameOver -= onGameOver;
+        TimeManager.OnNewDay -= onNewDay;
     }
     #endregion
 
@@ -23,37 +28,51 @@ public class GameBrain : Singleton<GameBrain>
         LifePanel.Instance.SetLifeCount(_Lifes);
         HintPanel.Instance.SetHintCount(_Hints);
     }
+    private void onGameOver()
+    {
+        expendLife();
+    }
+    private void onNewDay()
+    {
+        earnLife();
+    }
     #endregion
 
-    public int HyperCasualLevelsCount => _HyperCasualLevels.Count;
+    public int HyperCasualLevelsCount => _LevelsToLoad.Levels.Length;
 
-    public int Lifes 
-    { 
-        set
-        {
-            _Lifes = value;
-            LifePanel.Instance.SetLifeCount(_Lifes);
-        }
-        get
-        {
-            return _Lifes;
-        }
-    }
-    public int Hints
-    {
-        set
-        {
-            _Hints = value;
-            HintPanel.Instance.SetHintCount(_Hints);
-        }
-        get
-        {
-            return _Hints;
-        }
-    }
+    public int Lifes => _Lifes;
+    public int Hints => _Hints;
 
     [SerializeField] private int _Lifes, _Hints;
-    [SerializeField] private List<LevelData_Scriptable> _HyperCasualLevels;
+    [SerializeField] private LevelsData_Scriptable _LevelsToLoad;
 
-    public ILevelData GetCurrentHyperCasualLevel() => _HyperCasualLevels[_GameManager.LevelIndex % HyperCasualLevelsCount];
+    public ILevelData GetCurrentHyperCasualLevel() => _LevelsToLoad.Levels[_GameManager.LevelIndex % HyperCasualLevelsCount];
+
+    #region Lifes and Hints
+    private void earnLife()
+    {
+        _Lifes++;
+        LifePanel.Instance.SetLifeCount(_Lifes);
+    }
+    private void expendLife()
+    {
+        _Lifes--;
+        LifePanel.Instance.SetLifeCount(_Lifes);
+    }
+
+    public void EarnHint()
+    {
+        _Hints++;
+        HintPanel.Instance.SetHintCount(_Hints);
+    }
+    public void ExpendHint()
+    {
+        _Hints--;
+        HintPanel.Instance.SetHintCount(_Hints);
+    }
+    #endregion
+
+    #region Languaje
+    //detect languaje and switch the HC levels 
+    #endregion
 }

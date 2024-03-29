@@ -32,9 +32,10 @@ public class MistakesPanel : Singleton<MistakesPanel>
             bool condition = count > i;
             MistakeDot current = _MistakeDots[i];
             RectTransform cross = _MistakeDots[i].CrossImage.rectTransform;
-            cross.gameObject.SetActive(condition);
-            if (!condition)
+
+            if (!condition || cross.gameObject.activeInHierarchy)
                 continue;
+            cross.gameObject.SetActive(condition);
             cross.localScale = Vector3.zero;
             Sequence sequence = DOTween.Sequence();
             float scaleUpDuration = 0.25f;

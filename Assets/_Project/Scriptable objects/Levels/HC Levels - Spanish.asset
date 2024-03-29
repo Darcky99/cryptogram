@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d24056ee03a96d4598edcdd179e5211, type: 3}
+  m_Name: HC Levels - Spanish
+  m_EditorClassIdentifier: 
+  _Levels:
+  - _Author: "PEDRO CALDER\xD3N DE LA BARCA"
+    _Phrase: "LA VIDA ES SUE\xD1O, Y LOS SUE\xD1OS, SUE\xD1OS SON."
+    _PartiallyHiddenLetters: "O C \xD1 L E"
+    _HiddenLetters: A D U
+  - _Author: "S\xD3CRATES"
+    _Phrase: "S\xD3LO S\xC9 QUE NO S\xC9 NADA."
+    _PartiallyHiddenLetters: O S Q U
+    _HiddenLetters: E A
+  - _Author: JESUCRISTO
+    _Phrase: "LA VERDAD OS HAR\xC1 LIBRES."
+    _PartiallyHiddenLetters: O C L B R E
+    _HiddenLetters: A S

@@ -24,12 +24,14 @@ public class GameWord : MonoBehaviour
     }
     #endregion
 
+    public string AssignedWord => _AssignedWord;
     public Vector2 AbsoluteAnchoredPosition => _GameLine.AnchoredPosition + _RectTransform.anchoredPosition;
     public float Width => _RectTransform.sizeDelta.x;
     private float _GameLetterWidth => _GameLetterPrefab.Width;
 
-    private string _AssignedWord;
     private GameLine _GameLine;
+
+    [SerializeField] private string _AssignedWord;
 
     [SerializeField] private RectTransform _RectTransform;
     [SerializeField] private HorizontalLayoutGroup _HorizontalLayerGroup;
@@ -97,12 +99,23 @@ public class GameWord : MonoBehaviour
     }
     private void setFinalCharacter(char character)
     {
-        _LastCharacter.rectTransform.parent.SetParent(transform.parent);
-
         _LastCharacter.rectTransform.parent.gameObject.SetActive(true);
         _LastCharacter.text = character.ToString();
+    }
 
-        _LastCharacter.rectTransform.parent.SetParent(transform);
+    private bool trySpecialCharacter(char character)
+    {
+        if (isInitialCharacter(character))
+        {
+            setInitialCharacter(character);
+            return true;
+        }
+        else if (isFinalCharacter(character))
+        {
+            setFinalCharacter(character); ;
+            return true;
+        }
+        return false;
     }
     #endregion
 
@@ -110,21 +123,18 @@ public class GameWord : MonoBehaviour
     {
         foreach (char character in word)
         {
-            if (isInitialCharacter(character))
-            {
-                setInitialCharacter(character);
+            if (trySpecialCharacter(character))
                 continue;
-            }
-            else if (isFinalCharacter(character))
-            {
-                setFinalCharacter(character);
-                continue;
-            }
+
+            char fixedCharacter = GameLetter.FixCharacter(character);
 
             GameLetter gameLetter = Instantiate(_GameLetterPrefab, transform);
-            byte keyNumber = _PhraseManager.CharacterNumber[character];
-            Color keyColor = _PhraseManager.CharacterColor[character];
-            gameLetter.Initialize(this, character, keyNumber, keyColor);
+            byte keyNumber = _PhraseManager.CharacterNumber[fixedCharacter];
+            Color keyColor = _PhraseManager.CharacterColor[fixedCharacter];
+
+            _LastCharacter.rectTransform.parent.SetSiblingIndex(transform.childCount - 1);
+
+            gameLetter.Initialize(this, fixedCharacter, keyNumber, keyColor);
             _PhraseManager.AddGameLetter(gameLetter);
         }
         float sizeX = getWordWidth(_AssignedWord) + _SidesMargin;

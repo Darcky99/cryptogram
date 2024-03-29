@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d24056ee03a96d4598edcdd179e5211, type: 3}
+  m_Name: HC Levels - English
+  m_EditorClassIdentifier: 
+  _Levels:
+  - _Author: WILLIAM SHAKESPEARE
+    _Phrase: 'TO BE, OR NOT TO BE: THAT IS THE QUESTION.'
+    _PartiallyHiddenLetters: O Q U I B
+    _HiddenLetters: T N Q
+  - _Author: STEVE JOBS
+    _Phrase: THE ONLY WAY TO DO GREAT WORK IS TO LOVE WHAT YOU DO.
+    _PartiallyHiddenLetters: H W T O R
+    _HiddenLetters: G E A L
+  - _Author: ALBERT CAMUS
+    _Phrase: IN THE MIDST OF WINTER, I FOUND THERE WAS, WITHIN ME, AN INVINCIBLE
+      SUMMER.
+    _PartiallyHiddenLetters: C N O U
+    _HiddenLetters: M I

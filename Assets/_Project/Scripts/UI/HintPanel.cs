@@ -9,7 +9,7 @@ public class HintPanel : Singleton<HintPanel>
     private GameBrain _GameBrain => GameBrain.Instance;
     private PhraseManager _PhraseManager => PhraseManager.Instance;
 
-    public bool IsHint => _HintInterface.gameObject.activeInHierarchy;
+    public bool IsHintInterfaceEnabled => _HintInterface.gameObject.activeInHierarchy;
 
     [SerializeField] private RectTransform _HintInterface;
 
@@ -37,7 +37,7 @@ public class HintPanel : Singleton<HintPanel>
         setHintPanel(false);
     }
 
-    public void BuyHint() => _GameBrain.Hints++;
+    public void BuyHint() => _GameBrain.EarnHint();
     public void OpenHintPanel() => setHintPanel(true);
     public void CloseHintPanel() => setHintPanel(false);
 }

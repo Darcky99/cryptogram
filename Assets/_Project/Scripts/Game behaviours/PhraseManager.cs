@@ -37,7 +37,7 @@ public class PhraseManager : Singleton<PhraseManager>
     #region Callbacks
     private void onLoadLevel(int levelIndex)
     {
-        clearLevel();
+        clearGameElements();
 
         _RandomGenerator = new System.Random(levelIndex);
         _LevelData = _GameBrain.GetCurrentHyperCasualLevel();
@@ -108,7 +108,7 @@ public class PhraseManager : Singleton<PhraseManager>
     }
 
     #region Level generation
-    private void clearLevel()
+    private void clearGameElements()
     {
         _LevelData = null;
         _LetterSelected = null;
@@ -131,38 +131,31 @@ public class PhraseManager : Singleton<PhraseManager>
     private void generateLettersIndex()
     {
         List<int> colorIndex = new List<int>();
-        int loops = 0;
 
         foreach (char character in _LevelData.Phrase)
         {
             if (_GameLinePrefab.GameWordPrefab.IsSpecialCharacter(character))
                 continue;
 
-            while (_CharacterNumber.ContainsKey(character) == false)
+            char fixedCharacter = GameLetter.FixCharacter(character);
+
+            while (_CharacterNumber.ContainsKey(fixedCharacter) == false)
             {
                 byte randomNumber = (byte)_RandomGenerator.Next(1, 99);
                 if (_CharacterNumber.ContainsValue(randomNumber) == false)
-                    _CharacterNumber.Add(character, randomNumber);
-
-                loops++;
-                if (loops > 500)
-                    break;
+                    _CharacterNumber.Add(fixedCharacter, randomNumber);
             }
-            while (_CharacterColor.ContainsKey(character) == false)
+            while (_CharacterColor.ContainsKey(fixedCharacter) == false)
             {
                 byte randomNumber = (byte)_RandomGenerator.Next(0, _BackGroundColors.Length);
                 Color selection = _BackGroundColors[randomNumber];
                 if (colorIndex.Contains(randomNumber) == false)
                 {
                     colorIndex.Add(randomNumber);
-                    _CharacterColor.Add(character, selection);
+                    _CharacterColor.Add(fixedCharacter, selection);
                 }
-
-                loops++;
-                if (loops > 500)
-                    break;
             }
-            if (_CharacterColor.ContainsKey(character) == false)
+            if (_CharacterColor.ContainsKey(fixedCharacter) == false)
                 Debug.LogError($"Run out of colors, please assign more for this puzzle");
         }
     }
@@ -239,15 +232,15 @@ public class PhraseManager : Singleton<PhraseManager>
             return false;
         return true;
     }
-    private void setVerticalScrollPosition()
+    private void setVerticalScrollPosition(GameLetter focusLetter)
     {
-        bool isVisible = isContentVisible(_LetterSelected.AbsoluteAnchoredPosition);
+        bool isVisible = isContentVisible(focusLetter.AbsoluteAnchoredPosition);
         if (isVisible)
             return;
         if (_ScrollMove != null)
-            _ScrollMove.Kill();
+            _ScrollMove?.Kill();
 
-        float absY = Mathf.Abs(_LetterSelected.AbsoluteAnchoredPosition.y);
+        float absY = Mathf.Abs(focusLetter.AbsoluteAnchoredPosition.y);
         float sizeDeltaY = _LevelContent.sizeDelta.y;
 
         float offset = _GameLinePrefab.SizeDelta.y;
@@ -265,7 +258,10 @@ public class PhraseManager : Singleton<PhraseManager>
     #endregion
 
     #region Hints
-    private WaitForSeconds _ForceCompleteDelay = new WaitForSeconds(0.378f);
+    public bool IsHintSequenceFlag => _IsHintSequenceFlag;
+
+    private bool _IsHintSequenceFlag;
+    private WaitForSeconds _ForceCompleteDelay = new WaitForSeconds(0.56f * 1.1f);
 
     private GameLetter[] getIncomplete(char character)
     {
@@ -280,19 +276,23 @@ public class PhraseManager : Singleton<PhraseManager>
         if (_IsGeneratingLevelFlag)
             yield break;
 
-        clearSelection();
-        GameBrain.Instance.Hints--;
+        _IsHintSequenceFlag = true;
 
+        clearSelection();
+        GameBrain.Instance.ExpendHint();
         GameLetter[] incomplete = getIncomplete(character);
         yield return _ForceCompleteDelay;
 
         foreach (GameLetter gameLetter in incomplete)
         {
             gameLetter.TrySetLetterInText(character);
+            setVerticalScrollPosition(gameLetter);
             yield return _ForceCompleteDelay;
         }
         if (IsLevelCompleted)
             GameManager.Instance.LevelCompleted();
+
+        _IsHintSequenceFlag = false;
     }
     
     public void ForceCompletition(char character) => StartCoroutine(forceCompletition(character));
@@ -306,7 +306,7 @@ public class PhraseManager : Singleton<PhraseManager>
 
         if (selected == null)
             return;
-        setVerticalScrollPosition();
+        setVerticalScrollPosition(_LetterSelected);
     }
     private void clearSelection() => setSelection(null);
     private void checkCompletition(char character)
@@ -398,4 +398,5 @@ public class PhraseManager : Singleton<PhraseManager>
         _QuoteText.gameObject.SetActive(false);
     }
     #endregion
+
 }
