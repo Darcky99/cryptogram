@@ -43,6 +43,8 @@ public class GameBrain : Singleton<GameBrain>
     public int Lifes => _Lifes;
     public int Hints => _Hints;
 
+    [SerializeField] public LevelsAvailable delete;
+
     [SerializeField] private int _Lifes, _Hints;
     [SerializeField] private LevelsData_Scriptable _LevelsToLoad;
 
@@ -72,7 +74,5 @@ public class GameBrain : Singleton<GameBrain>
     }
     #endregion
 
-    #region Languaje
-    //detect languaje and switch the HC levels 
-    #endregion
+
 }

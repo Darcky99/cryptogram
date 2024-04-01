@@ -87,9 +87,9 @@ public class GameLetter : MonoBehaviour
         setAssignedNumber(assignedNumber);
         setAssignedColor(assignedColor);
 
-        if (_PhraseManager.LevelData.HiddenLetters.Contains(_AssignedLetter))
+        if (_PhraseManager.LevelData.Hidden.Contains(_AssignedLetter))
             return;
-        if (_PhraseManager.LevelData.PartiallyHiddenLetters.Contains(_AssignedLetter))
+        if (_PhraseManager.LevelData.PartiallyHidden.Contains(_AssignedLetter))
         {
             int random = _PhraseManager.RandomGenerator.Next(0, 100);
             if (random < 50)

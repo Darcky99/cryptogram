@@ -11,7 +11,8 @@ public class GameManager : Singleton<GameManager>
     #region Unity
     public override void Start()
     {
-        Invoke(nameof(LoadLevel), 0.25f);
+        RemoteLoad.GetTestLevels();
+        //Invoke(nameof(LoadLevel), 0.25f);
     }
     private void OnEnable()
     {
@@ -60,7 +61,7 @@ public class GameManager : Singleton<GameManager>
     public void GameOver() => OnGameOver?.Invoke();
     #endregion
 
-    #region Save & Load
+    #region Save & Load NOT DONE YET!
     public void SaveGame() { }
     public void LoadGame() { }
     public void DeleteGame() { }

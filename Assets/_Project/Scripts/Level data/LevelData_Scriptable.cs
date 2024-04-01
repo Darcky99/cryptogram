@@ -7,7 +7,7 @@ public class LevelData_Scriptable : ScriptableObject, ILevelData
 {
     public string Phrase => _Phrase;
     public string Author => _Author;
-    public char[] PartiallyHiddenLetters
+    public char[] PartiallyHidden
     {
         get
         {
@@ -22,7 +22,7 @@ public class LevelData_Scriptable : ScriptableObject, ILevelData
             return characters;
         }
     }
-    public char[] HiddenLetters
+    public char[] Hidden
     {
         get
         {

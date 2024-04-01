@@ -7,6 +7,6 @@ public interface ILevelData
     public string Phrase { get; }
     public string Author { get; }
 
-    public char[] PartiallyHiddenLetters { get; }
-    public char[] HiddenLetters { get; }
+    public char[] PartiallyHidden { get; }
+    public char[] Hidden { get; }
 }

@@ -1795,6 +1795,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfad48565bddd924a96fa2d53ea254da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  delete: 4
   _Lifes: 5
   _Hints: 3
   _LevelsToLoad: {fileID: 11400000, guid: 0e3100f7e3112bf4ea92b607a2ae6e8b, type: 2}
