@@ -32,7 +32,6 @@ public class TimeManager : MonoBehaviour
     #region Callbacks
     private void onTouch(Touch touch)
     {
-        Debug.Log("ACTIVITY!");
         _InactiviryTimer.SetTimer();
     }
 

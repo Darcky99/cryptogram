@@ -1,11 +1,11 @@
-using TMPro;
-using System;
 using DG.Tweening;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class PhraseManager : Singleton<PhraseManager>
 {
@@ -39,13 +39,14 @@ public class PhraseManager : Singleton<PhraseManager>
     {
         clearGameElements();
 
-        _RandomGenerator = new System.Random(levelIndex);
-        _LevelData = _GameBrain.GetCurrentHyperCasualLevel();
+        _LevelData = _GameBrain.GetCurrentLevel();
 
-        _Keyboard.InitializeKeyboard();
-        StartCoroutine(generateLevel());
+        DOVirtual.DelayedCall(0.1f, () =>
+        {
+            _Keyboard.InitializeKeyboard();
+            StartCoroutine(generateLevel());
+        });
     }
-
     private void onLevelCompleted()
     {
         displayQuote();
@@ -68,22 +69,21 @@ public class PhraseManager : Singleton<PhraseManager>
                 if (!gameLetter.IsCompleted)
                     return false;
             return true;
-        } 
+        }
     }
     public Dictionary<char, byte> CharacterNumber => _CharacterNumber;
     public Dictionary<char, Color> CharacterColor => _CharacterColor;
     public ILevelData LevelData => _LevelData;
-    public System.Random RandomGenerator => _RandomGenerator;
 
     private GameLine _LastLine => _GameLines.Last();
 
     private int _MistakeCount = 0;
-    private System.Random _RandomGenerator;
+
     private bool _IsGeneratingLevelFlag;
     private Dictionary<char, byte> _CharacterNumber;
     private Dictionary<char, Color> _CharacterColor;
 
-    [SerializeField, Header("Level generation")] private ILevelData _LevelData;
+    [Header("Level generation")] private ILevelData _LevelData;
 
     [SerializeField, Header("Level generation")] private RectTransform _GameArea;
     [SerializeField, Header("Level generation")] private ScrollRect _ScrollRect;
@@ -141,13 +141,13 @@ public class PhraseManager : Singleton<PhraseManager>
 
             while (_CharacterNumber.ContainsKey(fixedCharacter) == false)
             {
-                byte randomNumber = (byte)_RandomGenerator.Next(1, 99);
+                byte randomNumber = (byte)_GameBrain.RandomGenerator.Next(1, 99);
                 if (_CharacterNumber.ContainsValue(randomNumber) == false)
                     _CharacterNumber.Add(fixedCharacter, randomNumber);
             }
             while (_CharacterColor.ContainsKey(fixedCharacter) == false)
             {
-                byte randomNumber = (byte)_RandomGenerator.Next(0, _BackGroundColors.Length);
+                byte randomNumber = (byte)_GameBrain.RandomGenerator.Next(0, _BackGroundColors.Length);
                 Color selection = _BackGroundColors[randomNumber];
                 if (colorIndex.Contains(randomNumber) == false)
                 {
@@ -251,7 +251,7 @@ public class PhraseManager : Singleton<PhraseManager>
         float absDiference = Mathf.Abs(_ScrollRect.verticalNormalizedPosition - verticalNormalizedPosition);
         float time = absDiference * 0.65f;
 
-        _ScrollMove = DOVirtual.Float(_ScrollRect.verticalNormalizedPosition, verticalNormalizedPosition, time,  
+        _ScrollMove = DOVirtual.Float(_ScrollRect.verticalNormalizedPosition, verticalNormalizedPosition, time,
             (float value) => _ScrollRect.verticalNormalizedPosition = value)
             .SetEase(Ease.InOutSine);
     }
@@ -266,8 +266,8 @@ public class PhraseManager : Singleton<PhraseManager>
     private GameLetter[] getIncomplete(char character)
     {
         List<GameLetter> incomplete = new List<GameLetter>();
-        foreach(GameLetter gameLetter in _GameLetters)
-            if(gameLetter.AssignedLetter == character && !gameLetter.IsCompleted)
+        foreach (GameLetter gameLetter in _GameLetters)
+            if (gameLetter.AssignedLetter == character && !gameLetter.IsCompleted)
                 incomplete.Add(gameLetter);
         return incomplete.ToArray();
     }
@@ -294,7 +294,7 @@ public class PhraseManager : Singleton<PhraseManager>
 
         _IsHintSequenceFlag = false;
     }
-    
+
     public void ForceCompletition(char character) => StartCoroutine(forceCompletition(character));
     #endregion
 

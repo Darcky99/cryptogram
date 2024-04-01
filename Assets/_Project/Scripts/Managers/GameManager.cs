@@ -59,6 +59,12 @@ public class GameManager : Singleton<GameManager>
     public void LoadLevel() => OnLoadLevel?.Invoke(_LevelIndex);
     public void LevelCompleted() => OnLevelCompleted?.Invoke();
     public void GameOver() => OnGameOver?.Invoke();
+
+    public void SetLevelIndex(int levelIndex)
+    {
+        _LevelIndex = levelIndex;
+        LoadLevel();
+    }
     #endregion
 
     #region Save & Load NOT DONE YET!

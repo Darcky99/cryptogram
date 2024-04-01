@@ -27,14 +27,13 @@ public static class RemoteLoad
         return documents;
     }
 
-    public static void GetTestLevels()
+    public static LevelData[] GetTestLevels()
     {
-        //LevelData[]
         LevelData.Level_JSON[] documents = getCollection(s_DatabaseName, s_CollectionName);
-        foreach (var document in documents)
-        {
-            Debug.Log(document);
-        }
+        LevelData[] levels = new LevelData[documents.Length];
+        for (int i = 0; i < levels.Length; i++)
+            levels[i] = new LevelData(documents[i]);
+        return levels;
     }
 }
 

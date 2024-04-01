@@ -14,7 +14,7 @@ public class LevelCSVReader : MonoBehaviour
 	private const string _TXTS_PATH = "Assets/_Project/Documents/Levels/";
 	private const string _TXT_FORMAT_PREXIX = ".txt";
 
-	private const string _SCRIPTABLES_PATH = "Assets/_Project/Scriptable objects/Levels/";
+	private const string _SCRIPTABLES_PATH = "Assets/_Project/Resources/HC Levels/";
 	private const string _ASSET_FORMAT_PREXIX = ".asset";
 
 	private LevelData[] readCSV(string languaje)

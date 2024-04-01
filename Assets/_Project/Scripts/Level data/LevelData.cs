@@ -7,12 +7,19 @@ using MongoDB.Driver;
 [Serializable]
 public class LevelData : ILevelData
 {
-    public LevelData(string author, string phrase, string partiallyHiddenLetters, string hidenLetters)
+    public LevelData(string author, string phrase, string partiallyHidden, string hidden)
     {
         _Author = author;
         _Phrase = phrase;
-        _PartiallyHidden = partiallyHiddenLetters;
-        _Hidden = hidenLetters;
+        _PartiallyHidden = partiallyHidden;
+        _Hidden = hidden;
+    }
+    public LevelData(Level_JSON levelJSON)
+    {
+        _Author = levelJSON.Author;
+        _Phrase = levelJSON.Phrase;
+        _PartiallyHidden = levelJSON.PartiallyHidden;
+        _Hidden = levelJSON.Hidden;
     }
 
     public string Author => _Author;

@@ -8,6 +8,11 @@ public class GameBrain : Singleton<GameBrain>
     private GameManager _GameManager => GameManager.Instance;
 
     #region Unity
+    public override void Start()
+    {
+        base.Start();
+        SelectLevels(eLevels.OnlineTest);
+    }
     private void OnEnable()
     {
         GameManager.OnLoadLevel += onLoadLevel;
@@ -27,6 +32,8 @@ public class GameBrain : Singleton<GameBrain>
     {
         LifePanel.Instance.SetLifeCount(_Lifes);
         HintPanel.Instance.SetHintCount(_Hints);
+
+        _RandomGenerator = new System.Random(levelIndex);
     }
     private void onGameOver()
     {
@@ -34,23 +41,23 @@ public class GameBrain : Singleton<GameBrain>
     }
     private void onNewDay()
     {
-        earnLife();
+        for( ; _Lifes < 5; )
+            earnLife();
     }
     #endregion
 
-    public int HyperCasualLevelsCount => _LevelsToLoad.Levels.Length;
+    #region Random generator
+    public System.Random RandomGenerator => _RandomGenerator;
 
+    private System.Random _RandomGenerator;
+    #endregion
+
+    #region Lifes and Hints
     public int Lifes => _Lifes;
     public int Hints => _Hints;
 
-    [SerializeField] public LevelsAvailable delete;
-
     [SerializeField] private int _Lifes, _Hints;
-    [SerializeField] private LevelsData_Scriptable _LevelsToLoad;
 
-    public ILevelData GetCurrentHyperCasualLevel() => _LevelsToLoad.Levels[_GameManager.LevelIndex % HyperCasualLevelsCount];
-
-    #region Lifes and Hints
     private void earnLife()
     {
         _Lifes++;
@@ -74,5 +81,36 @@ public class GameBrain : Singleton<GameBrain>
     }
     #endregion
 
+    #region Level load
 
+    public int LevelsCount => _LevelsToLoad.Length;
+
+    private ILevelData[] _LevelsToLoad;
+
+    public ILevelData GetCurrentLevel() => _LevelsToLoad[_GameManager.LevelIndex % LevelsCount];
+
+    public void SelectLevels(eLevels toLoad)
+    {
+        switch (toLoad, Application.systemLanguage)
+        {
+            case (eLevels.HC, SystemLanguage.English):
+                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - English.asset").Levels;
+                break;
+            case (eLevels.HC, SystemLanguage.Spanish):
+                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - Spanish").Levels;
+                break;
+
+            case (eLevels.DailyChallenge, SystemLanguage.English):
+                break;
+            case (eLevels.OnlineTest, SystemLanguage.English):
+                _LevelsToLoad = RemoteLoad.GetTestLevels();
+                break;
+            case (eLevels.OnlineTest, SystemLanguage.Spanish):
+                _LevelsToLoad = RemoteLoad.GetTestLevels();
+                break;
+        }
+        _GameManager.LoadLevel();
+    }
+
+    #endregion
 }
