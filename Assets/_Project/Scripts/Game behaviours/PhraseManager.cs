@@ -11,6 +11,7 @@ public class PhraseManager : Singleton<PhraseManager>
 {
     private GameBrain _GameBrain => GameBrain.Instance;
     private GameManager _GameManager => GameManager.Instance;
+    private StorageManager _StorageManager => StorageManager.Instance;
 
     #region Unity
     protected override void OnAwakeEvent()
@@ -23,14 +24,22 @@ public class PhraseManager : Singleton<PhraseManager>
     private void OnEnable()
     {
         GameManager.OnLoadLevel += onLoadLevel;
+
+
         GameManager.OnLevelCompleted += onLevelCompleted;
         GameManager.OnGameOver += onGameOver;
+
+        OnLetterCompleted += onLetterCompleted;
     }
     private void OnDisable()
     {
         GameManager.OnLoadLevel -= onLoadLevel;
+
+
         GameManager.OnLevelCompleted -= onLevelCompleted;
         GameManager.OnGameOver -= onGameOver;
+
+        OnLetterCompleted -= onLetterCompleted;
     }
     #endregion
 
@@ -38,9 +47,7 @@ public class PhraseManager : Singleton<PhraseManager>
     private void onLoadLevel(int levelIndex)
     {
         clearGameElements();
-
         _LevelData = _GameBrain.GetCurrentLevel();
-
         DOVirtual.DelayedCall(0.1f, () =>
         {
             _Keyboard.InitializeKeyboard();
@@ -54,6 +61,13 @@ public class PhraseManager : Singleton<PhraseManager>
     private void onGameOver()
     {
         Invoke(nameof(clearSelection), 0.248f * 6f);
+    }
+
+    private void onLetterCompleted(char character)
+    {
+        if (_IsGeneratingLevelFlag)
+            return;
+        saveLevelProgress();
     }
     #endregion
 
@@ -174,11 +188,6 @@ public class PhraseManager : Singleton<PhraseManager>
         deltaSize.y = height;
         _LevelContent.sizeDelta = deltaSize;
     }
-    private void completeLetters()
-    {
-        foreach (char character in _LevelData.Phrase)
-            checkCompletition(character);
-    }
     private IEnumerator generateLevel()
     {
         _IsGeneratingLevelFlag = true;
@@ -192,8 +201,9 @@ public class PhraseManager : Singleton<PhraseManager>
             if (!_LastLine.TryAddWord(words[i]))
                 Debug.LogError($"This word seems to be to long {words[i]}");
         }
-        completeLetters();
+        checkCompletition();
         fixHeight();
+        tryLoadLevelProgress();
         _IsGeneratingLevelFlag = false;
     }
     #endregion
@@ -309,6 +319,11 @@ public class PhraseManager : Singleton<PhraseManager>
         setVerticalScrollPosition(_LetterSelected);
     }
     private void clearSelection() => setSelection(null);
+    private void checkCompletition()
+    {
+        foreach (char character in _LevelData.Phrase)
+            checkCompletition(character);
+    }
     private void checkCompletition(char character)
     {
         if (isCompleted(character))
@@ -399,4 +414,29 @@ public class PhraseManager : Singleton<PhraseManager>
     }
     #endregion
 
+    #region save and load
+    private void saveLevelProgress()
+    {
+        bool[] progress = new bool[_GameLetters.Count];
+
+        for(int i = 0; i < _GameLetters.Count; i++)
+            progress[i] = _GameLetters[i].IsCompleted;
+        _StorageManager.SaveLevelContinue(progress, _MistakeCount);
+    }
+    private void tryLoadLevelProgress()
+    {
+        bool exist = _StorageManager.TryLoadLevelContinue(out LevelProgress levelProgress);
+        if (!exist)
+            return;
+        if (_GameBrain.LevelsCollection != levelProgress.ContinueLevelType || levelProgress.ContinueLevelIndex != _GameManager.LevelIndex)
+        {
+            _StorageManager.DeleteLevelContinue();
+            return;
+        }
+        mistake(levelProgress.MistakeCount);
+        for (int i = 0; i < _GameLetters.Count; i++)
+            if(levelProgress.ContinueLevelProgress[i])
+                _GameLetters[i].TrySetLetterInText(_GameLetters[i].AssignedLetter);
+    }
+    #endregion
 }

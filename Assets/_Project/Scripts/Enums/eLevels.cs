@@ -1,4 +1,4 @@
-public enum eLevels
+public enum eLevelsCollection
 {
     HC, DailyChallenge, OnlineTest
 }

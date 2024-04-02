@@ -27,15 +27,17 @@ public class MistakesPanel : Singleton<MistakesPanel>
 
     public void DisplayMistakeCount(int count)
     {
+        Debug.Log($"Calling to change count: {count}");
         for(int i = 0; i < _MistakeDots.Length; i++)
         {
             bool condition = count > i;
             MistakeDot current = _MistakeDots[i];
             RectTransform cross = _MistakeDots[i].CrossImage.rectTransform;
+            cross.gameObject.SetActive(condition);
 
             if (!condition || cross.gameObject.activeInHierarchy)
                 continue;
-            cross.gameObject.SetActive(condition);
+
             cross.localScale = Vector3.zero;
             Sequence sequence = DOTween.Sequence();
             float scaleUpDuration = 0.25f;

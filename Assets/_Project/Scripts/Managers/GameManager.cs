@@ -4,16 +4,15 @@ using System.Collections.Generic;
 
 public class GameManager : Singleton<GameManager>
 {
+    private StorageManager _StorageManager => StorageManager.Instance;
+
     public static event Action<int> OnLoadLevel;
+    public static event Action OnResetLevel;
     public static event Action OnLevelCompleted;
     public static event Action OnGameOver;
 
     #region Unity
-    public override void Start()
-    {
-        RemoteLoad.GetTestLevels();
-        //Invoke(nameof(LoadLevel), 0.25f);
-    }
+    public override void Start() { }
     private void OnEnable()
     {
         InputManager.OnKeyDown += onKeyDown;
@@ -30,6 +29,7 @@ public class GameManager : Singleton<GameManager>
         switch (keyCode)
         {
             case KeyCode.R:
+                ResetLevel();
                 LoadLevel();
                 break;
             case KeyCode.Q:
@@ -56,14 +56,19 @@ public class GameManager : Singleton<GameManager>
 
     private int _LevelIndex = 0;
 
+    public void ResetLevel() => OnResetLevel?.Invoke();
     public void LoadLevel() => OnLoadLevel?.Invoke(_LevelIndex);
-    public void LevelCompleted() => OnLevelCompleted?.Invoke();
+    public void LevelCompleted()
+    {
+        _LevelIndex++;
+        OnLevelCompleted?.Invoke();
+        _StorageManager.SaveGameProgress();
+    }
     public void GameOver() => OnGameOver?.Invoke();
 
     public void SetLevelIndex(int levelIndex)
     {
         _LevelIndex = levelIndex;
-        LoadLevel();
     }
     #endregion
 

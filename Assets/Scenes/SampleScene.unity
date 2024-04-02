@@ -1795,10 +1795,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfad48565bddd924a96fa2d53ea254da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delete: 4
   _Lifes: 5
   _Hints: 3
-  _LevelsToLoad: {fileID: 11400000, guid: 0e3100f7e3112bf4ea92b607a2ae6e8b, type: 2}
 --- !u!1001 &350769218
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6644,6 +6642,7 @@ GameObject:
   - component: {fileID: 1918542541}
   - component: {fileID: 1918542540}
   - component: {fileID: 1918542542}
+  - component: {fileID: 1918542543}
   m_Layer: 5
   m_Name: MANAGERS
   m_TagString: Untagged
@@ -6704,6 +6703,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f543294b65cdc943aaeae8043a315f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1918542543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918542538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17b069e5792458b418543de14482e41e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1923546937

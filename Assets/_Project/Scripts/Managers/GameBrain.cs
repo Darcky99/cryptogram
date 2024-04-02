@@ -6,21 +6,24 @@ using UnityEngine;
 public class GameBrain : Singleton<GameBrain>
 {
     private GameManager _GameManager => GameManager.Instance;
+    private StorageManager _StorageManager => StorageManager.Instance;
 
     #region Unity
     public override void Start()
     {
         base.Start();
-        SelectLevels(eLevels.OnlineTest);
+        initialize();
     }
     private void OnEnable()
     {
+        GameManager.OnResetLevel += onResetLevel;
         GameManager.OnLoadLevel += onLoadLevel;
         GameManager.OnGameOver += onGameOver;
         TimeManager.OnNewDay += onNewDay;
     }
     private void OnDisable()
     {
+        GameManager.OnResetLevel -= onResetLevel;
         GameManager.OnLoadLevel -= onLoadLevel;
         GameManager.OnGameOver -= onGameOver;
         TimeManager.OnNewDay -= onNewDay;
@@ -28,6 +31,10 @@ public class GameBrain : Singleton<GameBrain>
     #endregion
 
     #region Callbacks
+    private void onResetLevel()
+    {
+        _StorageManager.DeleteLevelContinue();
+    }
     private void onLoadLevel(int levelIndex)
     {
         LifePanel.Instance.SetLifeCount(_Lifes);
@@ -82,35 +89,50 @@ public class GameBrain : Singleton<GameBrain>
     #endregion
 
     #region Level load
-
     public int LevelsCount => _LevelsToLoad.Length;
+    public eLevelsCollection LevelsCollection => _LevelsCollection;
 
     private ILevelData[] _LevelsToLoad;
+    private eLevelsCollection _LevelsCollection;
+
+    private void initialize()
+    {
+        _StorageManager.LoadGameProgress();
+        bool exist = _StorageManager.TryLoadLevelContinue(out LevelProgress levelProgress);
+        if (!exist)
+        {
+            SelectLevels(eLevelsCollection.HC);
+            return;
+        }
+        _GameManager.SetLevelIndex(levelProgress.ContinueLevelIndex);
+        SelectLevels(levelProgress.ContinueLevelType);
+    }
 
     public ILevelData GetCurrentLevel() => _LevelsToLoad[_GameManager.LevelIndex % LevelsCount];
-
-    public void SelectLevels(eLevels toLoad)
+    public void SelectLevels(eLevelsCollection toLoad)
     {
+        _LevelsCollection = toLoad;
         switch (toLoad, Application.systemLanguage)
         {
-            case (eLevels.HC, SystemLanguage.English):
+            case (eLevelsCollection.HC, SystemLanguage.English):
                 _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - English.asset").Levels;
                 break;
-            case (eLevels.HC, SystemLanguage.Spanish):
+            case (eLevelsCollection.HC, SystemLanguage.Spanish):
                 _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - Spanish").Levels;
                 break;
 
-            case (eLevels.DailyChallenge, SystemLanguage.English):
+            case (eLevelsCollection.DailyChallenge, SystemLanguage.English):
                 break;
-            case (eLevels.OnlineTest, SystemLanguage.English):
+
+            case (eLevelsCollection.OnlineTest, SystemLanguage.English):
                 _LevelsToLoad = RemoteLoad.GetTestLevels();
                 break;
-            case (eLevels.OnlineTest, SystemLanguage.Spanish):
+            case (eLevelsCollection.OnlineTest, SystemLanguage.Spanish):
                 _LevelsToLoad = RemoteLoad.GetTestLevels();
                 break;
         }
+        _GameManager.SetLevelIndex(_StorageManager.GetLevelIndex(LevelsCollection));
         _GameManager.LoadLevel();
     }
-
     #endregion
 }
