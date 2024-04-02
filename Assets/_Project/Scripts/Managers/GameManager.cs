@@ -6,20 +6,33 @@ public class GameManager : Singleton<GameManager>
 {
     private StorageManager _StorageManager => StorageManager.Instance;
 
-    public static event Action<int> OnLoadLevel;
+    public static event Action<ILevelData> OnLoadLevel;
     public static event Action OnResetLevel;
     public static event Action OnLevelCompleted;
     public static event Action OnGameOver;
 
     #region Unity
-    public override void Start() { }
+    public override void Start() 
+    {
+        initialize();
+    }
     private void OnEnable()
     {
         InputManager.OnKeyDown += onKeyDown;
+
+        GameManager.OnResetLevel += onResetLevel;
+        GameManager.OnLoadLevel += onLoadLevel;
+        GameManager.OnGameOver += onGameOver;
+        TimeManager.OnNewDay += onNewDay;
     }
     private void OnDisable()
     {
         InputManager.OnKeyDown -= onKeyDown;
+
+        GameManager.OnResetLevel -= onResetLevel;
+        GameManager.OnLoadLevel -= onLoadLevel;
+        GameManager.OnGameOver -= onGameOver;
+        TimeManager.OnNewDay -= onNewDay;
     }
     #endregion
 
@@ -44,11 +57,67 @@ public class GameManager : Singleton<GameManager>
                 break;
         }
     }
+
+    private void onResetLevel()
+    {
+        _StorageManager.DeleteLevelContinue();
+    }
+    private void onLoadLevel(ILevelData levelData)
+    {
+        LifePanel.Instance.SetLifeCount(_Lifes);
+        HintPanel.Instance.SetHintCount(_Hints);
+
+        _RandomGenerator = new System.Random(LevelIndex);
+    }
+    private void onGameOver()
+    {
+        expendLife();
+    }
+    private void onNewDay()
+    {
+        for (; _Lifes < 5;)
+            earnLife();
+    }
     #endregion
 
     #region Pause & Resume
     private void pause() => Time.timeScale = 0;
     private void resume() => Time.timeScale = 1;
+    #endregion
+
+    #region Random generator
+    public System.Random RandomGenerator => _RandomGenerator;
+
+    private System.Random _RandomGenerator;
+    #endregion
+
+    #region Lifes and Hints
+    public int Lifes => _Lifes;
+    public int Hints => _Hints;
+
+    [SerializeField] private int _Lifes, _Hints;
+
+    private void earnLife()
+    {
+        _Lifes++;
+        LifePanel.Instance.SetLifeCount(_Lifes);
+    }
+    private void expendLife()
+    {
+        _Lifes--;
+        LifePanel.Instance.SetLifeCount(_Lifes);
+    }
+
+    public void EarnHint()
+    {
+        _Hints++;
+        HintPanel.Instance.SetHintCount(_Hints);
+    }
+    public void ExpendHint()
+    {
+        _Hints--;
+        HintPanel.Instance.SetHintCount(_Hints);
+    }
     #endregion
 
     #region Game loop
@@ -57,7 +126,8 @@ public class GameManager : Singleton<GameManager>
     private int _LevelIndex = 0;
 
     public void ResetLevel() => OnResetLevel?.Invoke();
-    public void LoadLevel() => OnLoadLevel?.Invoke(_LevelIndex);
+    public void LoadLevel() => LoadLevel(LevelByIndex);
+    public void LoadLevel(ILevelData levelData) => OnLoadLevel?.Invoke(levelData);
     public void LevelCompleted()
     {
         _LevelIndex++;
@@ -72,9 +142,52 @@ public class GameManager : Singleton<GameManager>
     }
     #endregion
 
-    #region Save & Load NOT DONE YET!
-    public void SaveGame() { }
-    public void LoadGame() { }
-    public void DeleteGame() { }
+    #region Save & Load
+    public int LevelsCount => _LevelsToLoad.Length;
+    public eLevelsCollection LevelsCollection => _LevelsCollection;
+
+    public ILevelData LevelByIndex => _LevelsToLoad[LevelIndex % LevelsCount];
+    public LevelProgress LevelProgress => _LevelProgress;
+
+    private ILevelData[] _LevelsToLoad;
+    private eLevelsCollection _LevelsCollection;
+    private LevelProgress _LevelProgress;
+
+    private void initialize()
+    {
+        _StorageManager.LoadGameProgress();
+        bool exist = _StorageManager.TryLoadLevelContinue(out _LevelProgress);
+
+        if (exist)
+            SelectLevels(_LevelProgress.ContinueLevelType);
+        else
+            SelectLevels(eLevelsCollection.HC);
+    }
+
+    public void SelectLevels(eLevelsCollection toLoad)
+    {
+        _LevelsCollection = toLoad;
+        switch (toLoad, Application.systemLanguage)
+        {
+            case (eLevelsCollection.HC, SystemLanguage.English):
+                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - English.asset").Levels;
+                break;
+            case (eLevelsCollection.HC, SystemLanguage.Spanish):
+                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - Spanish").Levels;
+                break;
+
+            case (eLevelsCollection.DailyChallenge, SystemLanguage.English):
+                break;
+
+            case (eLevelsCollection.OnlineTest, SystemLanguage.English):
+                _LevelsToLoad = RemoteLoad.GetTestLevels();
+                break;
+            case (eLevelsCollection.OnlineTest, SystemLanguage.Spanish):
+                _LevelsToLoad = RemoteLoad.GetTestLevels();
+                break;
+        }
+        SetLevelIndex(_StorageManager.GetLevelIndex(LevelsCollection));
+        LoadLevel();
+    }
     #endregion
 }

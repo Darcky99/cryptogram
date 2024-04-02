@@ -15,7 +15,7 @@ public class MistakesPanel : Singleton<MistakesPanel>
     #endregion
 
     #region Callbacks
-    private void onLevelLoaded(int levelIndex)
+    private void onLevelLoaded(ILevelData levelData)
     {
         _CrossAnimation?.Kill();
     }

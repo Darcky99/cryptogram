@@ -16,7 +16,7 @@ public class TimeManager : MonoBehaviour
     private void OnEnable()
     {
         InputManager.OnTouch += onTouch;
-        GameManager.OnLoadLevel -= onLoadLevel;
+        GameManager.OnLoadLevel += onLoadLevel;
         GameManager.OnLevelCompleted += onLevelCompleted;
         GameManager.OnGameOver += onGameOver;
     }
@@ -35,7 +35,7 @@ public class TimeManager : MonoBehaviour
         _InactiviryTimer.SetTimer();
     }
 
-    private void onLoadLevel(int levelIndex)
+    private void onLoadLevel(ILevelData levelData)
     {
         _LevelTimer.SetTimer();
     }

@@ -23,7 +23,7 @@ public class StorageManager : Singleton<StorageManager>
 
     private void saveGameProgress()
     {
-        eLevelsCollection currentCollection = GameBrain.Instance.LevelsCollection;
+        eLevelsCollection currentCollection = _GameManager.LevelsCollection;
         int currentIndex = _GameManager.LevelIndex;
         if (!_LevelsIndex.ContainsKey(currentCollection))
             _LevelsIndex.Add(currentCollection, currentIndex);
@@ -33,7 +33,7 @@ public class StorageManager : Singleton<StorageManager>
     }
     private void saveLevelContinue(bool[] progress, int mistakeCount)
     {
-        eLevelsCollection currentCollection = GameBrain.Instance.LevelsCollection;
+        eLevelsCollection currentCollection = _GameManager.LevelsCollection;
         int currentIndex = _GameManager.LevelIndex;
         _LevelProgress = new LevelProgress(currentCollection, currentIndex, progress, mistakeCount);
         ES3.Save(_LEVEL_CONTINUE, _LevelProgress);

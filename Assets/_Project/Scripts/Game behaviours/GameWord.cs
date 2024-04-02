@@ -18,7 +18,7 @@ public class GameWord : MonoBehaviour
     #endregion
 
     #region Callbacks
-    private void onLoadLevel(int levelIndex)
+    private void onLoadLevel(ILevelData levelData)
     {
         discard();
     }

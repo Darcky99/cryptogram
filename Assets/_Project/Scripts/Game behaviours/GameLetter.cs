@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class GameLetter : MonoBehaviour
 {
     private PhraseManager _PhraseManager => PhraseManager.Instance;
-    private GameBrain _GameBrain => GameBrain.Instance;
+    private GameManager _GameManager => GameManager.Instance;
 
     #region Unity
     private void OnEnable()
@@ -29,7 +29,7 @@ public class GameLetter : MonoBehaviour
     #endregion
 
     #region Callbacks
-    private void onLoadLevel(int obj)
+    private void onLoadLevel(ILevelData levelData)
     {
         discard();
     }
@@ -92,7 +92,7 @@ public class GameLetter : MonoBehaviour
             return;
         if (_PhraseManager.LevelData.PartiallyHidden.Contains(_AssignedLetter))
         {
-            int random = _GameBrain.RandomGenerator.Next(0, 100);
+            int random = _GameManager.RandomGenerator.Next(0, 100);
             if (random < 50)
                 return;
         }

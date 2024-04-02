@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 public class PhraseManager : Singleton<PhraseManager>
 {
-    private GameBrain _GameBrain => GameBrain.Instance;
     private GameManager _GameManager => GameManager.Instance;
     private StorageManager _StorageManager => StorageManager.Instance;
 
@@ -24,8 +23,6 @@ public class PhraseManager : Singleton<PhraseManager>
     private void OnEnable()
     {
         GameManager.OnLoadLevel += onLoadLevel;
-
-
         GameManager.OnLevelCompleted += onLevelCompleted;
         GameManager.OnGameOver += onGameOver;
 
@@ -34,8 +31,6 @@ public class PhraseManager : Singleton<PhraseManager>
     private void OnDisable()
     {
         GameManager.OnLoadLevel -= onLoadLevel;
-
-
         GameManager.OnLevelCompleted -= onLevelCompleted;
         GameManager.OnGameOver -= onGameOver;
 
@@ -44,15 +39,18 @@ public class PhraseManager : Singleton<PhraseManager>
     #endregion
 
     #region Callbacks
-    private void onLoadLevel(int levelIndex)
+    private void onLoadLevel(ILevelData levelData)
     {
-        clearGameElements();
-        _LevelData = _GameBrain.GetCurrentLevel();
-        DOVirtual.DelayedCall(0.1f, () =>
+        IEnumerator call()
         {
+            clearGameElements();
+            _LevelData = levelData;
+            yield return null;
             _Keyboard.InitializeKeyboard();
             StartCoroutine(generateLevel());
-        });
+        }
+
+        StartCoroutine(call());
     }
     private void onLevelCompleted()
     {
@@ -155,13 +153,13 @@ public class PhraseManager : Singleton<PhraseManager>
 
             while (_CharacterNumber.ContainsKey(fixedCharacter) == false)
             {
-                byte randomNumber = (byte)_GameBrain.RandomGenerator.Next(1, 99);
+                byte randomNumber = (byte)_GameManager.RandomGenerator.Next(1, 99);
                 if (_CharacterNumber.ContainsValue(randomNumber) == false)
                     _CharacterNumber.Add(fixedCharacter, randomNumber);
             }
             while (_CharacterColor.ContainsKey(fixedCharacter) == false)
             {
-                byte randomNumber = (byte)_GameBrain.RandomGenerator.Next(0, _BackGroundColors.Length);
+                byte randomNumber = (byte)_GameManager.RandomGenerator.Next(0, _BackGroundColors.Length);
                 Color selection = _BackGroundColors[randomNumber];
                 if (colorIndex.Contains(randomNumber) == false)
                 {
@@ -289,7 +287,7 @@ public class PhraseManager : Singleton<PhraseManager>
         _IsHintSequenceFlag = true;
 
         clearSelection();
-        GameBrain.Instance.ExpendHint();
+        _GameManager.ExpendHint();
         GameLetter[] incomplete = getIncomplete(character);
         yield return _ForceCompleteDelay;
 
@@ -414,7 +412,7 @@ public class PhraseManager : Singleton<PhraseManager>
     }
     #endregion
 
-    #region save and load
+    #region Save and Load
     private void saveLevelProgress()
     {
         bool[] progress = new bool[_GameLetters.Count];
@@ -425,10 +423,10 @@ public class PhraseManager : Singleton<PhraseManager>
     }
     private void tryLoadLevelProgress()
     {
-        bool exist = _StorageManager.TryLoadLevelContinue(out LevelProgress levelProgress);
-        if (!exist)
+        LevelProgress levelProgress = _GameManager.LevelProgress;
+        if (levelProgress == null)
             return;
-        if (_GameBrain.LevelsCollection != levelProgress.ContinueLevelType || levelProgress.ContinueLevelIndex != _GameManager.LevelIndex)
+        if (_GameManager.LevelsCollection != levelProgress.ContinueLevelType || levelProgress.ContinueLevelIndex != _GameManager.LevelIndex)
         {
             _StorageManager.DeleteLevelContinue();
             return;

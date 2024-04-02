@@ -6,7 +6,7 @@ using System;
 
 public class HintPanel : Singleton<HintPanel>
 {
-    private GameBrain _GameBrain => GameBrain.Instance;
+    private GameManager _GameManager => GameManager.Instance;
     private PhraseManager _PhraseManager => PhraseManager.Instance;
 
     public bool IsHintInterfaceEnabled => _HintInterface.gameObject.activeInHierarchy;
@@ -25,8 +25,8 @@ public class HintPanel : Singleton<HintPanel>
 
         _HintInterface.gameObject.SetActive(condition);
 
-        _BuyHintInterfaceButton.gameObject.SetActive(!condition && _GameBrain.Hints <= 0);
-        _OpenHintInterfaceButton.gameObject.SetActive(!condition && _GameBrain.Hints > 0);
+        _BuyHintInterfaceButton.gameObject.SetActive(!condition && _GameManager.Hints <= 0);
+        _OpenHintInterfaceButton.gameObject.SetActive(!condition && _GameManager.Hints > 0);
 
         _CloseHintInterfaceButton.gameObject.SetActive(condition);
     }
@@ -37,7 +37,7 @@ public class HintPanel : Singleton<HintPanel>
         setHintPanel(false);
     }
 
-    public void BuyHint() => _GameBrain.EarnHint();
+    public void BuyHint() => _GameManager.EarnHint();
     public void OpenHintPanel() => setHintPanel(true);
     public void CloseHintPanel() => setHintPanel(false);
 }

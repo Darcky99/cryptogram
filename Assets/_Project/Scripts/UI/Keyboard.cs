@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Keyboard : MonoBehaviour
 {
-    private GameBrain _GameBrain => GameBrain.Instance;
+    private GameManager _GameManager => GameManager.Instance;
     private PhraseManager _PhraseManager => PhraseManager.Instance;
 
     #region Unity
@@ -161,12 +161,12 @@ public class Keyboard : MonoBehaviour
 
         for ( ; enabledKeysCount(keys) < target; )
         {
-            int index = _GameBrain.RandomGenerator.Next(0, keys.Length);
+            int index = _GameManager.RandomGenerator.Next(0, keys.Length);
             Key key = keys[index];
             if (!key.gameObject.activeInHierarchy && _Forbidden.Contains(key.KeyLetter) == false)
             {
                 key.gameObject.SetActive(true);
-                if (_GameBrain.RandomGenerator.Next(0, 100) < 30)
+                if (_GameManager.RandomGenerator.Next(0, 100) < 30)
                     key.SetNonInteractuable();
                 else
                     key.SetInteractuable();
