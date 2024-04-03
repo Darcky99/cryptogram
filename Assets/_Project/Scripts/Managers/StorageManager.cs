@@ -16,7 +16,10 @@ public class StorageManager : Singleton<StorageManager>
     }
     #endregion
 
-    private bool _SaveExists => ES3.KeyExists(_GAME_PROGRESS_DICTIONARY) || ES3.KeyExists(_LEVEL_CONTINUE) || ES3.KeyExists(_DAY_LIFES) || ES3.KeyExists(_DAY_HINTS);
+    public int CurrentCollectionSavedIndex => _LevelsIndex.ContainsKey(_GameManager.LevelsCollection) ? _LevelsIndex[_GameManager.LevelsCollection] : 0;
+
+    private bool _GameSaveExists => ES3.KeyExists(_GAME_PROGRESS_DICTIONARY) || ES3.KeyExists(_DAY_LIFES) || ES3.KeyExists(_DAY_HINTS);
+    private bool _LevelContinueSaveExists => ES3.KeyExists(_LEVEL_CONTINUE);
 
     private Dictionary<eLevelsCollection, int> _LevelsIndex;
     private LevelProgress _LevelProgress;
@@ -39,7 +42,9 @@ public class StorageManager : Singleton<StorageManager>
         int currentIndex = _GameManager.LevelIndex;
         if (!_LevelsIndex.ContainsKey(currentCollection))
             _LevelsIndex.Add(currentCollection, currentIndex);
-        _LevelsIndex[currentCollection] = currentIndex;
+        else if(_LevelsIndex[currentCollection] < currentIndex)
+            _LevelsIndex[currentCollection] = currentIndex;
+
         ES3.Save(_GAME_PROGRESS_DICTIONARY, _LevelsIndex);
         ES3.Save(_DAY_LIFES, _GameManager.Lifes);
         ES3.Save(_DAY_HINTS, _GameManager.Hints);
@@ -55,15 +60,17 @@ public class StorageManager : Singleton<StorageManager>
 
     private void loadGameProgress()
     {
-        bool keyExist = _SaveExists;
-
+        bool keyExist = _GameSaveExists;
         if (keyExist)
         {
             _LevelsIndex = ES3.Load<Dictionary<eLevelsCollection, int>>(_GAME_PROGRESS_DICTIONARY);
             _GameManager.LoadLifeAndHints(ES3.Load<int>(_DAY_LIFES), ES3.Load<int>(_DAY_HINTS));
         }
         else
+        {
             _LevelsIndex = new Dictionary<eLevelsCollection, int>();
+            //_GameManager.LoadLifeAndHints() NOT required. Default values are: 5, 3
+        }
     }
     private bool tryLoadLevelContinue(out LevelProgress levelProgress)
     {
@@ -80,6 +87,8 @@ public class StorageManager : Singleton<StorageManager>
     {
         ES3.DeleteKey(_GAME_PROGRESS_DICTIONARY);
         ES3.DeleteKey(_LEVEL_CONTINUE);
+        ES3.DeleteKey(_DAY_LIFES);
+        ES3.DeleteKey(_DAY_HINTS);
     }
 
     public int GetLevelIndex(eLevelsCollection levelsCollection) => getLevelIndex(levelsCollection);

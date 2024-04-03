@@ -24,18 +24,22 @@ public class GameManager : Singleton<GameManager>
     {
         InputManager.OnKeyDown += onKeyDown;
 
-        GameManager.OnResetLevel += onResetLevel;
-        GameManager.OnLoadLevel += onLoadLevel;
-        GameManager.OnGameOver += onGameOver;
+        OnResetLevel += onResetLevel;
+        OnLoadLevel += onLoadLevel;
+        OnGameOver += onGameOver;
+        OnLevelCompleted += onLevelCompleted;
+
         TimeManager.OnNewDay += onNewDay;
     }
     private void OnDisable()
     {
         InputManager.OnKeyDown -= onKeyDown;
 
-        GameManager.OnResetLevel -= onResetLevel;
-        GameManager.OnLoadLevel -= onLoadLevel;
-        GameManager.OnGameOver -= onGameOver;
+        OnResetLevel += onResetLevel;
+        OnLoadLevel += onLoadLevel;
+        OnGameOver += onGameOver;
+        OnLevelCompleted += onLevelCompleted;
+
         TimeManager.OnNewDay -= onNewDay;
     }
     #endregion
@@ -43,21 +47,25 @@ public class GameManager : Singleton<GameManager>
     #region Callbacks
     private void onKeyDown(KeyCode keyCode)
     {
+        //This behaviour changes depending on the gameState.
+
+        //If we are on playing, _LevelIndex++
+        //If we  are on levelCompleted, go _LevelIndex -= 2;
+
         switch (keyCode)
         {
             case KeyCode.R:
                 ResetLevel();
-                LoadLevel();
                 break;
             case KeyCode.Q:
-                _LevelIndex--;
-                if (_LevelIndex < 0)
-                    _LevelIndex = 0;
-                LoadLevel();
+                Debug.Log("Not implemented!");
+                //eGameState required
+                //LoadLevel();
                 break;
             case KeyCode.E:
-                _LevelIndex++;
-                LoadLevel();
+                Debug.Log("Not implemented!");
+                //eGameState required
+                //LoadLevel();
                 break;
         }
     }
@@ -69,6 +77,11 @@ public class GameManager : Singleton<GameManager>
     private void onLoadLevel(ILevelData levelData)
     {
         _RandomGenerator = new System.Random(LevelIndex);
+    }
+    private void onLevelCompleted()
+    {
+        _LevelIndex++;
+        _StorageManager.SaveGameProgress();
     }
     private void onGameOver()
     {
@@ -132,15 +145,14 @@ public class GameManager : Singleton<GameManager>
 
     private int _LevelIndex = 0;
 
-    public void ResetLevel() => OnResetLevel?.Invoke();
+    public void ResetLevel()
+    {
+        OnResetLevel?.Invoke();
+        LoadLevel();
+    }
     public void LoadLevel() => LoadLevel(LevelByIndex);
     public void LoadLevel(ILevelData levelData) => OnLoadLevel?.Invoke(levelData);
-    public void LevelCompleted()
-    {
-        _LevelIndex++;
-        OnLevelCompleted?.Invoke();
-        _StorageManager.SaveGameProgress();
-    }
+    public void LevelCompleted() => OnLevelCompleted?.Invoke();
     public void GameOver() => OnGameOver?.Invoke();
 
     public void SetLevelIndex(int levelIndex)
