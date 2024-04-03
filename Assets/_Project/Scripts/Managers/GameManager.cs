@@ -12,9 +12,13 @@ public class GameManager : Singleton<GameManager>
     public static event Action OnGameOver;
 
     #region Unity
+    protected override void OnAwakeEvent()
+    {
+        base.OnAwakeEvent();
+    }
     public override void Start() 
     {
-        initialize();
+        //continueLevel();
     }
     private void OnEnable()
     {
@@ -64,9 +68,6 @@ public class GameManager : Singleton<GameManager>
     }
     private void onLoadLevel(ILevelData levelData)
     {
-        LifePanel.Instance.SetLifeCount(_Lifes);
-        HintPanel.Instance.SetHintCount(_Hints);
-
         _RandomGenerator = new System.Random(LevelIndex);
     }
     private void onGameOver()
@@ -95,7 +96,7 @@ public class GameManager : Singleton<GameManager>
     public int Lifes => _Lifes;
     public int Hints => _Hints;
 
-    [SerializeField] private int _Lifes, _Hints;
+    private int _Lifes = 5, _Hints = 3;
 
     private void earnLife()
     {
@@ -117,6 +118,12 @@ public class GameManager : Singleton<GameManager>
     {
         _Hints--;
         HintPanel.Instance.SetHintCount(_Hints);
+    }
+
+    public void LoadLifeAndHints(int lifes, int hints)
+    {
+        _Lifes = lifes;
+        _Hints = hints;
     }
     #endregion
 
@@ -153,11 +160,12 @@ public class GameManager : Singleton<GameManager>
     private eLevelsCollection _LevelsCollection;
     private LevelProgress _LevelProgress;
 
-    private void initialize()
+    private void continueLevel()
     {
-        _StorageManager.LoadGameProgress();
-        bool exist = _StorageManager.TryLoadLevelContinue(out _LevelProgress);
+        //THIS SHOULD PROBABLY BE CONTROLLED FROM THE MAIN MENU.
+        //IN A FUTURE, WE WILL SKIP THE MAIN_MENU, AND GO STRAIGH INTO THE LEVEL THAT WE LEFT UNCOMPLETED...
 
+        bool exist = _StorageManager.TryLoadLevelContinue(out _LevelProgress);
         if (exist)
             SelectLevels(_LevelProgress.ContinueLevelType);
         else

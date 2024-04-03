@@ -9,6 +9,11 @@ public class HintPanel : Singleton<HintPanel>
     private GameManager _GameManager => GameManager.Instance;
     private PhraseManager _PhraseManager => PhraseManager.Instance;
 
+    private void OnEnable()
+    {
+        setHintCount(_GameManager.Hints);
+    }
+
     public bool IsHintInterfaceEnabled => _HintInterface.gameObject.activeInHierarchy;
 
     [SerializeField] private RectTransform _HintInterface;
@@ -30,12 +35,13 @@ public class HintPanel : Singleton<HintPanel>
 
         _CloseHintInterfaceButton.gameObject.SetActive(condition);
     }
-
-    public void SetHintCount(int count)
+    private void setHintCount(int count)
     {
         _Counter.text = count.ToString();
         setHintPanel(false);
     }
+
+    public void SetHintCount(int count) => setHintCount(count);
 
     public void BuyHint() => _GameManager.EarnHint();
     public void OpenHintPanel() => setHintPanel(true);

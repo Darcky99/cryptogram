@@ -57,5 +57,4 @@ public abstract class Singleton<T> : SingletonBase<Singleton<T>> where T : MonoB
             return s_Instance;
         }
     }
-
 }
