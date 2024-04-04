@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class GameManager : Singleton<GameManager>
 {
     private StorageManager _StorageManager => StorageManager.Instance;
+    private RemoteDataManager _RemoteDataManager => RemoteDataManager.Instance;
 
     public static event Action<ILevelData> OnLoadLevel;
     public static event Action OnResetLevel;
@@ -172,17 +173,40 @@ public class GameManager : Singleton<GameManager>
     private eLevelsCollection _LevelsCollection;
     private LevelProgress _LevelProgress;
 
-    private void continueLevel()
-    {
-        //THIS SHOULD PROBABLY BE CONTROLLED FROM THE MAIN MENU.
-        //IN A FUTURE, WE WILL SKIP THE MAIN_MENU, AND GO STRAIGH INTO THE LEVEL THAT WE LEFT UNCOMPLETED...
+    //private void continueLevel()
+    //{
+    //    //THIS SHOULD PROBABLY BE CONTROLLED FROM THE MAIN MENU.
+    //    //IN A FUTURE, WE WILL SKIP THE MAIN_MENU, AND GO STRAIGH INTO THE LEVEL THAT WE LEFT UNCOMPLETED...
 
-        bool exist = _StorageManager.TryLoadLevelContinue(out _LevelProgress);
-        if (exist)
-            SelectLevels(_LevelProgress.ContinueLevelType);
-        else
-            SelectLevels(eLevelsCollection.HC);
+    //    bool exist = _StorageManager.TryLoadLevelContinue(out _LevelProgress);
+    //    if (exist)
+    //        SelectLevels(_LevelProgress.ContinueLevelType);
+    //    else
+    //        SelectLevels(eLevelsCollection.HC);
+    //}
+
+    public void PlayHCLevels()
+    {
+        switch (Application.systemLanguage)
+        {
+            default:
+                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - English.asset").Levels;
+                break;
+            case SystemLanguage.Spanish:
+                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - Spanish").Levels;
+                break;
+        }
+        SetLevelIndex(_StorageManager.GetLevelIndex(LevelsCollection));
+        LoadLevel();
     }
+
+    public void PLayDailyChallenge(int month, int levelIndex)
+    {
+        _LevelsToLoad = _RemoteDataManager.GetDailyChallengeLevels(month);
+        SetLevelIndex(levelIndex);
+        LoadLevel();
+    }
+
 
     public void SelectLevels(eLevelsCollection toLoad)
     {
@@ -197,6 +221,8 @@ public class GameManager : Singleton<GameManager>
                 break;
 
             case (eLevelsCollection.DailyChallenge, SystemLanguage.English):
+            case (eLevelsCollection.DailyChallenge, SystemLanguage.Spanish):
+                
                 break;
 
             case (eLevelsCollection.OnlineTest, SystemLanguage.English):

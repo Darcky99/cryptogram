@@ -60,6 +60,7 @@ public class TimeManager : MonoBehaviour
     {
         DateTime today = DateTime.Today;
         DateTime lastLoggedDate = today;
+
         if (ES3.KeyExists(LAST_DATE))
             lastLoggedDate = ES3.Load<DateTime>(LAST_DATE);
         if (lastLoggedDate != today)

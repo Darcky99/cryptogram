@@ -33,6 +33,6 @@ public class HC_Levels_Panel : MonoBehaviour
         _MenuManager.ChangeScreenState(eScreen.MainMenu, false);
         _MenuManager.ChangeScreenState(eScreen.Gameplay, true);
 
-        _GameManager.SelectLevels(eLevelsCollection.HC);
+        _GameManager.PlayHCLevels();
     }
 }

@@ -18,7 +18,6 @@ public static class RemoteLoad
             var database = client.GetDatabase(dataBaseName);
             var collection = database.GetCollection<LevelData.Level_JSON>(collectionName);
             documents = collection.Find(FilterDefinition<LevelData.Level_JSON>.Empty).ToList().ToArray();
-            //documents = collection.Find(FilterDefinition<BsonDocument>.Empty).ToList().ToArray();
         }
         catch (Exception ex)
         {
@@ -35,9 +34,10 @@ public static class RemoteLoad
             levels[i] = new LevelData(documents[i]);
         return levels;
     }
-}
 
-public enum LevelsAvailable
-{
-    HC, Chrismas, Europe, Food, anotherone, Military, anothertwo, etc
+
+
+    //from a selector, if we load the levels once, we go out and then we have to get the from the cloud again? Idk I feel like this could be a singleton\
+
+    //a remote data managaer. Loads the stuff as it's required adn like that.
 }
