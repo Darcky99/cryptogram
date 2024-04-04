@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class RemoteDataManager : Singleton<RemoteDataManager>
 {
@@ -15,23 +16,23 @@ public class RemoteDataManager : Singleton<RemoteDataManager>
 
     private const string s_ConnectionString = "mongodb+srv://darcking99:bf7hqE98rOntwJ08@sandbox.g2woihu.mongodb.net/?retryWrites=true&w=majority&appName=Sandbox";
 
-    private LevelData.Level_JSON[] getCollection(string dataBaseName, string collectionName)
+    private async Task<LevelData.Level_JSON[]> getCollection(string dataBaseName, string collectionName)
     {
-        LevelData.Level_JSON[] documents = null;
+        List<LevelData.Level_JSON> documentsList = null;
         try
         {
             MongoClient client = new MongoClient(s_ConnectionString);
             var database = client.GetDatabase(dataBaseName);
             var collection = database.GetCollection<LevelData.Level_JSON>(collectionName);
-            documents = collection.Find(FilterDefinition<LevelData.Level_JSON>.Empty).ToList().ToArray();
+            var cursor = await collection.FindAsync(FilterDefinition<LevelData.Level_JSON>.Empty);
+            documentsList = await cursor.ToListAsync();
         }
         catch (Exception ex)
         {
             Debug.LogError($"An error occurred: {ex.Message}");
         }
-        return documents;
+        return documentsList.ToArray();
     }
-
 
     #region Level Collections
 
@@ -39,9 +40,9 @@ public class RemoteDataManager : Singleton<RemoteDataManager>
     private const string _THEMED_LEVELS_DATABASE = "ThemeLevels";
     private const string _TEST_COLLECTION = "MyTest";
 
-    public LevelData[] GetTestLevels()
+    public async Task<LevelData[]> GetTestLevels()
     {
-        LevelData.Level_JSON[] documents = getCollection(_THEMED_LEVELS_DATABASE, _TEST_COLLECTION);
+        LevelData.Level_JSON[] documents = await getCollection(_THEMED_LEVELS_DATABASE, _TEST_COLLECTION);
         LevelData[] levels = new LevelData[documents.Length];
         for (int i = 0; i < levels.Length; i++)
             levels[i] = new LevelData(documents[i]);
@@ -54,14 +55,14 @@ public class RemoteDataManager : Singleton<RemoteDataManager>
 
     private Dictionary<int, LevelData[]> _LevelsByMonth;
 
-    public LevelData[] GetDailyChallengeLevels(int month)
+    public async Task<LevelData[]> GetDailyChallengeLevels(int month)
     {
         if (_LevelsByMonth == null)
             _LevelsByMonth = new Dictionary<int, LevelData[]>();
         if (_LevelsByMonth.ContainsKey(month))
             return _LevelsByMonth[month];
 
-        LevelData.Level_JSON[] documents = getCollection(_DAILY_CHALLENGE_DATABASE, month.ToString());
+        LevelData.Level_JSON[] documents = await getCollection(_DAILY_CHALLENGE_DATABASE, month.ToString());
         LevelData[] levels = new LevelData[documents.Length];
         for (int i = 0; i < levels.Length; i++)
             levels[i] = new LevelData(documents[i]);
@@ -69,7 +70,6 @@ public class RemoteDataManager : Singleton<RemoteDataManager>
         _LevelsByMonth[month] = levels;
         return levels;
     }
-
     #endregion
 
     #endregion

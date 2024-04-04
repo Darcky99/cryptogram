@@ -162,7 +162,7 @@ public class GameManager : Singleton<GameManager>
     }
     #endregion
 
-    #region Save & Load
+    #region Load levels
     public int LevelsCount => _LevelsToLoad.Length;
     public eLevelsCollection LevelsCollection => _LevelsCollection;
 
@@ -199,40 +199,10 @@ public class GameManager : Singleton<GameManager>
         SetLevelIndex(_StorageManager.GetLevelIndex(LevelsCollection));
         LoadLevel();
     }
-
-    public void PLayDailyChallenge(int month, int levelIndex)
+    public async void PLayDailyChallenge(int month, int levelIndex)
     {
-        _LevelsToLoad = _RemoteDataManager.GetDailyChallengeLevels(month);
+        _LevelsToLoad = await _RemoteDataManager.GetDailyChallengeLevels(month);
         SetLevelIndex(levelIndex);
-        LoadLevel();
-    }
-
-
-    public void SelectLevels(eLevelsCollection toLoad)
-    {
-        _LevelsCollection = toLoad;
-        switch (toLoad, Application.systemLanguage)
-        {
-            case (eLevelsCollection.HC, SystemLanguage.English):
-                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - English.asset").Levels;
-                break;
-            case (eLevelsCollection.HC, SystemLanguage.Spanish):
-                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - Spanish").Levels;
-                break;
-
-            case (eLevelsCollection.DailyChallenge, SystemLanguage.English):
-            case (eLevelsCollection.DailyChallenge, SystemLanguage.Spanish):
-                
-                break;
-
-            case (eLevelsCollection.OnlineTest, SystemLanguage.English):
-                _LevelsToLoad = RemoteLoad.GetTestLevels();
-                break;
-            case (eLevelsCollection.OnlineTest, SystemLanguage.Spanish):
-                _LevelsToLoad = RemoteLoad.GetTestLevels();
-                break;
-        }
-        SetLevelIndex(_StorageManager.GetLevelIndex(LevelsCollection));
         LoadLevel();
     }
     #endregion

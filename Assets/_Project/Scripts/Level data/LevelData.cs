@@ -49,6 +49,8 @@ public class LevelData : ILevelData
             {
                 if (splitResult[i].Length > 1)
                     Debug.LogError($"{_Hidden} must be separated by ' '");
+                else if (splitResult[i].Length < 1)
+                    Debug.LogWarning($"{_Hidden} '' empty string not valid");
                 characters[i] = splitResult[i][0];
             }
             return characters;
