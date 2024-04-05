@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Color: {r: 0.2180633, g: 0.69281113, b: 0.93962264, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 0
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -536,6 +536,10 @@ PrefabInstance:
     - target: {fileID: 3224652905686703626, guid: dc78d7b752dc6ba4d89873e9f695d5d0, type: 3}
       propertyPath: m_Name
       value: MASK IMAGE
+      objectReference: {fileID: 0}
+    - target: {fileID: 3224652905686703626, guid: dc78d7b752dc6ba4d89873e9f695d5d0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6080029315527171747, guid: dc78d7b752dc6ba4d89873e9f695d5d0, type: 3}
       propertyPath: m_Pivot.x

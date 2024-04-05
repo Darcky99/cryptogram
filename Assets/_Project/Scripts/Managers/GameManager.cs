@@ -77,20 +77,26 @@ public class GameManager : Singleton<GameManager>
     }
     private void onLoadLevel(ILevelData levelData)
     {
+        _GameState = eGameState.Playing;
+
         _RandomGenerator = new System.Random(LevelIndex);
     }
     private void onLevelCompleted()
     {
+        _GameState = eGameState.Win;
+
         _LevelIndex++;
         _StorageManager.SaveGameProgress();
     }
     private void onGameOver()
     {
+        _GameState = eGameState.GameOver;
+
         expendLife();
     }
     private void onNewDay()
     {
-        for (; _Lifes < 5;)
+        for ( ; _Lifes < 5; )
             earnLife();
     }
     #endregion
@@ -142,9 +148,11 @@ public class GameManager : Singleton<GameManager>
     #endregion
 
     #region Game loop
+    public eGameState GameState => _GameState;
     public int LevelIndex => _LevelIndex;
 
     private int _LevelIndex = 0;
+    private eGameState _GameState;
 
     public void ResetLevel()
     {

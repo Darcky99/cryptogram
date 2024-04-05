@@ -17,6 +17,8 @@ public class GameLetter : MonoBehaviour
 
         PhraseManager.OnLetterCompleted += onLetterCompleted;
         PhraseManager.OnSelection += onSelection;
+
+        HintPanel.OnHintPanel += onHintPanel;
     }
     private void OnDisable()
     {
@@ -25,6 +27,8 @@ public class GameLetter : MonoBehaviour
 
         PhraseManager.OnLetterCompleted -= onLetterCompleted;
         PhraseManager.OnSelection -= onSelection;
+
+        HintPanel.OnHintPanel -= onHintPanel;
     }
     #endregion
 
@@ -53,6 +57,11 @@ public class GameLetter : MonoBehaviour
             softSelected();
         else
             diselect();
+    }
+
+    private void onHintPanel(bool condition)
+    {
+        _HintHighlight.gameObject.SetActive(condition);
     }
     #endregion
 
@@ -272,8 +281,6 @@ public class GameLetter : MonoBehaviour
     #region Complete
     private void useCorrectCharacter()
     {
-        _HintHighlight.gameObject.SetActive(false);
-
         int index = _RectTransform.GetSiblingIndex() - 1;
         _LetterText.text = _GameWord.AssignedWord[index].ToString();
     }

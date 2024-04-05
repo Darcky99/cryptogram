@@ -9,10 +9,14 @@ public class HintPanel : Singleton<HintPanel>
     private GameManager _GameManager => GameManager.Instance;
     private PhraseManager _PhraseManager => PhraseManager.Instance;
 
+    #region Unity
     private void OnEnable()
     {
         setHintCount(_GameManager.Hints);
     }
+    #endregion
+
+    public static event Action<bool> OnHintPanel;
 
     public bool IsHintInterfaceEnabled => _HintInterface.gameObject.activeInHierarchy;
 
@@ -25,6 +29,8 @@ public class HintPanel : Singleton<HintPanel>
 
     private void setHintPanel(bool condition)
     {
+        OnHintPanel?.Invoke(condition);
+
         if (condition)
             _PhraseManager.ClearSelection();
 
@@ -44,6 +50,6 @@ public class HintPanel : Singleton<HintPanel>
     public void SetHintCount(int count) => setHintCount(count);
 
     public void BuyHint() => _GameManager.EarnHint();
-    public void OpenHintPanel() => setHintPanel(true);
+    public void OpenHintPanel() => setHintPanel(_GameManager.GameState == eGameState.Playing);
     public void CloseHintPanel() => setHintPanel(false);
 }
