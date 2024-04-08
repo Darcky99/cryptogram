@@ -30,12 +30,14 @@ public class Screen_Callendar : MenuScreenBase
         DateTime today = DateTime.Today;
         _Month = today.Month;
         _MonthText.SetMonth(_Month);
+
         int dayCount = DateTime.DaysInMonth(today.Year, today.Month);
 
         for(int i = 0; i < dayCount; i++)
         {
             DayChallengeButton instance = Instantiate(_DayChallengeButtonPrefab, _DayButtonsContainer);
-            instance.Initialize(this, i);
+            int t = DateTime.Today.Year + DateTime.Today.DayOfYear;
+            instance.Initialize(this, i, i <= today.Day - 1);
         }
     }
 

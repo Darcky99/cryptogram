@@ -14,14 +14,14 @@ public class RemoteDataManager : Singleton<RemoteDataManager>
     }
     #endregion
 
-    private const string s_ConnectionString = "mongodb+srv://darcking99:bf7hqE98rOntwJ08@sandbox.g2woihu.mongodb.net/?retryWrites=true&w=majority&appName=Sandbox";
+    private const string _CONNECTION_STRING = "mongodb+srv://darcking99:bf7hqE98rOntwJ08@sandbox.g2woihu.mongodb.net/?retryWrites=true&w=majority&appName=Sandbox";
 
     private async Task<LevelData.Level_JSON[]> getCollection(string dataBaseName, string collectionName)
     {
         List<LevelData.Level_JSON> documentsList = null;
         try
         {
-            MongoClient client = new MongoClient(s_ConnectionString);
+            MongoClient client = new MongoClient(_CONNECTION_STRING);
             var database = client.GetDatabase(dataBaseName);
             var collection = database.GetCollection<LevelData.Level_JSON>(collectionName);
             var cursor = await collection.FindAsync(FilterDefinition<LevelData.Level_JSON>.Empty);
@@ -48,6 +48,14 @@ public class RemoteDataManager : Singleton<RemoteDataManager>
             levels[i] = new LevelData(documents[i]);
         return levels;
     }
+    #endregion
+
+    #region HC LEVELS
+
+    private const string _HC_LEVELS_DATABASE = "HC-LEVELS";
+
+    //Gonna have to check last date of modification, if modified, re-dowload the thing.
+
     #endregion
 
     #region DailyChallenges

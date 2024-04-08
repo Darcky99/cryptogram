@@ -16,59 +16,57 @@ public class StorageManager : Singleton<StorageManager>
     }
     #endregion
 
-    public int CurrentCollectionSavedIndex => _LevelsIndex.ContainsKey(_GameManager.LevelsCollection) ? _LevelsIndex[_GameManager.LevelsCollection] : 0;
-
     private bool _GameSaveExists => ES3.KeyExists(_GAME_PROGRESS_DICTIONARY) || ES3.KeyExists(_DAY_LIFES) || ES3.KeyExists(_DAY_HINTS);
     private bool _LevelContinueSaveExists => ES3.KeyExists(_LEVEL_CONTINUE);
 
-    private Dictionary<eLevelsCollection, int> _LevelsIndex;
-    private LevelProgress _LevelProgress;
+    private ContinousProgress _HC_Levels_Progress;
+    private CollectionProgress _DC_Levels_Progress;
 
     private const string _GAME_PROGRESS_DICTIONARY = "GP_GAME_DICTIONARY";
     private const string _LEVEL_CONTINUE = "GP_LVLCONT";
     private const string _DAY_LIFES = "GP_DAYLIFES";
     private const string _DAY_HINTS = "GP_HINTS";
 
-    private int getLevelIndex(eLevelsCollection levelsCollection)
-    {
-        if (_LevelsIndex.ContainsKey(levelsCollection))
-            return _LevelsIndex[levelsCollection];
-        return 0;
-    }
+    //private int getLevelIndex(eLevelsCollection levelsCollection)
+    //{
+    //    if (_LevelsIndex.ContainsKey(levelsCollection))
+    //        return _LevelsIndex[levelsCollection];
+    //    return 0;
+    //}
 
-    private void saveGameProgress()
-    {
-        eLevelsCollection currentCollection = _GameManager.LevelsCollection;
-        int currentIndex = _GameManager.LevelIndex;
-        if (!_LevelsIndex.ContainsKey(currentCollection))
-            _LevelsIndex.Add(currentCollection, currentIndex);
-        else if(_LevelsIndex[currentCollection] < currentIndex)
-            _LevelsIndex[currentCollection] = currentIndex;
+    //private void saveGameProgress()
+    //{
+    //    eLevelsCollection currentCollection = _GameManager.LevelsCollection;
+    //    int currentIndex = _GameManager.LevelIndex;
+    //    if (!_LevelsIndex.ContainsKey(currentCollection))
+    //        _LevelsIndex.Add(currentCollection, currentIndex);
+    //    else if(_LevelsIndex[currentCollection] < currentIndex)
+    //        _LevelsIndex[currentCollection] = currentIndex;
 
-        ES3.Save(_GAME_PROGRESS_DICTIONARY, _LevelsIndex);
-        ES3.Save(_DAY_LIFES, _GameManager.Lifes);
-        ES3.Save(_DAY_HINTS, _GameManager.Hints);
-        ES3.DeleteKey(_LEVEL_CONTINUE);
-    }
-    private void saveLevelContinue(bool[] progress, int mistakeCount)
-    {
-        eLevelsCollection currentCollection = _GameManager.LevelsCollection;
-        int currentIndex = _GameManager.LevelIndex;
-        _LevelProgress = new LevelProgress(currentCollection, currentIndex, progress, mistakeCount);
-        ES3.Save(_LEVEL_CONTINUE, _LevelProgress);
-    }
+    //    ES3.Save(_GAME_PROGRESS_DICTIONARY, _LevelsIndex);
+    //    ES3.Save(_DAY_LIFES, _GameManager.Lifes);
+    //    ES3.Save(_DAY_HINTS, _GameManager.Hints);
+    //    ES3.DeleteKey(_LEVEL_CONTINUE);
+    //}
+    //private void saveLevelContinue(bool[] progress, int mistakeCount)
+    //{
+    //    eLevelsCollection currentCollection = _GameManager.LevelsCollection;
+    //    int currentIndex = _GameManager.LevelIndex;
+    //    _LevelProgress = new LevelProgress(currentCollection, currentIndex, progress, mistakeCount);
+    //    ES3.Save(_LEVEL_CONTINUE, _LevelProgress);
+    //}
 
     private void loadGameProgress()
     {
         bool keyExist = _GameSaveExists;
         if (keyExist)
         {
-            _LevelsIndex = ES3.Load<Dictionary<eLevelsCollection, int>>(_GAME_PROGRESS_DICTIONARY);
+            //_LevelsIndex = ES3.Load<Dictionary<eLevelsCollection, int>>(_GAME_PROGRESS_DICTIONARY);
             _GameManager.LoadLifeAndHints(ES3.Load<int>(_DAY_LIFES), ES3.Load<int>(_DAY_HINTS));
         }
         else
         {
-            _LevelsIndex = new Dictionary<eLevelsCollection, int>();
+            //_LevelsIndex = new Dictionary<eLevelsCollection, int>();
             //_GameManager.LoadLifeAndHints() NOT required. Default values are: 5, 3
         }
     }
@@ -91,10 +89,10 @@ public class StorageManager : Singleton<StorageManager>
         ES3.DeleteKey(_DAY_HINTS);
     }
 
-    public int GetLevelIndex(eLevelsCollection levelsCollection) => getLevelIndex(levelsCollection);
+    //public int GetLevelIndex(eLevelsCollection levelsCollection) => getLevelIndex(levelsCollection);
 
-    public void SaveGameProgress() => saveGameProgress();
-    public void SaveLevelContinue(bool[] progress, int mistakeCount) => saveLevelContinue(progress, mistakeCount);
+    //public void SaveGameProgress() => saveGameProgress();
+    //public void SaveLevelContinue(bool[] progress, int mistakeCount) => saveLevelContinue(progress, mistakeCount);
 
     //public void LoadGameProgress() => loadGameProgress();
     public bool TryLoadLevelContinue(out LevelProgress levelProgress) => tryLoadLevelContinue(out levelProgress);
@@ -102,6 +100,31 @@ public class StorageManager : Singleton<StorageManager>
     public void DeleteLevelContinue() => deleteLevelContinue();
     public void DeleteAll() => deleteAll();
 }
+
+
+
+public class ContinousProgress
+{
+    public int LevelIndex;
+    public LevelContinue LevelContinue;
+}
+public class CollectionProgress
+{
+    public ItemProgress[] Items;
+}
+
+public class ItemProgress
+{
+    public LevelContinue LevelContinue;
+    public bool IsCompleted;
+}
+public class LevelContinue
+{
+    public bool[] Progress;
+    public int MistakeCount;
+}
+
+
 
 [CustomEditor(typeof(StorageManager))]
 public class StorageManagerEditor : Editor

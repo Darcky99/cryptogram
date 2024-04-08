@@ -22,7 +22,7 @@ public class NextLevelDummy_Panel : Singleton<NextLevelDummy_Panel>
     #region Callbacks
     private void onLevelCompleted()
     {
-        StartCountDown("NEXT LEVEL IN: ", () => GameManager.Instance.LoadLevel());
+        StartCountDown("NEXT LEVEL IN: ", () => Debug.Log("NEX LEVEL FUNCTION NOT CREATED!") /*GameManager.Instance.LoadLevel()*/);
     }
     private void onGameOver()
     {

@@ -25,7 +25,7 @@ public class HC_Levels_Panel : MonoBehaviour
 
     private void levelText()
     {
-        _LevelText.text = $"LEVEL {_StorageManager.GetLevelIndex(eLevelsCollection.HC) + 1}";
+        _LevelText.text = $"LEVEL {/*_StorageManager.GetLevelIndex(eLevelsCollection.HC)*/ + 1}";
     }
 
     public void PlayHCLevels()

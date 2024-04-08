@@ -13,25 +13,30 @@ public class DayChallengeButton : MonoBehaviour
 
     [SerializeField] private Color _SelectedColor;
 
-    [SerializeField] private Image _BackgroundImge;
+    [SerializeField] private RectTransform _DayButton;
+    [SerializeField] private RectTransform _Padklock;
+
     [SerializeField] private TextMeshProUGUI _Number;
+    [SerializeField] private Image _BackGroundImage;
 
-    //ill need to set a number and then on presed let the screencallendar my number
-
-    public void Initialize(Screen_Callendar screen, int levelIndex) 
+    public void Initialize(Screen_Callendar screen, int levelIndex, bool show) 
     {
+        //somewhere I have to deside if it shows or now.
+        _DayButton.gameObject.SetActive(show);
+        _Padklock.gameObject.SetActive(!show);
+
         _ScreenCallendar = screen;
         _LevelIndex = levelIndex;
         _Number.text = (_LevelIndex + 1).ToString();
     }
     public void OnButtonDown()
     {
-        _BackgroundImge.color = _SelectedColor;
+        _BackGroundImage.color = _SelectedColor;
         _ScreenCallendar.SetSelection(this);
     }
 
     public void Deselect()
     {
-        _BackgroundImge.color = Color.white;
+        _BackGroundImage.color = Color.white;
     }
 }

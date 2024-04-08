@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 6255070010884372553}
   - component: {fileID: 4183812094804440101}
   m_Layer: 5
-  m_Name: MENU PANEL
+  m_Name: DC PANEL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -79,14 +79,14 @@ public class GameManager : Singleton<GameManager>
     {
         _GameState = eGameState.Playing;
 
-        _RandomGenerator = new System.Random(LevelIndex);
+        _RandomGenerator = new System.Random(_LevelIndex);
     }
     private void onLevelCompleted()
     {
         _GameState = eGameState.Win;
 
         _LevelIndex++;
-        _StorageManager.SaveGameProgress();
+        //_StorageManager.SaveGameProgress();
     }
     private void onGameOver()
     {
@@ -149,17 +149,19 @@ public class GameManager : Singleton<GameManager>
 
     #region Game loop
     public eGameState GameState => _GameState;
-    public int LevelIndex => _LevelIndex;
-
-    private int _LevelIndex = 0;
     private eGameState _GameState;
+
+
+    //public int LevelIndex => _LevelIndex;
+
+    private int _LevelIndex;
 
     public void ResetLevel()
     {
         OnResetLevel?.Invoke();
-        LoadLevel();
+        //LoadLevel();
     }
-    public void LoadLevel() => LoadLevel(LevelByIndex);
+    //public void LoadLevel() => LoadLevel(LevelByIndex);
     public void LoadLevel(ILevelData levelData) => OnLoadLevel?.Invoke(levelData);
     public void LevelCompleted() => OnLevelCompleted?.Invoke();
     public void GameOver() => OnGameOver?.Invoke();
@@ -174,29 +176,42 @@ public class GameManager : Singleton<GameManager>
     public int LevelsCount => _LevelsToLoad.Length;
     public eLevelsCollection LevelsCollection => _LevelsCollection;
 
-    public ILevelData LevelByIndex => _LevelsToLoad[LevelIndex % LevelsCount];
+    //public ILevelData LevelByIndex => _LevelsToLoad[LevelIndex % LevelsCount];
     public LevelProgress LevelProgress => _LevelProgress;
 
     private ILevelData[] _LevelsToLoad;
     private eLevelsCollection _LevelsCollection;
     private LevelProgress _LevelProgress;
 
-    //private void continueLevel()
-    //{
-    //    //THIS SHOULD PROBABLY BE CONTROLLED FROM THE MAIN MENU.
-    //    //IN A FUTURE, WE WILL SKIP THE MAIN_MENU, AND GO STRAIGH INTO THE LEVEL THAT WE LEFT UNCOMPLETED...
+    public async void PLayDailyChallenge(int month, int levelIndex)
+    {
+        _LevelsToLoad = await _RemoteDataManager.GetDailyChallengeLevels(month);
+        SetLevelIndex(levelIndex);
+        //LoadLevel();
+    }
+    public void PlayThemeLevels()
+    {
+        //Get the the levels pack
+        //Load the last one
+        //Continue
+    }
+    #endregion
 
-    //    bool exist = _StorageManager.TryLoadLevelContinue(out _LevelProgress);
-    //    if (exist)
-    //        SelectLevels(_LevelProgress.ContinueLevelType);
-    //    else
-    //        SelectLevels(eLevelsCollection.HC);
-    //}
+    //COLLECTION OF LEVELS
+    //DATA
+    //PROGRESS
+
+    #region HC LEVELS
+    //I'll need my data and progress here
+
+    
 
     public void PlayHCLevels()
     {
         switch (Application.systemLanguage)
         {
+            //Instead of loading from scriptable, we need to 
+
             default:
                 _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - English.asset").Levels;
                 break;
@@ -204,14 +219,27 @@ public class GameManager : Singleton<GameManager>
                 _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - Spanish").Levels;
                 break;
         }
-        SetLevelIndex(_StorageManager.GetLevelIndex(LevelsCollection));
-        LoadLevel();
+        //SetLevelIndex(_StorageManager.GetLevelIndex(LevelsCollection));
+        //LoadLevel();
     }
-    public async void PLayDailyChallenge(int month, int levelIndex)
-    {
-        _LevelsToLoad = await _RemoteDataManager.GetDailyChallengeLevels(month);
-        SetLevelIndex(levelIndex);
-        LoadLevel();
-    }
+
+    //_StorageManager.Load(key)
+    //_RemoteDataManager.TryGetChanges("HC")
+    //
+    //_StorageManger.Save(key)
+
+
+    #endregion
+
+    #region DC LEVELS
+    //I'll need my data and progress here
+
+
+    #endregion
+
+    #region THEME LEVELS
+    //I'll need my data and progress here
+
+
     #endregion
 }
