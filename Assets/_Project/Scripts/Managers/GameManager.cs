@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 
 public class GameManager : Singleton<GameManager>
 {
     private StorageManager _StorageManager => StorageManager.Instance;
-    private RemoteDataManager _RemoteDataManager => RemoteDataManager.Instance;
 
     public static event Action<ILevelData> OnLoadLevel;
     public static event Action OnResetLevel;
@@ -16,9 +16,14 @@ public class GameManager : Singleton<GameManager>
     protected override void OnAwakeEvent()
     {
         base.OnAwakeEvent();
+
+        _HC_Levels_Progress = new ContinousProgress();
+        _GameMode = eGameMode.None;
     }
     public override void Start() 
     {
+        load();
+
         //continueLevel();
     }
     private void OnEnable()
@@ -73,25 +78,20 @@ public class GameManager : Singleton<GameManager>
 
     private void onResetLevel()
     {
-        _StorageManager.DeleteLevelContinue();
+        LoadLevel();
     }
     private void onLoadLevel(ILevelData levelData)
     {
         _GameState = eGameState.Playing;
-
-        _RandomGenerator = new System.Random(_LevelIndex);
     }
     private void onLevelCompleted()
     {
         _GameState = eGameState.Win;
-
-        _LevelIndex++;
-        //_StorageManager.SaveGameProgress();
+        registerProgress();
     }
     private void onGameOver()
     {
         _GameState = eGameState.GameOver;
-
         expendLife();
     }
     private void onNewDay()
@@ -101,15 +101,38 @@ public class GameManager : Singleton<GameManager>
     }
     #endregion
 
-    #region Pause & Resume
-    private void pause() => Time.timeScale = 0;
-    private void resume() => Time.timeScale = 1;
+    #region Game loop
+    public eGameState GameState => _GameState;
+    private eGameState _GameState;
+
+    private void loadLevel(ILevelData levelData) => OnLoadLevel?.Invoke(levelData);
+
+    public void ResetLevel()
+    {
+        OnResetLevel?.Invoke();
+    }
+    public void LevelCompleted() => OnLevelCompleted?.Invoke();
+    public void LoadLevel()
+    {
+        switch (_GameMode)
+        {
+            default:
+                Debug.LogError("Not valid gamemode");
+                break;
+            case eGameMode.HC:
+                playHC();
+                break;
+        }
+    }
+    public void GameOver() => OnGameOver?.Invoke();
     #endregion
 
     #region Random generator
     public System.Random RandomGenerator => _RandomGenerator;
-
     private System.Random _RandomGenerator;
+
+    private void createRandomizer(int seed) => _RandomGenerator = new System.Random(seed);
+
     #endregion
 
     #region Lifes and Hints
@@ -147,80 +170,65 @@ public class GameManager : Singleton<GameManager>
     }
     #endregion
 
-    #region Game loop
-    public eGameState GameState => _GameState;
-    private eGameState _GameState;
+    #region Game modes
 
+    private eGameMode _GameMode;
 
-    //public int LevelIndex => _LevelIndex;
-
-    private int _LevelIndex;
-
-    public void ResetLevel()
+    private void registerProgress()
     {
-        OnResetLevel?.Invoke();
-        //LoadLevel();
-    }
-    //public void LoadLevel() => LoadLevel(LevelByIndex);
-    public void LoadLevel(ILevelData levelData) => OnLoadLevel?.Invoke(levelData);
-    public void LevelCompleted() => OnLevelCompleted?.Invoke();
-    public void GameOver() => OnGameOver?.Invoke();
-
-    public void SetLevelIndex(int levelIndex)
-    {
-        _LevelIndex = levelIndex;
-    }
-    #endregion
-
-    #region Load levels
-
-    //COLLECTION OF LEVELS
-    //DATA
-    //PROGRESS
-
-    #region HC LEVELS
-    //I'll need my data and progress here
-
-    private void unloadAll()
-    {
-        //UNLOAD LEVEL COLLECTIONS;
-    }
-
-    public void PlayHCLevels()
-    {
-        // LOAD A JSON, FOR THE LEVELS, CONVERT TO A LEVELS ARRAY.
-        // WELL KEEP THIS OBJECT IN MEMORY, WE MIGHT UNLOAD IT AT SOME POINT.
-        // USE THE OBJECT TO PASS THE NEXT LEVEL
-
-        switch (Application.systemLanguage)
+        switch (_GameMode)
         {
-            //GRAB THE NEXT LEVEL
-
             default:
-                //_LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - English.asset").Levels;
+            Debug.LogError("Not valid gamemode");
                 break;
-            case SystemLanguage.Spanish:
-                //_LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - Spanish").Levels;
+            case eGameMode.HC:
+                _HC_Levels_Progress.LevelIndex++;
                 break;
         }
-        //CALL AND PASS LOADLEVEL(NEXTLEVEL)
-        //LoadLevel();
+        save();
     }
-    //_StorageManager.Load(key)
-    //_RemoteDataManager.TryGetChanges("HC")
-    //
-    //_StorageManger.Save(key)
+
+    #region HC LEVELS
+
+    public int HC_Index => _HC_Levels_Progress.LevelIndex;
+
+    private ContinousProgress _HC_Levels_Progress;
+
+    private void playHC()
+    {
+        _GameMode = eGameMode.HC;
+        string file;
+        switch (Application.systemLanguage)
+        {
+            default:
+                file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/HC/HC Levels - English.json");
+                break;
+            case SystemLanguage.Spanish:
+                file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/HC/HC Levels - Spanish.json");
+                break;
+        }
+        LevelData.JSON collection = JsonUtility.FromJson<LevelData.JSON>(file);
+        LevelData levelToPlay = collection.Levels[_HC_Levels_Progress.LevelIndex % collection.Levels.Length];
+
+        createRandomizer(_HC_Levels_Progress.LevelIndex);
+        loadLevel(levelToPlay);
+    }
+
+    public void PlayHC() => playHC();
+
     #endregion
 
     #region DC LEVELS
     //I'll need my data and progress here
 
-    public async void PLayDailyChallenge(int month, int levelIndex)
+    public void PlayDH(int month, int levelIndex)
     {
         //_LevelsToLoad = await _RemoteDataManager.GetDailyChallengeLevels(month);
-        SetLevelIndex(levelIndex);
+        //SetLevelIndex(levelIndex);
         //LoadLevel();
     }
+
+
     #endregion
 
     #region THEME LEVELS
@@ -233,6 +241,22 @@ public class GameManager : Singleton<GameManager>
         //Continue
     }
     #endregion
+
+    #endregion
+
+    #region Save and Load
+
+    private const string HC_PROGRESS = "GP_HC-PROGRESS";
+
+    private void save()
+    {
+        _StorageManager.Save(HC_PROGRESS, _HC_Levels_Progress);
+    }
+    private void load()
+    {
+        if(ES3.KeyExists(HC_PROGRESS))
+            _HC_Levels_Progress = _StorageManager.Load<ContinousProgress>(HC_PROGRESS);
+    }
 
     #endregion
 }

@@ -326,8 +326,8 @@ public class PhraseManager : Singleton<PhraseManager>
     {
         if (isCompleted(character))
         {
-            OnLetterCompleted?.Invoke(character);
             clearSelection();
+            OnLetterCompleted?.Invoke(character);
         }
         if (IsLevelCompleted)
             GameManager.Instance.LevelCompleted();

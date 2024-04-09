@@ -15,8 +15,10 @@ public class HC_Levels_Panel : MonoBehaviour
     {
         _LevelText = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
     }
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return null;
+
         levelText();
     }
     #endregion
@@ -25,7 +27,7 @@ public class HC_Levels_Panel : MonoBehaviour
 
     private void levelText()
     {
-        _LevelText.text = $"LEVEL {/*_StorageManager.GetLevelIndex(eLevelsCollection.HC)*/ + 1}";
+        _LevelText.text = $"LEVEL {_GameManager.HC_Index + 1}";
     }
 
     public void PlayHCLevels()
@@ -33,6 +35,6 @@ public class HC_Levels_Panel : MonoBehaviour
         _MenuManager.ChangeScreenState(eScreen.MainMenu, false);
         _MenuManager.ChangeScreenState(eScreen.Gameplay, true);
 
-        _GameManager.PlayHCLevels();
+        _GameManager.PlayHC();
     }
 }

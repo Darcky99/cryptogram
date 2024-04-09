@@ -14,13 +14,6 @@ public class LevelData : ILevelData
         _PartiallyHidden = partiallyHidden;
         _Hidden = hidden;
     }
-    public LevelData(Level_JSON levelJSON)
-    {
-        _Author = levelJSON.Author;
-        _Phrase = levelJSON.Phrase;
-        _PartiallyHidden = levelJSON.PartiallyHidden;
-        _Hidden = levelJSON.Hidden;
-    }
 
     public string Author => _Author;
     public string Phrase => _Phrase;
@@ -62,17 +55,13 @@ public class LevelData : ILevelData
     [SerializeField] private string _PartiallyHidden;
     [SerializeField] private string _Hidden;
 
-    public class Level_JSON
+    public class JSON
     {
-        public object _id;
-        public string Author;
-        public string Phrase;
-        public string PartiallyHidden;
-        public string Hidden;
-
-        public override string ToString()
+        public JSON(LevelData[] levels)
         {
-            return $"Author: {Author}, Phrase: {Phrase}, PartiallyHidden: {PartiallyHidden}, Hidden: {Hidden}";
+            Levels = levels;
         }
+
+        public LevelData[] Levels;
     }
 }

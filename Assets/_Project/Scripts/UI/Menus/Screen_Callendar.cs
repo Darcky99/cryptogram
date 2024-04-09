@@ -49,12 +49,10 @@ public class Screen_Callendar : MenuScreenBase
     }
     public void GoToDailyChallengeLevel()
     {
-        _GameManager.SetLevelIndex(_Selected.LevelIndex);
-
         _MenuManager.ChangeScreenState(eScreen.DailyChallengeCalendar, false);
         _MenuManager.ChangeScreenState(eScreen.Gameplay, true);
 
-        _GameManager.PLayDailyChallenge(_Month, _Selected.LevelIndex);
+        _GameManager.PlayDH(_Month, _Selected.LevelIndex);
     }
 
     public void MainMenu()

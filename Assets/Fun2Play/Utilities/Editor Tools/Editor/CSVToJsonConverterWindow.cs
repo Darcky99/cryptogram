@@ -68,27 +68,25 @@ public class CSVToJsonConverterWindow : EditorWindow
             return;
         }
 
-        // Read CSV file
-        string[] csvLines = File.ReadAllLines(csvFilePath);
+        string fileName = csvFilePath.Split('/').Last();
+        string[] lines = File.ReadAllLines(csvFilePath);
+        LevelData[] levels = new LevelData[lines.Length - 1];
 
-        // Parse CSV data into JSON format
-        List<Dictionary<string, string>> jsonDataList = new List<Dictionary<string, string>>();
-        string[] headers = csvLines[0].Split(',');
-        foreach (string line in csvLines.Skip(1))
+        for (int i = 1; i < lines.Length; i++)
         {
-            string[] values = line.Split(',');
-            Dictionary<string, string> jsonData = new Dictionary<string, string>();
-            for (int i = 0; i < headers.Length; i++)
-            {
-                jsonData[headers[i]] = values[i];
-            }
-            jsonDataList.Add(jsonData);
+            string[] values = lines[i].Split(';');
+
+            string autor = values[0];
+            string phrase = values[1];
+            string partiallyHiden = values.Length > 2 ? values[2] : "";
+            string hiden = values.Length > 3 ? values[3] : "";
+
+            LevelData level = new LevelData(autor, phrase, partiallyHiden, hiden);
+            levels[i - 1] = level;
         }
 
-        // Convert JSON data to string
-        string jsonDataString = JsonUtility.ToJson(jsonDataList, true);
-
-        // Write JSON data to file
+        LevelData.JSON dataPack = new LevelData.JSON(levels);
+        string jsonDataString = JsonUtility.ToJson(dataPack);
         File.WriteAllText(jsonFilePath, jsonDataString);
 
         Debug.Log("CSV to JSON conversion complete.");

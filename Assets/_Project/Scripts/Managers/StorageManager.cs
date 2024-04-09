@@ -16,16 +16,39 @@ public class StorageManager : Singleton<StorageManager>
     }
     #endregion
 
+    
+
     private bool _GameSaveExists => ES3.KeyExists(_GAME_PROGRESS_DICTIONARY) || ES3.KeyExists(_DAY_LIFES) || ES3.KeyExists(_DAY_HINTS);
     private bool _LevelContinueSaveExists => ES3.KeyExists(_LEVEL_CONTINUE);
 
-    private ContinousProgress _HC_Levels_Progress;
-    private CollectionProgress _DC_Levels_Progress;
+    
+    //private CollectionProgress _DC_Levels_Progress;
 
     private const string _GAME_PROGRESS_DICTIONARY = "GP_GAME_DICTIONARY";
     private const string _LEVEL_CONTINUE = "GP_LVLCONT";
     private const string _DAY_LIFES = "GP_DAYLIFES";
     private const string _DAY_HINTS = "GP_HINTS";
+
+
+    private void save(string key, object value) => ES3.Save(key, value);
+    private T load<T>(string key) => ES3.Load<T>(key);
+
+    public void Save(string key, object value) => save(key, value);
+    public T Load<T>(string key) => load<T>(key);
+
+
+
+    //private void saveHCProgress()
+    //{
+    //    if(_HC_Levels_Progress == null)
+    //    {
+    //        _HC_Levels_Progress = new ContinousProgress();
+    //        return;
+    //    }
+
+    //}
+
+    //public void SaveHCProgress() => saveHCProgress();
 
     //private int getLevelIndex(eLevelsCollection levelsCollection)
     //{
@@ -105,6 +128,11 @@ public class StorageManager : Singleton<StorageManager>
 
 public class ContinousProgress
 {
+    //public ContinousProgress()
+    //{
+    //    LevelIndex = 0;
+    //}
+
     public int LevelIndex;
     public LevelContinue LevelContinue;
 }
