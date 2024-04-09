@@ -173,29 +173,6 @@ public class GameManager : Singleton<GameManager>
     #endregion
 
     #region Load levels
-    public int LevelsCount => _LevelsToLoad.Length;
-    public eLevelsCollection LevelsCollection => _LevelsCollection;
-
-    //public ILevelData LevelByIndex => _LevelsToLoad[LevelIndex % LevelsCount];
-    public LevelProgress LevelProgress => _LevelProgress;
-
-    private ILevelData[] _LevelsToLoad;
-    private eLevelsCollection _LevelsCollection;
-    private LevelProgress _LevelProgress;
-
-    public async void PLayDailyChallenge(int month, int levelIndex)
-    {
-        _LevelsToLoad = await _RemoteDataManager.GetDailyChallengeLevels(month);
-        SetLevelIndex(levelIndex);
-        //LoadLevel();
-    }
-    public void PlayThemeLevels()
-    {
-        //Get the the levels pack
-        //Load the last one
-        //Continue
-    }
-    #endregion
 
     //COLLECTION OF LEVELS
     //DATA
@@ -204,42 +181,58 @@ public class GameManager : Singleton<GameManager>
     #region HC LEVELS
     //I'll need my data and progress here
 
-    
+    private void unloadAll()
+    {
+        //UNLOAD LEVEL COLLECTIONS;
+    }
 
     public void PlayHCLevels()
     {
+        // LOAD A JSON, FOR THE LEVELS, CONVERT TO A LEVELS ARRAY.
+        // WELL KEEP THIS OBJECT IN MEMORY, WE MIGHT UNLOAD IT AT SOME POINT.
+        // USE THE OBJECT TO PASS THE NEXT LEVEL
+
         switch (Application.systemLanguage)
         {
-            //Instead of loading from scriptable, we need to 
+            //GRAB THE NEXT LEVEL
 
             default:
-                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - English.asset").Levels;
+                //_LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - English.asset").Levels;
                 break;
             case SystemLanguage.Spanish:
-                _LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - Spanish").Levels;
+                //_LevelsToLoad = Resources.Load<LevelsData_Scriptable>("HC Levels/HC Levels - Spanish").Levels;
                 break;
         }
-        //SetLevelIndex(_StorageManager.GetLevelIndex(LevelsCollection));
+        //CALL AND PASS LOADLEVEL(NEXTLEVEL)
         //LoadLevel();
     }
-
     //_StorageManager.Load(key)
     //_RemoteDataManager.TryGetChanges("HC")
     //
     //_StorageManger.Save(key)
-
-
     #endregion
 
     #region DC LEVELS
     //I'll need my data and progress here
 
-
+    public async void PLayDailyChallenge(int month, int levelIndex)
+    {
+        //_LevelsToLoad = await _RemoteDataManager.GetDailyChallengeLevels(month);
+        SetLevelIndex(levelIndex);
+        //LoadLevel();
+    }
     #endregion
 
     #region THEME LEVELS
     //I'll need my data and progress here
 
+    public void PlayThemeLevels()
+    {
+        //Get the the levels pack
+        //Load the last one
+        //Continue
+    }
+    #endregion
 
     #endregion
 }
