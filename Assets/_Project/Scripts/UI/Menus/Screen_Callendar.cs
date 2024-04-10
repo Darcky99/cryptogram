@@ -32,13 +32,13 @@ public class Screen_Callendar : MenuScreenBase
         _MonthText.SetMonth(_Month);
 
         int dayCount = DateTime.DaysInMonth(today.Year, today.Month);
-
         for(int i = 0; i < dayCount; i++)
         {
             DayChallengeButton instance = Instantiate(_DayChallengeButtonPrefab, _DayButtonsContainer);
             int t = DateTime.Today.Year + DateTime.Today.DayOfYear;
             instance.Initialize(this, i, i <= today.Day - 1);
         }
+        _GameManager.SetMonth(_Month);
     }
 
     public void SetSelection(DayChallengeButton button)
@@ -52,7 +52,7 @@ public class Screen_Callendar : MenuScreenBase
         _MenuManager.ChangeScreenState(eScreen.DailyChallengeCalendar, false);
         _MenuManager.ChangeScreenState(eScreen.Gameplay, true);
 
-        _GameManager.PlayDH(_Month, _Selected.LevelIndex);
+        _GameManager.PlayDH(_Selected.LevelIndex);
     }
 
     public void MainMenu()

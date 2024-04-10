@@ -18,7 +18,7 @@ public class GameManager : Singleton<GameManager>
         base.OnAwakeEvent();
 
         //for now it's a good structure, I might move the data loading to their own methods / moments.
-        _HC_Levels_Progress = new ContinousProgress();
+        //_HC_Levels_Progress = new ContinousProgress();
         setMonth(DateTime.Today.Month);
 
         _GameMode = eGameMode.None;
@@ -185,10 +185,14 @@ public class GameManager : Singleton<GameManager>
             Debug.LogError("Not valid gamemode");
                 break;
             case eGameMode.HC:
-                _HC_Levels_Progress.LevelIndex++;
+                _HC_Levels_Progress.IncreaseLevelIndex();
+                _StorageManager.Save(HC_PROGRESS, _HC_Levels_Progress);
+                break;
+            case eGameMode.DC:
+                _DC_Levels_Progress.RegisterProgress(_DC_Index, new ItemProgress(true));
+                _StorageManager.Save(dcKey(_Month), _DC_Levels_Progress);
                 break;
         }
-        save();
     }
 
     #region HC LEVELS
@@ -225,24 +229,24 @@ public class GameManager : Singleton<GameManager>
 
     private CollectionProgress _DC_Levels_Progress;
     private int _Month;
-    private int _LevelIndex;
+    private int _DC_Index;
 
     private void setMonth(int month)
     {
         _Month = month;
-        // here it should check if there's any save.... so we load here..?
-
-
-        _DC_Levels_Progress = new CollectionProgress(DateTime.DaysInMonth(DateTime.Today.Year, month));
-
-
+        if (!ES3.KeyExists(dcKey(month)))
+        {
+            _DC_Levels_Progress = new CollectionProgress(DateTime.DaysInMonth(DateTime.Today.Year, month));
+            return;
+        }
+        _DC_Levels_Progress = _StorageManager.Load<CollectionProgress>(dcKey(month));
     }
     public void playDH(int levelIndex)
     {
         _GameMode = eGameMode.DC;
 
         string file;
-        _LevelIndex = levelIndex;
+        _DC_Index = levelIndex;
 
         switch (Application.systemLanguage)
         {
@@ -261,6 +265,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     public void PlayDH(int levelIndex) => playDH(levelIndex);
+    public void SetMonth(int month) => setMonth(month);
 
     #endregion
 
@@ -280,17 +285,18 @@ public class GameManager : Singleton<GameManager>
     #region Save and Load
 
     private const string HC_PROGRESS = "GP_HC-PROGRESS";
-    private const string DC_PROGRESS = "GP_HC-PROGRESS";
+    private const string DC_PROGRESS = "GP_DC-PROGRESS";
 
-    private void save()
-    {
-        _StorageManager.Save(HC_PROGRESS, _HC_Levels_Progress);
-        _StorageManager.Save($"{DC_PROGRESS}-{_Month}", _DC_Levels_Progress);
-    }
+    private string dcKey(int month) => $"{DC_PROGRESS}-{_Month}";
+
     private void load()
     {
-        if(ES3.KeyExists(HC_PROGRESS))
+        if (ES3.KeyExists(HC_PROGRESS))
+        {
             _HC_Levels_Progress = _StorageManager.Load<ContinousProgress>(HC_PROGRESS);
+            return;
+        }
+        _HC_Levels_Progress = new ContinousProgress(0, null);
     }
 
     #endregion
