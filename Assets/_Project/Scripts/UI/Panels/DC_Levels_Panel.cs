@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine;
 
 public class DC_Levels_Panel : MonoBehaviour
 {
@@ -30,6 +28,6 @@ public class DC_Levels_Panel : MonoBehaviour
     public void OpenDCCallendar()
     {
         _MenuManager.ChangeScreenState(eScreen.MainMenu, false);
-        _MenuManager.ChangeScreenState(eScreen.DailyChallengeCalendar, true);
+        _MenuManager.ChangeScreenState(eScreen.DC_Calendar, true);
     }
 }

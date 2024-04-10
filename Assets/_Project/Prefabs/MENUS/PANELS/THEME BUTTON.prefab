@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6133450539891600338}
+  - component: {fileID: 2943609404994833472}
   m_Layer: 5
-  m_Name: THEME LEVEL PANEL
+  m_Name: THEME BUTTON
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,6 +39,18 @@ RectTransform:
   m_AnchoredPosition: {x: 472.5, y: -100}
   m_SizeDelta: {x: 937, y: 170.5}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2943609404994833472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585229444132291729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ffc28c0fe64c24890d9453ec09884c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1184597254512613923
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,7 +277,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 58.85
+  m_fontSize: 68.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

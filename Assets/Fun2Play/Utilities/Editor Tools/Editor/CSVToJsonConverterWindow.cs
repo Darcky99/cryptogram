@@ -82,11 +82,12 @@ public class CSVToJsonConverterWindow : EditorWindow
             string hiden = values.Length > 3 ? values[3] : "";
 
             LevelData level = new LevelData(autor, phrase, partiallyHiden, hiden);
-            levels[i - 1] = level;
+            //levels[i - 1] = level;
         }
 
         LevelData.JSON dataPack = new LevelData.JSON(levels);
         string jsonDataString = JsonUtility.ToJson(dataPack);
+
         File.WriteAllText(jsonFilePath, jsonDataString);
 
         Debug.Log("CSV to JSON conversion complete.");

@@ -1,4 +1,4 @@
 public enum eScreen
 {
-    MainMenu, DailyChallengeCalendar, Gameplay
+    MainMenu, DC_Calendar, Gameplay, TH_Selection
 }
