@@ -128,23 +128,33 @@ public class StorageManager : Singleton<StorageManager>
 
 public class ContinousProgress
 {
-    //public ContinousProgress()
-    //{
-    //    LevelIndex = 0;
-    //}
-
     public int LevelIndex;
     public LevelContinue LevelContinue;
 }
 public class CollectionProgress
 {
+    public CollectionProgress(int size)
+    {
+        Items = new ItemProgress[size];
+    }
+
     public ItemProgress[] Items;
+
+    public void RegisterProgress(int index, ItemProgress itemProgress)
+    {
+        Items[index] = itemProgress;
+    }
 }
 
 public class ItemProgress
 {
+    public ItemProgress(LevelContinue levelContinue, bool isComplete)
+    {
+
+    }
+
     public LevelContinue LevelContinue;
-    public bool IsCompleted;
+    public bool IsCompleted = false;
 }
 public class LevelContinue
 {

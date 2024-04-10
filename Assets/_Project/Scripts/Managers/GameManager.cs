@@ -17,7 +17,10 @@ public class GameManager : Singleton<GameManager>
     {
         base.OnAwakeEvent();
 
+        //for now it's a good structure, I might move the data loading to their own methods / moments.
         _HC_Levels_Progress = new ContinousProgress();
+        setMonth(DateTime.Today.Month);
+
         _GameMode = eGameMode.None;
     }
     public override void Start() 
@@ -219,15 +222,45 @@ public class GameManager : Singleton<GameManager>
     #endregion
 
     #region DC LEVELS
-    //I'll need my data and progress here
 
-    public void PlayDH(int month, int levelIndex)
+    private CollectionProgress _DC_Levels_Progress;
+    private int _Month;
+    private int _LevelIndex;
+
+    private void setMonth(int month)
     {
-        //_LevelsToLoad = await _RemoteDataManager.GetDailyChallengeLevels(month);
-        //SetLevelIndex(levelIndex);
-        //LoadLevel();
+        _Month = month;
+        // here it should check if there's any save.... so we load here..?
+
+
+        _DC_Levels_Progress = new CollectionProgress(DateTime.DaysInMonth(DateTime.Today.Year, month));
+
+
+    }
+    public void playDH(int levelIndex)
+    {
+        _GameMode = eGameMode.DC;
+
+        string file;
+        _LevelIndex = levelIndex;
+
+        switch (Application.systemLanguage)
+        {
+            default:
+                //file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/DC/DC Levels - English.json");
+                //break;
+            case SystemLanguage.Spanish:
+                file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/DC/April Levels - Spanish.json");
+                break;
+        }
+        LevelData.JSON collection = JsonUtility.FromJson<LevelData.JSON>(file);
+        LevelData levelToPlay = collection.Levels[levelIndex];
+
+        createRandomizer(levelIndex + DateTime.Today.Year);
+        loadLevel(levelToPlay);
     }
 
+    public void PlayDH(int levelIndex) => playDH(levelIndex);
 
     #endregion
 
@@ -247,10 +280,12 @@ public class GameManager : Singleton<GameManager>
     #region Save and Load
 
     private const string HC_PROGRESS = "GP_HC-PROGRESS";
+    private const string DC_PROGRESS = "GP_HC-PROGRESS";
 
     private void save()
     {
         _StorageManager.Save(HC_PROGRESS, _HC_Levels_Progress);
+        _StorageManager.Save($"{DC_PROGRESS}-{_Month}", _DC_Levels_Progress);
     }
     private void load()
     {
