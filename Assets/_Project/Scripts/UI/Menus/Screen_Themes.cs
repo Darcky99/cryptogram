@@ -8,27 +8,41 @@ public class Screen_Themes : MenuScreenBase
     private MenuManager _MenuManager => MenuManager.Instance;
     private GameManager _GameManager => GameManager.Instance;
 
-    private void Start()
+    #region Unity
+    private void Awake()
     {
         populateThemeSelection();
     }
+    private void OnEnable()
+    {
+        updateProgress();
+    }
+    #endregion
+
+    private Theme_Button[] _ThemeButtons;
 
     [SerializeField] private RectTransform _Panel;
     [SerializeField] private RectTransform _Container;
     [SerializeField] private Theme_Button _ThemeButtonPrefab;
 
-    private const string _THEMES_PATH = "Assets/_Project/Documents/JSON LEVELS/TH";
-
     private void populateThemeSelection()
     {
         Dictionary<string, ContinousProgress> themesProgress = _GameManager.ThemesProgress;
         string[] themes = _GameManager.Themes;
+        _ThemeButtons = new Theme_Button[themes.Length];
 
         for (int i = 0; i < themesProgress.Count; i++)
         {
             string theme = themes[i];
-            Instantiate(_ThemeButtonPrefab, _Container).Inititialize(themes[i], $"{_GameManager.ThemesProgress[theme].LevelIndex + 1} / {_GameManager.GetThemeLevelsCount(theme)}");
+            _ThemeButtons[i] = Instantiate(_ThemeButtonPrefab, _Container);
+            _ThemeButtons[i].SetTheme(theme);
         }
+    }
+
+    private void updateProgress()
+    {
+        for (int i = 0; i < _ThemeButtons.Length; i++)
+            _ThemeButtons[i].UpdateProgress();
     }
 
     public void CloseMenu()

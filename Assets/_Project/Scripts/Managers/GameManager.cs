@@ -24,12 +24,6 @@ public class GameManager : Singleton<GameManager>
 
         _GameMode = eGameMode.None;
     }
-    public override void Start() 
-    {
-        load();
-
-        //continueLevel();
-    }
     private void OnEnable()
     {
         InputManager.OnKeyDown += onKeyDown;
@@ -40,6 +34,11 @@ public class GameManager : Singleton<GameManager>
         OnLevelCompleted += onLevelCompleted;
 
         TimeManager.OnNewDay += onNewDay;
+    }
+    public override void Start() 
+    {
+        load();
+        //continueLevel();
     }
     private void OnDisable()
     {
@@ -182,9 +181,6 @@ public class GameManager : Singleton<GameManager>
     {
         switch (_GameMode)
         {
-            default:
-            Debug.LogError("Not valid gamemode");
-                break;
             case eGameMode.HC:
                 _HC_Levels_Progress.IncreaseLevelIndex();
                 _StorageManager.Save(HC_PROGRESS, _HC_Levels_Progress);
@@ -192,6 +188,13 @@ public class GameManager : Singleton<GameManager>
             case eGameMode.DC:
                 _DC_Levels_Progress.RegisterProgress(_DC_Index, new ItemProgress(true));
                 _StorageManager.Save(dcKey(_Month), _DC_Levels_Progress);
+                break;
+            case eGameMode TH:
+                //
+                break;
+
+            default:
+                Debug.LogError("Not valid gamemode");
                 break;
         }
     }
@@ -296,6 +299,7 @@ public class GameManager : Singleton<GameManager>
     private int _TH_Index;
     private string _CurrentTheme;
     //MAKE THE SCREEN THEMES GET THE STRING FROM HERE
+
     private Dictionary<string, ContinousProgress> _ThemesProgress;
 
     private const string _THEMES_PREFIX = "TH";
@@ -304,12 +308,17 @@ public class GameManager : Singleton<GameManager>
     //WE SHOULD HAVE THE SAME PREFIX THING FOR ALL OF THESE AND STANDARISE LANGUAJE NAMING AS WELL
     //ALSO MAYBE MAKE A METHOD TO CRATE PATH STRINGS, USING THE CATEGORY PATH + SPECIFIC + PREFIX + LANGUAJE
 
-    public void playThemeLevels(string theme)
+    private void playThemeLevels(string theme)
     {
-        //here, we need to somehow indicate the THEME folder
-        //then, somehow select a languaje
+        _CurrentTheme = theme;
+        _TH_Index = _ThemesProgress[_CurrentTheme].LevelIndex;
 
-        //using the theme string load the exact level required
+        LevelData[] collection = getThemeLevels(theme);
+        int levelIndex = _ThemesProgress[theme].LevelIndex;
+        LevelData levelToPlay = collection[levelIndex];
+
+        createRandomizer(levelIndex + levelToPlay.Phrase.Length + theme.Length);
+        loadLevel(levelToPlay);
     }
 
     private int getThemeLevelsCount(string theme)
@@ -323,6 +332,7 @@ public class GameManager : Singleton<GameManager>
 
         string file = File.ReadAllText($"{_THEMES_PATH}{theme}/{_THEMES_PREFIX}-Spanish.json");
         LevelData[] levels = JsonUtility.FromJson<JSONWrapper<LevelData>>(file).Array;
+
         return levels;
     }
     private string[] getAllThemeTitles()
@@ -348,6 +358,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     public int GetThemeLevelsCount(string theme) => getThemeLevelsCount(theme);
+    public void PlayThemeLevels(string theme) => playThemeLevels(theme);
 
     #endregion
 
