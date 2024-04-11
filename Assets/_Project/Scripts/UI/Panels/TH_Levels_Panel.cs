@@ -9,6 +9,6 @@ public class TH_Levels_Panel : MonoBehaviour
 
     public void OpenTHScreen()
     {
-        _MenuManager.ChangeScreenState(eScreen.TH_Selection, true);
+        _MenuManager.MainMenuScreen.OpenThemeSelection();
     }
 }

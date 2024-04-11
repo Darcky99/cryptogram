@@ -24,7 +24,7 @@ public class Theme_Button : MonoBehaviour
     }
     private void updateProgress()
     {
-        _ProgressText.text = $"{_GameManager.ThemesProgress[_Theme].LevelIndex + 1} / {_LevelCount}";
+        _ProgressText.text = $"{_GameManager.TH_Levels_Progress[_Theme].LevelIndex + 1} / {_LevelCount}";
     }
 
     public void SetTheme(string theme) => setTheme(theme);
@@ -33,10 +33,7 @@ public class Theme_Button : MonoBehaviour
 
     public void OnButtonDown()
     {
-        _MenuManager.ChangeScreenState(eScreen.TH_Selection, false);
-        _MenuManager.ChangeScreenState(eScreen.MainMenu, false);
-        _MenuManager.ChangeScreenState(eScreen.Gameplay, true);
-
+        _MenuManager.OpenGameplay();
         _GameManager.PlayThemeLevels(_Theme);
     }
 }

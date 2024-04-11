@@ -3,38 +3,28 @@ using UnityEngine;
 
 public class MenuManager : Singleton<MenuManager>
 {
-    [SerializeField] private MenuScreenBase _MainMenu;
-    [SerializeField] private MenuScreenBase _DailyChanllengeCallendar;
-    [SerializeField] private MenuScreenBase _Themes;
-    [SerializeField] private MenuScreenBase _Gameplay;
+    public Screen_MainMenu MainMenuScreen => _MainMenuScreen;
+    public Screen_Gameplay GameplayScreen => _GameplayScreen;
+
+    [SerializeField] private Screen_MainMenu _MainMenuScreen;
+    [SerializeField] private Screen_Gameplay _GameplayScreen;
 
     protected override void OnAwakeEvent()
     {
         base.OnAwakeEvent();
     }
 
-    private void changeScreenState(eScreen screen, bool condition)
+    private void openGameplay()
     {
-        switch (screen)
-        {
-            default:
-                Debug.LogError("Screen not included");
-                break;
-
-            case eScreen.MainMenu:
-                _MainMenu.SetActive(condition);
-                break;
-            case eScreen.DC_Calendar:
-                _DailyChanllengeCallendar.SetActive(condition);
-                break;
-            case eScreen.Gameplay:
-                _Gameplay.SetActive(condition);
-                break;
-            case eScreen.TH_Selection:
-                _Themes.SetActive(condition);
-                break;
-        }
+        _MainMenuScreen.gameObject.SetActive(false);
+        _GameplayScreen.gameObject.SetActive(true);
+    }
+    private void openMainMenu()
+    {
+        _GameplayScreen.gameObject.SetActive(false);
+        _MainMenuScreen.gameObject.SetActive(true);
     }
 
-    public void ChangeScreenState(eScreen screen, bool condition) => changeScreenState(screen, condition);
+    public void OpenGameplay() => openGameplay();
+    public void OpenMainMenu() => openMainMenu();
 }

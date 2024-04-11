@@ -119,11 +119,14 @@ public class GameManager : Singleton<GameManager>
     {
         switch (_GameMode)
         {
-            default:
-                Debug.LogError("Not valid gamemode");
-                break;
             case eGameMode.HC:
                 playHC();
+                break;
+            case eGameMode.TH:
+                playThemeLevels(_CurrentTheme);
+                break;
+            default:
+                Debug.LogError("Not valid gamemode");
                 break;
         }
     }
@@ -175,6 +178,11 @@ public class GameManager : Singleton<GameManager>
 
     #region Game modes
 
+    public eGameMode GameMode => _GameMode;
+
+    private const string _ENGLISH = "English";
+    private const string _SPANISH = "Spanish";
+
     private eGameMode _GameMode;
 
     private void registerProgress()
@@ -183,20 +191,27 @@ public class GameManager : Singleton<GameManager>
         {
             case eGameMode.HC:
                 _HC_Levels_Progress.IncreaseLevelIndex();
-                _StorageManager.Save(HC_PROGRESS, _HC_Levels_Progress);
+                _StorageManager.Save(_StorageManager.HC_PROGRESS, _HC_Levels_Progress);
                 break;
             case eGameMode.DC:
                 _DC_Levels_Progress.RegisterProgress(_DC_Index, new ItemProgress(true));
                 _StorageManager.Save(dcKey(_Month), _DC_Levels_Progress);
                 break;
-            case eGameMode TH:
-                //
+            case eGameMode.TH:
+                _TH_Levels_Progress[_CurrentTheme].IncreaseLevelIndex();
+                _StorageManager.Save(_StorageManager.TH_PROGRESS, _TH_Levels_Progress);
                 break;
 
             default:
                 Debug.LogError("Not valid gamemode");
                 break;
         }
+    }
+    private string filePath(string path, string prefix, string languaje, string specific = "")
+    {
+        return specific == "" ? 
+            $"{path}{prefix}-{languaje}.json" : 
+            $"{path}{specific}/{prefix}-{languaje}.json";
     }
 
     #region HC LEVELS
@@ -205,23 +220,27 @@ public class GameManager : Singleton<GameManager>
 
     private ContinousProgress _HC_Levels_Progress;
 
+    private const string _HC_PREFIX = "HC";
     private const string _HC_PATH = "Assets/_Project/Documents/JSON LEVELS/HC/";
 
     private void playHC()
     {
         _GameMode = eGameMode.HC;
         string file;
+        string path;
         switch (Application.systemLanguage)
         {
             default:
-                file = File.ReadAllText(_HC_PATH + "HC Levels - English.json");
+                path = filePath(_HC_PATH, _HC_PREFIX, _ENGLISH);
+                file = File.ReadAllText(path);
                 break;
             case SystemLanguage.Spanish:
-                file = File.ReadAllText(_HC_PATH + "HC Levels - Spanish.json");
+                path = filePath(_HC_PATH, _HC_PREFIX, _ENGLISH);
+                file = File.ReadAllText(path);
                 break;
         }
-        LevelData.JSON collection = JsonUtility.FromJson<LevelData.JSON>(file);
-        LevelData levelToPlay = collection.Levels[_HC_Levels_Progress.LevelIndex % collection.Levels.Length];
+        LevelData[] collection = JsonUtility.FromJson<JSONWrapper<LevelData>>(file).Array;
+        LevelData levelToPlay = collection[_HC_Levels_Progress.LevelIndex % collection.Length];
 
         createRandomizer(_HC_Levels_Progress.LevelIndex);
         loadLevel(levelToPlay);
@@ -237,6 +256,7 @@ public class GameManager : Singleton<GameManager>
     private int _Month;
     private CollectionProgress _DC_Levels_Progress;
 
+    private const string _DC_PREFIX = "DC";
     private const string _DC_PATH = "Assets/_Project/Documents/JSON LEVELS/DC/";
 
     private void setMonth(int month)
@@ -254,6 +274,7 @@ public class GameManager : Singleton<GameManager>
         _GameMode = eGameMode.DC;
 
         string file;
+        string path;
         _DC_Index = levelIndex;
 
         switch (Application.systemLanguage)
@@ -262,11 +283,12 @@ public class GameManager : Singleton<GameManager>
                 //file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/DC/DC Levels - English.json");
                 //break;
             case SystemLanguage.Spanish:
-                file = File.ReadAllText(_DC_PATH + "April Levels - Spanish.json");
+                path = filePath(_DC_PATH, _DC_PREFIX, _SPANISH, $"{levelIndex}");
+                file = File.ReadAllText(path);
                 break;
         }
-        LevelData.JSON collection = JsonUtility.FromJson<LevelData.JSON>(file);
-        LevelData levelToPlay = collection.Levels[levelIndex];
+        LevelData[] collection = JsonUtility.FromJson<JSONWrapper<LevelData>>(file).Array;
+        LevelData levelToPlay = collection[levelIndex];
 
         createRandomizer(levelIndex + DateTime.Today.Year);
         loadLevel(levelToPlay);
@@ -284,9 +306,9 @@ public class GameManager : Singleton<GameManager>
         get
         {
             int i = 0;
-            string[] themes = new string[_ThemesProgress.Keys.Count];
+            string[] themes = new string[_TH_Levels_Progress.Keys.Count];
 
-            foreach(string value in _ThemesProgress.Keys)
+            foreach(string value in _TH_Levels_Progress.Keys)
             {
                 themes[i] = value;
                 i++;
@@ -294,43 +316,38 @@ public class GameManager : Singleton<GameManager>
             return themes;
         } 
     }
-    public Dictionary<string, ContinousProgress> ThemesProgress => _ThemesProgress;
+    public Dictionary<string, ContinousProgress> TH_Levels_Progress => _TH_Levels_Progress;
 
-    private int _TH_Index;
+    //private int _TH_Index;
     private string _CurrentTheme;
-    //MAKE THE SCREEN THEMES GET THE STRING FROM HERE
 
-    private Dictionary<string, ContinousProgress> _ThemesProgress;
+    private Dictionary<string, ContinousProgress> _TH_Levels_Progress;
 
-    private const string _THEMES_PREFIX = "TH";
     private const string _THEMES_PATH = "Assets/_Project/Documents/JSON LEVELS/TH/";
-
-    //WE SHOULD HAVE THE SAME PREFIX THING FOR ALL OF THESE AND STANDARISE LANGUAJE NAMING AS WELL
-    //ALSO MAYBE MAKE A METHOD TO CRATE PATH STRINGS, USING THE CATEGORY PATH + SPECIFIC + PREFIX + LANGUAJE
+    private const string _THEMES_PREFIX = "TH";
 
     private void playThemeLevels(string theme)
     {
         _CurrentTheme = theme;
-        _TH_Index = _ThemesProgress[_CurrentTheme].LevelIndex;
+        //_TH_Index = _TH_Levels_Progress[_CurrentTheme].LevelIndex;
 
         LevelData[] collection = getThemeLevels(theme);
-        int levelIndex = _ThemesProgress[theme].LevelIndex;
+        int levelIndex = _TH_Levels_Progress[theme].LevelIndex;
         LevelData levelToPlay = collection[levelIndex];
 
         createRandomizer(levelIndex + levelToPlay.Phrase.Length + theme.Length);
         loadLevel(levelToPlay);
     }
 
-    private int getThemeLevelsCount(string theme)
-    {
-        return getThemeLevels(theme).Length;
-    }
+    private bool isThemeCompleted(string theme) => _TH_Levels_Progress[theme].LevelIndex >= getThemeLevelsCount(theme) ;
+    private int getThemeLevelsCount(string theme) => getThemeLevels(theme).Length;
     private LevelData[] getThemeLevels(string theme)
     {
-        if (_ThemesProgress.ContainsKey(theme) == false)
+        if (_TH_Levels_Progress.ContainsKey(theme) == false)
             Debug.LogError("Theme does not exist!");
 
-        string file = File.ReadAllText($"{_THEMES_PATH}{theme}/{_THEMES_PREFIX}-Spanish.json");
+        string path = filePath(_THEMES_PATH, _THEMES_PREFIX, _SPANISH, theme);
+        string file = File.ReadAllText(path);
         LevelData[] levels = JsonUtility.FromJson<JSONWrapper<LevelData>>(file).Array;
 
         return levels;
@@ -357,6 +374,7 @@ public class GameManager : Singleton<GameManager>
         return directoryNames;
     }
 
+    public bool IsThemeCompleted() => isThemeCompleted(_CurrentTheme);
     public int GetThemeLevelsCount(string theme) => getThemeLevelsCount(theme);
     public void PlayThemeLevels(string theme) => playThemeLevels(theme);
 
@@ -366,11 +384,7 @@ public class GameManager : Singleton<GameManager>
 
     #region Save and Load
 
-    private const string HC_PROGRESS = "GP_HC-PROGRESS";
-    private const string DC_PROGRESS = "GP_DC-PROGRESS";
-    private const string TH_PROGRESS = "GP_TH-PROGRESS";
-
-    private string dcKey(int month) => $"{DC_PROGRESS}-{_Month}";
+    private string dcKey(int month) => $"{_StorageManager.DC_PROGRESS}-{_Month}";
 
     private void load()
     {
@@ -380,25 +394,25 @@ public class GameManager : Singleton<GameManager>
 
     private void loadHCProgress()
     {
-        if (ES3.KeyExists(HC_PROGRESS))
+        if (ES3.KeyExists(_StorageManager.HC_PROGRESS))
         {
-            _HC_Levels_Progress = _StorageManager.Load<ContinousProgress>(HC_PROGRESS);
+            _HC_Levels_Progress = _StorageManager.Load<ContinousProgress>(_StorageManager.HC_PROGRESS);
             return;
         }
         _HC_Levels_Progress = new ContinousProgress(0, null);
     }
     private void loadTHProgress()
     {
-        if (ES3.KeyExists(TH_PROGRESS))
-            _ThemesProgress = _StorageManager.Load<Dictionary<string, ContinousProgress>>(TH_PROGRESS);
+        if (ES3.KeyExists(_StorageManager.TH_PROGRESS))
+            _TH_Levels_Progress = _StorageManager.Load<Dictionary<string, ContinousProgress>>(_StorageManager.TH_PROGRESS);
         else
-            _ThemesProgress = new Dictionary<string, ContinousProgress>();
+            _TH_Levels_Progress = new Dictionary<string, ContinousProgress>();
         
         string[] themes = getAllThemeTitles();
 
         for(int i = 0; i < themes.Length; i++)
-            if(!_ThemesProgress.ContainsKey(themes[i]))
-                _ThemesProgress.Add(themes[i], new ContinousProgress(0, null));
+            if(!_TH_Levels_Progress.ContainsKey(themes[i]))
+                _TH_Levels_Progress.Add(themes[i], new ContinousProgress(0, null));
     }
 
     #endregion

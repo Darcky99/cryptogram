@@ -10,7 +10,6 @@ using System.Collections.Generic;
 public class PhraseManager : Singleton<PhraseManager>
 {
     private GameManager _GameManager => GameManager.Instance;
-    private StorageManager _StorageManager => StorageManager.Instance;
 
     #region Unity
     protected override void OnAwakeEvent()
@@ -35,6 +34,8 @@ public class PhraseManager : Singleton<PhraseManager>
         GameManager.OnGameOver -= onGameOver;
 
         OnLetterCompleted -= onLetterCompleted;
+
+        clearGameElements();
     }
     #endregion
 

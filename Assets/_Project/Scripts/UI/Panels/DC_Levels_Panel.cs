@@ -27,7 +27,6 @@ public class DC_Levels_Panel : MonoBehaviour
 
     public void OpenDCCallendar()
     {
-        _MenuManager.ChangeScreenState(eScreen.MainMenu, false);
-        _MenuManager.ChangeScreenState(eScreen.DC_Calendar, true);
+        _MenuManager.MainMenuScreen.OpenCalendar();
     }
 }

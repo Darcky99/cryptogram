@@ -15,8 +15,16 @@ public class StorageManager : Singleton<StorageManager>
     }
     #endregion
 
+    public string HC_PROGRESS => _HC_PROGRESS;
+    public string DC_PROGRESS => _DC_PROGRESS;
+    public string TH_PROGRESS => _TH_PROGRESS;
+
     private const string _DAY_LIFES = "GP_DAYLIFES";
     private const string _DAY_HINTS = "GP_HINTS";
+
+    private const string _HC_PROGRESS = "GP_HC-PROGRESS";
+    private const string _DC_PROGRESS = "GP_DC-PROGRESS";
+    private const string _TH_PROGRESS = "GP_TH-PROGRESS";
 
     private void save(string key, object value) => ES3.Save(key, value);
     private T load<T>(string key) => ES3.Load<T>(key);
@@ -28,8 +36,10 @@ public class StorageManager : Singleton<StorageManager>
     {
         ES3.DeleteKey(_DAY_LIFES);
         ES3.DeleteKey(_DAY_HINTS);
+        ES3.DeleteKey(_HC_PROGRESS);
+        ES3.DeleteKey(_DC_PROGRESS);
+        ES3.DeleteKey(_TH_PROGRESS);
     }
-
     public void DeleteAll() => deleteAll();
 }
 

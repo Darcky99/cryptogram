@@ -27,7 +27,7 @@ public class Screen_Themes : MenuScreenBase
 
     private void populateThemeSelection()
     {
-        Dictionary<string, ContinousProgress> themesProgress = _GameManager.ThemesProgress;
+        Dictionary<string, ContinousProgress> themesProgress = _GameManager.TH_Levels_Progress;
         string[] themes = _GameManager.Themes;
         _ThemeButtons = new Theme_Button[themes.Length];
 
@@ -47,6 +47,6 @@ public class Screen_Themes : MenuScreenBase
 
     public void CloseMenu()
     {
-        _MenuManager.ChangeScreenState(eScreen.TH_Selection, false);
+        _MenuManager.MainMenuScreen.DisableAllPanels();
     }
 }
