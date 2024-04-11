@@ -7,7 +7,7 @@ public class TH_Levels_Panel : MonoBehaviour
 {
     private MenuManager _MenuManager => MenuManager.Instance;
 
-    public void OpenDCCallendar()
+    public void OpenTHScreen()
     {
         _MenuManager.ChangeScreenState(eScreen.TH_Selection, true);
     }

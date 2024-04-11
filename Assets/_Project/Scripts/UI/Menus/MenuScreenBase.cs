@@ -6,4 +6,5 @@ using UnityEngine;
 public abstract class MenuScreenBase : MonoBehaviour
 {
     public void SetActive(bool condition) => gameObject.SetActive(condition);
+
 }

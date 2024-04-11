@@ -51,6 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1ffc28c0fe64c24890d9453ec09884c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _TitleText: {fileID: 5742106364293116494}
+  _ProgressText: {fileID: 2176190537904748190}
 --- !u!1 &1184597254512613923
 GameObject:
   m_ObjectHideFlags: 0
@@ -83,10 +85,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6133450539891600338}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.052, y: 0.5}
+  m_AnchorMin: {x: 0.08940342, y: 0.5}
   m_AnchorMax: {x: 0.59234685, y: 0.5}
-  m_AnchoredPosition: {x: -9.549988, y: 0}
-  m_SizeDelta: {x: -19.1, y: 203.7}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -0.000030518, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7764938151818884290
 CanvasRenderer:
@@ -116,7 +118,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Navidad
+  m_text: TEST
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -143,14 +145,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 122.55
+  m_fontSize: 116.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 290.7
   m_fontStyle: 1
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: -2

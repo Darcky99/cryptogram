@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+
 using System.IO;
 
 public class GameManager : Singleton<GameManager>
@@ -201,6 +202,8 @@ public class GameManager : Singleton<GameManager>
 
     private ContinousProgress _HC_Levels_Progress;
 
+    private const string _HC_PATH = "Assets/_Project/Documents/JSON LEVELS/HC/";
+
     private void playHC()
     {
         _GameMode = eGameMode.HC;
@@ -208,10 +211,10 @@ public class GameManager : Singleton<GameManager>
         switch (Application.systemLanguage)
         {
             default:
-                file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/HC/HC Levels - English.json");
+                file = File.ReadAllText(_HC_PATH + "HC Levels - English.json");
                 break;
             case SystemLanguage.Spanish:
-                file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/HC/HC Levels - Spanish.json");
+                file = File.ReadAllText(_HC_PATH + "HC Levels - Spanish.json");
                 break;
         }
         LevelData.JSON collection = JsonUtility.FromJson<LevelData.JSON>(file);
@@ -227,9 +230,11 @@ public class GameManager : Singleton<GameManager>
 
     #region DC LEVELS
 
-    private CollectionProgress _DC_Levels_Progress;
-    private int _Month;
     private int _DC_Index;
+    private int _Month;
+    private CollectionProgress _DC_Levels_Progress;
+
+    private const string _DC_PATH = "Assets/_Project/Documents/JSON LEVELS/DC/";
 
     private void setMonth(int month)
     {
@@ -254,7 +259,7 @@ public class GameManager : Singleton<GameManager>
                 //file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/DC/DC Levels - English.json");
                 //break;
             case SystemLanguage.Spanish:
-                file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/DC/April Levels - Spanish.json");
+                file = File.ReadAllText(_DC_PATH + "April Levels - Spanish.json");
                 break;
         }
         LevelData.JSON collection = JsonUtility.FromJson<LevelData.JSON>(file);
@@ -270,14 +275,80 @@ public class GameManager : Singleton<GameManager>
     #endregion
 
     #region THEME LEVELS
-    //I'll need my data and progress here
 
-    public void PlayThemeLevels()
+    public string[] Themes 
     {
-        //Get the the levels pack
-        //Load the last one
-        //Continue
+        get
+        {
+            int i = 0;
+            string[] themes = new string[_ThemesProgress.Keys.Count];
+
+            foreach(string value in _ThemesProgress.Keys)
+            {
+                themes[i] = value;
+                i++;
+            }
+            return themes;
+        } 
     }
+    public Dictionary<string, ContinousProgress> ThemesProgress => _ThemesProgress;
+
+    private int _TH_Index;
+    private string _CurrentTheme;
+    //MAKE THE SCREEN THEMES GET THE STRING FROM HERE
+    private Dictionary<string, ContinousProgress> _ThemesProgress;
+
+    private const string _THEMES_PREFIX = "TH";
+    private const string _THEMES_PATH = "Assets/_Project/Documents/JSON LEVELS/TH/";
+
+    //WE SHOULD HAVE THE SAME PREFIX THING FOR ALL OF THESE AND STANDARISE LANGUAJE NAMING AS WELL
+    //ALSO MAYBE MAKE A METHOD TO CRATE PATH STRINGS, USING THE CATEGORY PATH + SPECIFIC + PREFIX + LANGUAJE
+
+    public void playThemeLevels(string theme)
+    {
+        //here, we need to somehow indicate the THEME folder
+        //then, somehow select a languaje
+
+        //using the theme string load the exact level required
+    }
+
+    private int getThemeLevelsCount(string theme)
+    {
+        return getThemeLevels(theme).Length;
+    }
+    private LevelData[] getThemeLevels(string theme)
+    {
+        if (_ThemesProgress.ContainsKey(theme) == false)
+            Debug.LogError("Theme does not exist!");
+
+        string file = File.ReadAllText($"{_THEMES_PATH}{theme}/{_THEMES_PREFIX}-Spanish.json");
+        LevelData[] levels = JsonUtility.FromJson<JSONWrapper<LevelData>>(file).Array;
+        return levels;
+    }
+    private string[] getAllThemeTitles()
+    {
+        string[] directories = Directory.GetDirectories(_THEMES_PATH);
+        string[] directoryNames = new string[directories.Length];
+
+        for (int i = 0; i < directories.Length; i++)
+        {
+            string[] folderDirectories = directories[i].Split('/');
+            string name = folderDirectories[folderDirectories.Length - 1];
+
+            directoryNames[i] = name;
+
+            //I'll need this to get the languajes
+            //foreach (string file in Directory.GetFiles(directories[i]))
+            //{
+            //    string[] fileDirectoryNames = file.Split('\\');
+            //    debug += $" {fileDirectoryNames[fileDirectoryNames.Length - 1]}, ";
+            //}
+        }
+        return directoryNames;
+    }
+
+    public int GetThemeLevelsCount(string theme) => getThemeLevelsCount(theme);
+
     #endregion
 
     #endregion
@@ -286,10 +357,17 @@ public class GameManager : Singleton<GameManager>
 
     private const string HC_PROGRESS = "GP_HC-PROGRESS";
     private const string DC_PROGRESS = "GP_DC-PROGRESS";
+    private const string TH_PROGRESS = "GP_TH-PROGRESS";
 
     private string dcKey(int month) => $"{DC_PROGRESS}-{_Month}";
 
     private void load()
+    {
+        loadHCProgress();
+        loadTHProgress();
+    }
+
+    private void loadHCProgress()
     {
         if (ES3.KeyExists(HC_PROGRESS))
         {
@@ -297,6 +375,19 @@ public class GameManager : Singleton<GameManager>
             return;
         }
         _HC_Levels_Progress = new ContinousProgress(0, null);
+    }
+    private void loadTHProgress()
+    {
+        if (ES3.KeyExists(TH_PROGRESS))
+            _ThemesProgress = _StorageManager.Load<Dictionary<string, ContinousProgress>>(TH_PROGRESS);
+        else
+            _ThemesProgress = new Dictionary<string, ContinousProgress>();
+        
+        string[] themes = getAllThemeTitles();
+
+        for(int i = 0; i < themes.Length; i++)
+            if(!_ThemesProgress.ContainsKey(themes[i]))
+                _ThemesProgress.Add(themes[i], new ContinousProgress(0, null));
     }
 
     #endregion

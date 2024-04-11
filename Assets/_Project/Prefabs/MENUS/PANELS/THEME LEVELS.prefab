@@ -341,16 +341,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3948111280706020034, guid: 0de9251878e4d6f4cb4467e04646b5f5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7070593720740615789}
+    - target: {fileID: 3948111280706020034, guid: 0de9251878e4d6f4cb4467e04646b5f5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3948111280706020034, guid: 0de9251878e4d6f4cb4467e04646b5f5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OpenDCCallendar
+      value: OpenTHScreen
       objectReference: {fileID: 0}
     - target: {fileID: 3948111280706020034, guid: 0de9251878e4d6f4cb4467e04646b5f5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: DC_Levels_Panel, Assembly-CSharp
+      value: TH_Levels_Panel, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3948111280706020034, guid: 0de9251878e4d6f4cb4467e04646b5f5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName

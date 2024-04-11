@@ -361,7 +361,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &276098659
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1219,7 +1219,7 @@ RectTransform:
   m_Father: {fileID: 858547747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1829,7 +1829,7 @@ RectTransform:
   m_Father: {fileID: 1295242329}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -11.500002, y: 0}
   m_SizeDelta: {x: 15.200003, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1961,7 +1961,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _MainMenu: {fileID: 847041211}
   _DailyChanllengeCallendar: {fileID: 617115406}
-  _Themes: {fileID: 0}
+  _Themes: {fileID: 276098660}
   _Gameplay: {fileID: 65996112}
 --- !u!114 &1918542545
 MonoBehaviour:
@@ -2057,7 +2057,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1982610457}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 276098660}
+        m_TargetAssemblyTypeName: Screen_Themes, Assembly-CSharp
+        m_MethodName: CloseMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1982610457
 MonoBehaviour:
   m_ObjectHideFlags: 0
