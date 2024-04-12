@@ -401,13 +401,12 @@ public class PhraseManager : Singleton<PhraseManager>
 
     private void displayQuote()
     {
-        _QuoteText.rectTransform.SetParent(_LevelContent);
+        _QuoteText.rectTransform.SetSiblingIndex(_QuoteText.rectTransform.parent.childCount - 1);
         _QuoteText.text = _LevelData.Author;
         _QuoteText.gameObject.SetActive(true);
     }
     private void hideQuote()
     {
-        _QuoteText.rectTransform.SetParent(_LevelContent.parent);
         _QuoteText.text = " ";
         _QuoteText.gameObject.SetActive(false);
     }

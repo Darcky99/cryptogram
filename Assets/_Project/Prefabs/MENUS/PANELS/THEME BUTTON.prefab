@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1ffc28c0fe64c24890d9453ec09884c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Button: {fileID: 5597866312699631086}
   _TitleText: {fileID: 5742106364293116494}
   _ProgressText: {fileID: 2176190537904748190}
 --- !u!1 &1184597254512613923

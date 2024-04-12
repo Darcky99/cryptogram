@@ -17,11 +17,6 @@ public class GameManager : Singleton<GameManager>
     protected override void OnAwakeEvent()
     {
         base.OnAwakeEvent();
-
-        //for now it's a good structure, I might move the data loading to their own methods / moments.
-        //_HC_Levels_Progress = new ContinousProgress();
-        setMonth(DateTime.Today.Month);
-
         _GameMode = eGameMode.None;
     }
     private void OnEnable()
@@ -194,8 +189,8 @@ public class GameManager : Singleton<GameManager>
                 _StorageManager.Save(_StorageManager.HC_PROGRESS, _HC_Levels_Progress);
                 break;
             case eGameMode.DC:
-                _DC_Levels_Progress.RegisterProgress(_DC_Index, new ItemProgress(true));
-                _StorageManager.Save(dcKey(_Month), _DC_Levels_Progress);
+                _DC_Levels_Progress[_Month].RegisterProgress(_DC_Index, new ItemProgress(true));
+                _StorageManager.Save(_StorageManager.DC_PROGRESS, _DC_Levels_Progress);
                 break;
             case eGameMode.TH:
                 _TH_Levels_Progress[_CurrentTheme].IncreaseLevelIndex();
@@ -252,9 +247,11 @@ public class GameManager : Singleton<GameManager>
 
     #region DC LEVELS
 
+    public Dictionary<int, CollectionProgress> DC_Levels_Progress => _DC_Levels_Progress;
+
     private int _DC_Index;
     private int _Month;
-    private CollectionProgress _DC_Levels_Progress;
+    private Dictionary<int, CollectionProgress> _DC_Levels_Progress;
 
     private const string _DC_PREFIX = "DC";
     private const string _DC_PATH = "Assets/_Project/Documents/JSON LEVELS/DC/";
@@ -262,12 +259,7 @@ public class GameManager : Singleton<GameManager>
     private void setMonth(int month)
     {
         _Month = month;
-        if (!ES3.KeyExists(dcKey(month)))
-        {
-            _DC_Levels_Progress = new CollectionProgress(DateTime.DaysInMonth(DateTime.Today.Year, month));
-            return;
-        }
-        _DC_Levels_Progress = _StorageManager.Load<CollectionProgress>(dcKey(month));
+        loadDCProgress();
     }
     public void playDH(int levelIndex)
     {
@@ -283,7 +275,7 @@ public class GameManager : Singleton<GameManager>
                 //file = File.ReadAllText("Assets/_Project/Documents/JSON LEVELS/DC/DC Levels - English.json");
                 //break;
             case SystemLanguage.Spanish:
-                path = filePath(_DC_PATH, _DC_PREFIX, _SPANISH, $"{levelIndex}");
+                path = filePath(_DC_PATH, _DC_PREFIX, _SPANISH, $"{_Month}");
                 file = File.ReadAllText(path);
                 break;
         }
@@ -328,6 +320,7 @@ public class GameManager : Singleton<GameManager>
 
     private void playThemeLevels(string theme)
     {
+        _GameMode = eGameMode.TH;
         _CurrentTheme = theme;
         //_TH_Index = _TH_Levels_Progress[_CurrentTheme].LevelIndex;
 
@@ -384,8 +377,6 @@ public class GameManager : Singleton<GameManager>
 
     #region Save and Load
 
-    private string dcKey(int month) => $"{_StorageManager.DC_PROGRESS}-{_Month}";
-
     private void load()
     {
         loadHCProgress();
@@ -401,6 +392,18 @@ public class GameManager : Singleton<GameManager>
         }
         _HC_Levels_Progress = new ContinousProgress(0, null);
     }
+    private void loadDCProgress()
+    {
+        if (ES3.KeyExists(_StorageManager.DC_PROGRESS))
+        {
+            _DC_Levels_Progress = _StorageManager.Load<Dictionary<int, CollectionProgress>>(_StorageManager.DC_PROGRESS);
+            return;
+        }
+        _DC_Levels_Progress = new Dictionary<int, CollectionProgress>();
+
+        for(int i = 1; i <= 12; i++)
+            _DC_Levels_Progress.Add(i, new CollectionProgress(DateTime.DaysInMonth(DateTime.Today.Year, i)));
+    }
     private void loadTHProgress()
     {
         if (ES3.KeyExists(_StorageManager.TH_PROGRESS))
@@ -414,6 +417,5 @@ public class GameManager : Singleton<GameManager>
             if(!_TH_Levels_Progress.ContainsKey(themes[i]))
                 _TH_Levels_Progress.Add(themes[i], new ContinousProgress(0, null));
     }
-
     #endregion
 }

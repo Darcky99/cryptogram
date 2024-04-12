@@ -43,33 +43,6 @@ public class StorageManager : Singleton<StorageManager>
     public void DeleteAll() => deleteAll();
 }
 
-public class ItemProgress
-{
-    public ItemProgress(bool isComplete, LevelContinue levelContinue = null)
-    {
-        _LevelContinue = levelContinue;
-        _IsCompleted = isComplete;
-    }
-    public LevelContinue LevelContinue => _LevelContinue;
-    public bool IsCompleted => _IsCompleted;
-
-    private LevelContinue _LevelContinue;
-    private bool _IsCompleted = false;
-}
-public class LevelContinue
-{
-    public LevelContinue(bool[] progress, int mistakeCount)
-    {
-        _Progress = progress;
-        _MistakeCount = mistakeCount;
-    }
-    public bool[] Progress => _Progress;
-    public int MistakeCount => _MistakeCount;
-
-    private bool[] _Progress;
-    private int _MistakeCount;
-}
-
 [CustomEditor(typeof(StorageManager))]
 public class StorageManagerEditor : Editor
 {

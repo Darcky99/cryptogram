@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Theme_Button : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Theme_Button : MonoBehaviour
 
     private int _LevelCount;
 
+    [SerializeField] private Button _Button;
     [SerializeField] private TextMeshProUGUI _TitleText;
     [SerializeField] private TextMeshProUGUI _ProgressText;
 
@@ -24,7 +26,15 @@ public class Theme_Button : MonoBehaviour
     }
     private void updateProgress()
     {
-        _ProgressText.text = $"{_GameManager.TH_Levels_Progress[_Theme].LevelIndex + 1} / {_LevelCount}";
+        int levelIndex = _GameManager.TH_Levels_Progress[_Theme].LevelIndex;
+
+        if (levelIndex >= _LevelCount)
+        {
+            _ProgressText.text = "DONE";
+            _Button.interactable = false;
+        }
+        else
+            _ProgressText.text = $"{levelIndex} / {_LevelCount}";
     }
 
     public void SetTheme(string theme) => setTheme(theme);

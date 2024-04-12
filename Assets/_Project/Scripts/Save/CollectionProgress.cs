@@ -2,15 +2,16 @@ public class CollectionProgress
 {
     public CollectionProgress(int size)
     {
-        _Items = new ItemProgress[size];
+        Items = new ItemProgress[size];
+
+        for (int i = 0; i < Items.Length; i++)
+            Items[i] = new ItemProgress(false);
     }
 
-    public ItemProgress[] Items => _Items;
-
-    private ItemProgress[] _Items;
+    public ItemProgress[] Items;
 
     public void RegisterProgress(int index, ItemProgress itemProgress)
     {
-        _Items[index] = itemProgress;
+        Items[index] = itemProgress;
     }
 }

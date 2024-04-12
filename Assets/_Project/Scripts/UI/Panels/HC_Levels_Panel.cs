@@ -15,16 +15,19 @@ public class HC_Levels_Panel : MonoBehaviour
     {
         _LevelText = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
     }
-    private IEnumerator Start()
+    private void OnEnable()
     {
-        yield return null;
-
-        levelText();
+        StartCoroutine(updateLevelText());
     }
     #endregion
 
     private TextMeshProUGUI _LevelText;
 
+    private IEnumerator updateLevelText()
+    {
+        yield return null;
+        levelText();
+    }
     private void levelText()
     {
         _LevelText.text = $"LEVEL {_GameManager.HC_Index + 1}";
