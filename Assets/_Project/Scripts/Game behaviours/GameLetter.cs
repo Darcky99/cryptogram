@@ -62,7 +62,8 @@ public class GameLetter : MonoBehaviour
 
     private void onHintPanel(bool condition)
     {
-        _HintHighlight.gameObject.SetActive(condition);
+        if(!IsCompleted)
+            _HintHighlight.gameObject.SetActive(condition);
     }
     #endregion
 
