@@ -5,10 +5,8 @@ public class ContinousProgress
         LevelIndex = levelIndex;
         LevelContinue = levelContinue;
     }
-
-
-    public int LevelIndex;
     public LevelContinue LevelContinue;
+    public int LevelIndex;
 
     public void IncreaseLevelIndex() => LevelIndex++;
 }

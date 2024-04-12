@@ -66,7 +66,6 @@ public class PhraseManager : Singleton<PhraseManager>
     {
         if (_IsGeneratingLevelFlag)
             return;
-        //saveLevelProgress();
     }
     #endregion
 
@@ -202,7 +201,7 @@ public class PhraseManager : Singleton<PhraseManager>
         }
         checkCompletition();
         fixHeight();
-        //tryLoadLevelProgress();
+        tryLoadLevelProgress();
         _IsGeneratingLevelFlag = false;
     }
     #endregion
@@ -382,8 +381,11 @@ public class PhraseManager : Singleton<PhraseManager>
         if (_LetterSelected == null || _LetterSelected.IsCompleted || _LetterSelected.IsWrong)
             return;
         bool isCorrect = _LetterSelected.TrySetLetterInText(character);
+
         if (!isCorrect)
             mistake(++_MistakeCount);
+        else
+            saveLevelProgress();
     }
     public void CheckCompletition(char character)
     {
@@ -413,28 +415,27 @@ public class PhraseManager : Singleton<PhraseManager>
     #endregion
 
     #region Save and Load
-    //private void saveLevelProgress()
-    //{
-    //    bool[] progress = new bool[_GameLetters.Count];
-
-    //    for(int i = 0; i < _GameLetters.Count; i++)
-    //        progress[i] = _GameLetters[i].IsCompleted;
-    //    _StorageManager.SaveLevelContinue(progress, _MistakeCount);
-    //}
-    //private void tryLoadLevelProgress()
-    //{
-    //    LevelProgress levelProgress = _GameManager.LevelProgress;
-    //    if (levelProgress == null)
-    //        return;
-    //    if (_GameManager.LevelsCollection != levelProgress.ContinueLevelType || levelProgress.ContinueLevelIndex != _GameManager.LevelIndex)
-    //    {
-    //        _StorageManager.DeleteLevelContinue();
-    //        return;
-    //    }
-    //    mistake(levelProgress.MistakeCount);
-    //    for (int i = 0; i < _GameLetters.Count; i++)
-    //        if(levelProgress.ContinueLevelProgress[i])
-    //            _GameLetters[i].TrySetLetterInText(_GameLetters[i].AssignedLetter);
-    //}
+    private bool[] levelProgress()
+    {
+        bool[] progress = new bool[_GameLetters.Count];
+        for (int i = 0; i < _GameLetters.Count; i++)
+            progress[i] = _GameLetters[i].IsCompleted;
+        return progress;
+    }
+    private void saveLevelProgress()
+    {
+        _GameManager.RegisterLevelProgress(levelProgress(), _MistakeCount);
+    }
+    private void tryLoadLevelProgress()
+    {
+        LevelContinue levelContinue = _GameManager.LevelContinue();
+        if (levelContinue == null)
+            return;
+        mistake(levelContinue.MistakeCount);
+        for (int i = 0; i < _GameLetters.Count; i++)
+            if (levelContinue.Progress[i])
+                _GameLetters[i].TrySetLetterInText(_GameLetters[i].AssignedLetter);
+        checkCompletition();
+    }
     #endregion
 }

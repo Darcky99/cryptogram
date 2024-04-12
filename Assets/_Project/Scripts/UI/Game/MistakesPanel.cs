@@ -27,7 +27,6 @@ public class MistakesPanel : Singleton<MistakesPanel>
 
     public void DisplayMistakeCount(int count)
     {
-        Debug.Log($"Calling to change count: {count}");
         for(int i = 0; i < _MistakeDots.Length; i++)
         {
             bool condition = count > i;

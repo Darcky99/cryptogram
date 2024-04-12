@@ -171,15 +171,35 @@ public class GameManager : Singleton<GameManager>
     }
     #endregion
 
-    #region Game modes
+    #region Gamemode & Progress
 
     public eGameMode GameMode => _GameMode;
+
+    private eGameMode _GameMode;
 
     private const string _ENGLISH = "English";
     private const string _SPANISH = "Spanish";
 
-    private eGameMode _GameMode;
+    private void registerLevelProgress(bool[] levelProgress, int mistakeCount)
+    {
+        LevelContinue levelContinue = new LevelContinue(levelProgress, mistakeCount);
 
+        switch (_GameMode)
+        {
+            case eGameMode.HC:
+                _HC_Levels_Progress.LevelContinue = levelContinue;
+                _StorageManager.Save(_StorageManager.HC_PROGRESS, _HC_Levels_Progress);
+                break;
+            case eGameMode.DC:
+                _DC_CurrentDay.LevelContinue = levelContinue;
+                _StorageManager.Save(_StorageManager.DC_PROGRESS, _DC_Levels_Progress);
+                break;
+            case eGameMode.TH:
+                _TH_Current.LevelContinue = levelContinue;
+                _StorageManager.Save(_StorageManager.TH_PROGRESS, _TH_Levels_Progress);
+                break;
+        }
+    }
     private void registerProgress()
     {
         switch (_GameMode)
@@ -193,7 +213,7 @@ public class GameManager : Singleton<GameManager>
                 _StorageManager.Save(_StorageManager.DC_PROGRESS, _DC_Levels_Progress);
                 break;
             case eGameMode.TH:
-                _TH_Levels_Progress[_CurrentTheme].IncreaseLevelIndex();
+                _TH_Current.IncreaseLevelIndex();
                 _StorageManager.Save(_StorageManager.TH_PROGRESS, _TH_Levels_Progress);
                 break;
 
@@ -208,9 +228,32 @@ public class GameManager : Singleton<GameManager>
             $"{path}{prefix}-{languaje}.json" : 
             $"{path}{specific}/{prefix}-{languaje}.json";
     }
+    private LevelContinue levelContinue()
+    {
+        LevelContinue levelContinue = null;
+
+        switch (_GameMode)
+        {
+            case eGameMode.HC:
+                levelContinue = HC_Levels_Progress.LevelContinue;
+                break;
+            case eGameMode.DC:
+                levelContinue = DC_Levels_Progress[_Month].Items[_DC_Index].LevelContinue;
+                break;
+            case eGameMode.TH:
+                levelContinue = TH_Levels_Progress[_CurrentTheme].LevelContinue;
+                break;
+        }
+
+        return levelContinue;
+    }
+
+    public void RegisterLevelProgress(bool[] levelProgress, int mistakeCount) => registerLevelProgress(levelProgress, mistakeCount);
+    public LevelContinue LevelContinue() => levelContinue();
 
     #region HC LEVELS
 
+    public ContinousProgress HC_Levels_Progress => _HC_Levels_Progress;
     public int HC_Index => _HC_Levels_Progress.LevelIndex;
 
     private ContinousProgress _HC_Levels_Progress;
@@ -248,6 +291,8 @@ public class GameManager : Singleton<GameManager>
     #region DC LEVELS
 
     public Dictionary<int, CollectionProgress> DC_Levels_Progress => _DC_Levels_Progress;
+
+    private ItemProgress _DC_CurrentDay => _DC_Levels_Progress[_Month].Items[_DC_Index];
 
     private int _DC_Index;
     private int _Month;
@@ -309,6 +354,8 @@ public class GameManager : Singleton<GameManager>
         } 
     }
     public Dictionary<string, ContinousProgress> TH_Levels_Progress => _TH_Levels_Progress;
+
+    private ContinousProgress _TH_Current => _TH_Levels_Progress[_CurrentTheme];
 
     //private int _TH_Index;
     private string _CurrentTheme;

@@ -50,8 +50,6 @@ public class GameLetter : MonoBehaviour
     }
     private void onSelection(GameLetter gameLetter)
     {
-        _Debug.Add($"OnSelection {gameLetter}");
-
         if (gameLetter == null || IsCompleted)
             diselect();
         else if (gameLetter == this)
@@ -83,7 +81,6 @@ public class GameLetter : MonoBehaviour
     private char _AssignedLetter;
     private byte _AssignedNumber;
     private Color _AssignedColor;
-    //private Sequence _ScaleRectangleAnimation;
 
     [SerializeField] private RectTransform _RectTransform;
     [SerializeField] private TextMeshProUGUI _LetterText;
@@ -188,8 +185,6 @@ public class GameLetter : MonoBehaviour
     private Tween _Wrong;
 
     [SerializeField] private Color _Error;
-    [SerializeField] private List<string> _Debug;
-    
 
     private Tween fadeIn()
     {
@@ -288,7 +283,6 @@ public class GameLetter : MonoBehaviour
     private void completeSingle(bool animate = true)
     {
         _GeneralAnimation?.Kill();
-
         useCorrectCharacter();
         if (animate)
         {
@@ -301,7 +295,6 @@ public class GameLetter : MonoBehaviour
                 .OnComplete(() => _SingleAnimation = false);
         }
         PhraseManager.Instance.CheckCompletition(_AssignedLetter);
-        _Debug.Add($"Complete single");
     }
     private void completeCharacter()
     {
@@ -311,7 +304,6 @@ public class GameLetter : MonoBehaviour
         if (_SingleAnimation)
             return;
 
-        _Debug.Add($"Complete character");
         useCorrectCharacter();
 
         if (_PhraseManager.IsGeneratingLevelFlag == false)

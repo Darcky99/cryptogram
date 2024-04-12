@@ -17,7 +17,7 @@ public class NextLevelDummy_Panel : Singleton<NextLevelDummy_Panel>
     }
     private void OnDisable()
     {
-        GameManager.OnLevelCompleted += onLevelCompleted;
+        GameManager.OnLevelCompleted -= onLevelCompleted;
         GameManager.OnGameOver -= onGameOver;
     }
     #endregion
@@ -28,13 +28,13 @@ public class NextLevelDummy_Panel : Singleton<NextLevelDummy_Panel>
         switch (_GameManager.GameMode)
         {
             case eGameMode.HC:
-                StartCountDown("NEXT LEVEL IN: ", () => _GameManager.LoadLevel());
+                setCountDown("NEXT LEVEL IN: ", () => _GameManager.LoadLevel());
                 break;
             case eGameMode.DC:
-                StartCountDown("GOING OUT IN: ", () => _MenuManager.OpenMainMenu());
+                setCountDown("GOING OUT IN: ", () => _MenuManager.OpenMainMenu());
                 break;
             case eGameMode.TH:
-                StartCountDown("GOING OUT IN: ", () => {
+                setCountDown("COMPLETE : ", () => {
                     if (_GameManager.IsThemeCompleted())
                         _MenuManager.OpenMainMenu();
                     else
@@ -46,7 +46,7 @@ public class NextLevelDummy_Panel : Singleton<NextLevelDummy_Panel>
     }
     private void onGameOver()
     {
-        StartCountDown("RESTARTING LEVEL IN: ", () => _GameManager.ResetLevel());
+        setCountDown("RESTARTING LEVEL IN: ", () => _GameManager.ResetLevel());
     }
     #endregion
 
@@ -60,20 +60,19 @@ public class NextLevelDummy_Panel : Singleton<NextLevelDummy_Panel>
     {
         _Text.text = $"{message} {count}s";
     }
-    private IEnumerator loadLevelCountDown(string message, Action endAction)
+    private IEnumerator countDown(string message, Action endAction)
     {
-        for(int i = 3; i > 0; i--)
+        _Visuals.gameObject.SetActive(true);
+
+        for (int i = 3; i > 0; i--)
         {
             setTime(message, i);
             yield return _CountDownDelay;
         }
+
         endAction();
         _Visuals.gameObject.SetActive(false);
     }
 
-    public void StartCountDown(string message, Action endAction)
-    {
-        _Visuals.gameObject.SetActive(true);
-        StartCoroutine(loadLevelCountDown(message, endAction));
-    }
+    private void setCountDown(string message, Action endAction) => StartCoroutine(countDown(message, endAction));
 }
