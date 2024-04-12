@@ -282,6 +282,9 @@ public class GameManager : Singleton<GameManager>
 
         createRandomizer(_HC_Levels_Progress.LevelIndex);
         loadLevel(levelToPlay);
+
+        if (levelToPlay.BossLevel)
+            BossWarning.Instance.TriggerBossWarning();
     }
 
     public void PlayHC() => playHC();

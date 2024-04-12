@@ -49,11 +49,13 @@ public class LevelData : ILevelData
             return characters;
         }
     }
+    public bool BossLevel => _BossLevel;
 
     [SerializeField] private string _Author;
     [SerializeField] private string _Phrase;
     [SerializeField] private string _PartiallyHidden;
     [SerializeField] private string _Hidden;
+    [SerializeField] private bool _BossLevel;
 
     public class JSON
     {
@@ -65,4 +67,3 @@ public class LevelData : ILevelData
         public LevelData[] Levels;
     }
 }
-
