@@ -91,6 +91,7 @@ public class GameManager : Singleton<GameManager>
     {
         _GameState = eGameState.GameOver;
         expendLife();
+        eraseLevelProgress();
     }
     private void onNewDay()
     {
@@ -180,10 +181,9 @@ public class GameManager : Singleton<GameManager>
     private const string _ENGLISH = "English";
     private const string _SPANISH = "Spanish";
 
-    private void registerLevelProgress(bool[] levelProgress, int mistakeCount)
+    private void eraseLevelProgress() => registerLevelProgress(null);
+    private void registerLevelProgress(LevelContinue levelContinue)
     {
-        LevelContinue levelContinue = new LevelContinue(levelProgress, mistakeCount);
-
         switch (_GameMode)
         {
             case eGameMode.HC:
@@ -248,7 +248,7 @@ public class GameManager : Singleton<GameManager>
         return levelContinue;
     }
 
-    public void RegisterLevelProgress(bool[] levelProgress, int mistakeCount) => registerLevelProgress(levelProgress, mistakeCount);
+    public void RegisterLevelProgress(LevelContinue levelContinue) => registerLevelProgress(levelContinue);
     public LevelContinue LevelContinue() => levelContinue();
 
     #region HC LEVELS

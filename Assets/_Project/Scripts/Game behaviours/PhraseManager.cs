@@ -332,6 +332,10 @@ public class PhraseManager : Singleton<PhraseManager>
             clearSelection();
             OnLetterCompleted?.Invoke(character);
         }
+        else
+        {
+            _Keyboard.SetKeyHint(character, true);
+        }
         if (IsLevelCompleted)
             GameManager.Instance.LevelCompleted();
     }
@@ -427,7 +431,7 @@ public class PhraseManager : Singleton<PhraseManager>
     }
     private void saveLevelProgress()
     {
-        _GameManager.RegisterLevelProgress(levelProgress(), _MistakeCount);
+        _GameManager.RegisterLevelProgress(new LevelContinue(levelProgress(), _MistakeCount));
     }
     private void tryLoadLevelProgress()
     {

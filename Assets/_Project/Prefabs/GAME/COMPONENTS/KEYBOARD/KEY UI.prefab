@@ -147,6 +147,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Button: {fileID: 4097379080059422000}
+  _Text: {fileID: 4352138764610267696}
+  _HintColor: {r: 0.23529412, g: 0.9411765, b: 0.13333334, a: 1}
 --- !u!1 &6736989071361410148
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,7 +247,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 90
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

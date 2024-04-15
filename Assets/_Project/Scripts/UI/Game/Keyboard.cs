@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,24 @@ public class Keyboard : MonoBehaviour
         _TopKeys = _TopLine.GetComponentsInChildren<Key>(true);
         _MidKeys = _MidLine.GetComponentsInChildren<Key>(true);
         _BotKeys = _BotLine.GetComponentsInChildren<Key>(true);
+    }
+    private void OnEnable()
+    {
+        PhraseManager.OnLetterCompleted += onLetterCompleted;
+    }
+    private void OnDisable()
+    {
+        PhraseManager.OnLetterCompleted -= onLetterCompleted;
+    }
+    #endregion
+
+    #region Callback
+    private void onLetterCompleted(char letter)
+    {
+        if (_PhraseManager.IsGeneratingLevelFlag)
+            return;
+
+        setKeyInteraction(letter, false);
     }
     #endregion
 
@@ -42,7 +61,7 @@ public class Keyboard : MonoBehaviour
                 return key;
         return null;
     }
-    private void enableKey(char character)
+    private void setKey(char character, bool enable)
     {
         Key keyToEnable;
         switch (character)
@@ -68,7 +87,7 @@ public class Keyboard : MonoBehaviour
         }
         if (keyToEnable == null)
             return;
-        keyToEnable.gameObject.SetActive(true);
+        keyToEnable.gameObject.SetActive(enable);
     }
     private void disableAllKeys()
     {
@@ -91,7 +110,7 @@ public class Keyboard : MonoBehaviour
             if (_EsensialKeys.Contains(character) == false)
                 _EsensialKeys.Add(character);
 
-            enableKey(character);
+            setKey(character, true);
         }
     }
     private void enableNonEsencialKeys()
@@ -167,9 +186,9 @@ public class Keyboard : MonoBehaviour
             {
                 key.gameObject.SetActive(true);
                 if (_GameManager.RandomGenerator.Next(0, 100) < 30)
-                    key.SetNonInteractuable();
+                    key.SetInteraction(false);
                 else
-                    key.SetInteractuable();
+                    key.SetInteraction(true);
             }
             #region Loop breaker
             breakHold++;
@@ -181,6 +200,12 @@ public class Keyboard : MonoBehaviour
             #endregion
         }
     }
+    #endregion
+
+    #region Hints
+    private void setKeyInteraction(char character, bool enabled) => getKey(character).SetInteraction(enabled);
+
+    public void SetKeyHint(char character, bool enabled) => getKey(character).SetHint(enabled);
     #endregion
 
     private void initializeKeyboard()
