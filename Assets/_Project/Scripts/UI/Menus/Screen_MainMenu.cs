@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Screen_MainMenu : MenuScreenBase
 {
-    [SerializeField] private RectTransform _Calendar;
-    [SerializeField] private RectTransform _ThemeSelection;
+    public Screen_Callendar Callendar => _Calendar;
+    public Screen_Themes ThemeSelection => _ThemeSelection;
+
+    [SerializeField] private Screen_Callendar _Calendar;
+    [SerializeField] private Screen_Themes _ThemeSelection;
 
     private void disableAllPanels()
     {

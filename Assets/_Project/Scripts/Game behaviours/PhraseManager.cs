@@ -83,6 +83,7 @@ public class PhraseManager : Singleton<PhraseManager>
             return true;
         }
     }
+    public bool IsVerticalScroll => _VericalScroll.gameObject.activeInHierarchy;
     public Dictionary<char, byte> CharacterNumber => _CharacterNumber;
     public Dictionary<char, Color> CharacterColor => _CharacterColor;
     public ILevelData LevelData => _LevelData;
@@ -99,6 +100,7 @@ public class PhraseManager : Singleton<PhraseManager>
 
     [SerializeField, Header("Level generation")] private RectTransform _GameArea;
     [SerializeField, Header("Level generation")] private ScrollRect _ScrollRect;
+    [SerializeField, Header("Level generation")] private RectTransform _VericalScroll;
     [SerializeField, Header("Level generation")] private RectTransform _LevelContent;
     [SerializeField, Header("Level generation")] private VerticalLayoutGroup _VerticalLayerGroup;
     [SerializeField, Header("Level generation")] private GameLine _GameLinePrefab;
@@ -185,6 +187,7 @@ public class PhraseManager : Singleton<PhraseManager>
         Vector2 deltaSize = _LevelContent.sizeDelta;
         deltaSize.y = height;
         _LevelContent.sizeDelta = deltaSize;
+        _ScrollRect.vertical = IsVerticalScroll;
     }
     private IEnumerator generateLevel()
     {
@@ -332,7 +335,7 @@ public class PhraseManager : Singleton<PhraseManager>
         if (IsLevelCompleted)
             GameManager.Instance.LevelCompleted();
     }
-    private void changeSelection(eChangeSelectionMode selectionMode)
+    private void changeSelection(eDirection selectionMode)
     {
         if (_GameLetters == null || _LetterSelected == null)
             return;
@@ -340,10 +343,10 @@ public class PhraseManager : Singleton<PhraseManager>
         int increase = 0, breaker = 0;
         switch (selectionMode)
         {
-            case eChangeSelectionMode.Previous:
+            case eDirection.Left:
                 increase = -1;
                 break;
-            case eChangeSelectionMode.Next:
+            case eDirection.Right:
                 increase = 1;
                 break;
         }
@@ -395,7 +398,7 @@ public class PhraseManager : Singleton<PhraseManager>
         checkCompletition(character);
     }
     public void AddGameLetter(GameLetter gameLetter) => _GameLetters.Add(gameLetter);
-    public void ChangeSelection(eChangeSelectionMode changeSelectionMode) => changeSelection(changeSelectionMode);
+    public void ChangeSelection(eDirection changeSelectionMode) => changeSelection(changeSelectionMode);
     #endregion
 
     #region Quote

@@ -27,7 +27,7 @@ public class ArrowUI : MonoBehaviour
     }
     #endregion
 
-    [SerializeField] private eChangeSelectionMode _ChangeSelectionMode;
+    [SerializeField] private eDirection _ChangeSelectionMode;
     [SerializeField] private Button _Button;
 
     public void ChangeSelection() => PhraseManager.Instance.ChangeSelection(_ChangeSelectionMode);

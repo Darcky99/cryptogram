@@ -43,6 +43,15 @@ public class DayChallengeButton : MonoBehaviour
             return;
         }
         DateTime today = DateTime.Today;
+
+        //NEED TO CONSIDER YEARS HERE
+
+        if(_Month < today.Month)
+        {
+            _DayButton.SetActive(true);
+            return;
+        }
+
         if (_LevelIndex <= today.Day - 1)
             _DayButton.SetActive(true);
         else

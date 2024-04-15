@@ -785,6 +785,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _GameArea: {fileID: 0}
   _ScrollRect: {fileID: 4923071605267279778}
+  _VericalScroll: {fileID: 215562052720647253}
   _LevelContent: {fileID: 1812411451248741686}
   _VerticalLayerGroup: {fileID: 3280352235695414946}
   _GameLinePrefab: {fileID: 3279341473833658613, guid: 65977d99d6ef4ae45bf7f561926ba11d, type: 3}
