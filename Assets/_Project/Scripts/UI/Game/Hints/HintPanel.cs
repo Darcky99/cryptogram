@@ -22,10 +22,13 @@ public class HintPanel : Singleton<HintPanel>
 
     [SerializeField] private RectTransform _HintInterface;
 
+    [SerializeField] private RectTransform _HintButton;
     [SerializeField] private RectTransform _BuyHintInterfaceButton;
     [SerializeField] private RectTransform _OpenHintInterfaceButton;
     [SerializeField] private RectTransform _CloseHintInterfaceButton;
     [SerializeField] private TextMeshProUGUI _Counter;
+
+    private void hintButton(bool enable) => _HintButton.gameObject.SetActive(enable);
 
     private void setHintPanel(bool condition)
     {
@@ -47,6 +50,7 @@ public class HintPanel : Singleton<HintPanel>
         setHintPanel(false);
     }
 
+    public void HintButton(bool enable) => hintButton(enable);
     public void SetHintCount(int count) => setHintCount(count);
 
     public void BuyHint() => _GameManager.EarnHint();

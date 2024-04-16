@@ -67,6 +67,7 @@ public class GameLetter : MonoBehaviour
     }
     #endregion
 
+    public RectTransform RectTransform => _RectTransform;
     public bool IsCompleted => FixCharacter(_LetterInText) == _AssignedLetter;
     public char AssignedLetter => _AssignedLetter;
     public Vector2 AbsoluteAnchoredPosition => _GameWord.AbsoluteAnchoredPosition + _RectTransform.anchoredPosition;

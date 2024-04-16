@@ -18,9 +18,11 @@ public class StorageManager : Singleton<StorageManager>
     public string HC_PROGRESS => _HC_PROGRESS;
     public string DC_PROGRESS => _DC_PROGRESS;
     public string TH_PROGRESS => _TH_PROGRESS;
+    public string TUTORIAL_COMPLETED => _TUTORIAL_COMPLETED;
 
     private const string _DAY_LIFES = "GP_DAYLIFES";
     private const string _DAY_HINTS = "GP_HINTS";
+    private const string _TUTORIAL_COMPLETED = "GP_TUTO";
 
     private const string _HC_PROGRESS = "GP_HC-PROGRESS";
     private const string _DC_PROGRESS = "GP_DC-PROGRESS";
@@ -39,6 +41,7 @@ public class StorageManager : Singleton<StorageManager>
         ES3.DeleteKey(_HC_PROGRESS);
         ES3.DeleteKey(_DC_PROGRESS);
         ES3.DeleteKey(_TH_PROGRESS);
+        ES3.DeleteKey(_TUTORIAL_COMPLETED);
     }
     public void DeleteAll() => deleteAll();
 }

@@ -31,6 +31,7 @@ public class NextLevelDummy_Panel : Singleton<NextLevelDummy_Panel>
                 setCountDown("NEXT LEVEL IN: ", () => _GameManager.LoadLevel());
                 break;
             case eGameMode.DC:
+            case eGameMode.Tutorial:
                 setCountDown("GOING OUT IN: ", () => _MenuManager.OpenMainMenu());
                 break;
             case eGameMode.TH:

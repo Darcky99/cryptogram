@@ -1,19 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using Sirenix.OdinInspector;
 
 public class Pool<T> : MonoBehaviour where T : MonoBehaviour
 {
     #region Editor
-    //[Button]
     private void preBake()
     {
         clearQueue();
 
         increaseThreshold();
     }
-    //[Button]
     private void clearObjects() => clearQueue();
     #endregion
 

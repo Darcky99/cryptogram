@@ -85,6 +85,10 @@ public class GameManager : Singleton<GameManager>
     private void onLevelCompleted()
     {
         _GameState = eGameState.Win;
+
+        if (GameMode == eGameMode.Tutorial)
+            return;
+
         registerProgress();
     }
     private void onGameOver()
@@ -247,6 +251,11 @@ public class GameManager : Singleton<GameManager>
 
         return levelContinue;
     }
+    private void playLevel(LevelData levelData)
+    {
+        createRandomizer(51248);
+        loadLevel(levelData);
+    }
 
     public void RegisterLevelProgress(LevelContinue levelContinue) => registerLevelProgress(levelContinue);
     public LevelContinue LevelContinue() => levelContinue();
@@ -309,7 +318,7 @@ public class GameManager : Singleton<GameManager>
         _Month = month;
         loadDCProgress();
     }
-    public void playDH(int levelIndex)
+    private void playDH(int levelIndex)
     {
         _GameMode = eGameMode.DC;
 
@@ -421,6 +430,14 @@ public class GameManager : Singleton<GameManager>
     public int GetThemeLevelsCount(string theme) => getThemeLevelsCount(theme);
     public void PlayThemeLevels(string theme) => playThemeLevels(theme);
 
+    #endregion
+
+    #region Tutorial
+    public void PlayTutorial(LevelData levelData)
+    {
+        _GameMode = eGameMode.Tutorial;
+        playLevel(levelData);
+    }
     #endregion
 
     #endregion

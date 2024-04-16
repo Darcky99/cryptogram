@@ -42,6 +42,7 @@ public class PhraseManager : Singleton<PhraseManager>
     #region Callbacks
     private void onLoadLevel(ILevelData levelData)
     {
+        //_LevelData = levelData;
         IEnumerator call()
         {
             clearGameElements();
@@ -87,6 +88,7 @@ public class PhraseManager : Singleton<PhraseManager>
     public Dictionary<char, byte> CharacterNumber => _CharacterNumber;
     public Dictionary<char, Color> CharacterColor => _CharacterColor;
     public ILevelData LevelData => _LevelData;
+    public GameLetter Selection => _LetterSelected;
 
     private GameLine _LastLine => _GameLines.Last();
 
@@ -206,6 +208,15 @@ public class PhraseManager : Singleton<PhraseManager>
         fixHeight();
         tryLoadLevelProgress();
         _IsGeneratingLevelFlag = false;
+    }
+
+    public GameLetter[] GetGameLetters(char character)
+    {
+        List<GameLetter> gameLetters = new List<GameLetter>();
+        foreach (GameLetter gameLetter in _GameLetters)
+            if (gameLetter.AssignedLetter == character)
+                gameLetters.Add(gameLetter);
+        return gameLetters.ToArray();
     }
     #endregion
 
@@ -332,10 +343,9 @@ public class PhraseManager : Singleton<PhraseManager>
             clearSelection();
             OnLetterCompleted?.Invoke(character);
         }
-        else
-        {
+        else if(!_IsGeneratingLevelFlag)
             _Keyboard.SetKeyHint(character, true);
-        }
+
         if (IsLevelCompleted)
             GameManager.Instance.LevelCompleted();
     }

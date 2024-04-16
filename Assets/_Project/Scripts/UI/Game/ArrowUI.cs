@@ -4,6 +4,10 @@ using UnityEngine.UI;
 public class ArrowUI : MonoBehaviour
 {
     #region Unity
+    private void Awake()
+    {
+        _RectTransform = GetComponent<RectTransform>();
+    }
     private void OnEnable()
     {
         GameManager.OnLoadLevel += onLoadLevel;
@@ -26,6 +30,10 @@ public class ArrowUI : MonoBehaviour
         _Button.interactable = false;
     }
     #endregion
+
+    public RectTransform RectTransform => _RectTransform;
+
+    private RectTransform _RectTransform;
 
     [SerializeField] private eDirection _ChangeSelectionMode;
     [SerializeField] private Button _Button;

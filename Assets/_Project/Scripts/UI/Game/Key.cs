@@ -30,6 +30,7 @@ public class Key : MonoBehaviour
     }
     #endregion
 
+    public RectTransform RectTransform => _Text.rectTransform;
     public char KeyLetter => gameObject.name[0];
 
     [SerializeField] private Button _Button;

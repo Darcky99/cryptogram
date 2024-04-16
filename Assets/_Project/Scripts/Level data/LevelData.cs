@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
 using System;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 [Serializable]
 public class LevelData : ILevelData
@@ -22,6 +19,8 @@ public class LevelData : ILevelData
         get
         {
             string[] splitResult = _PartiallyHidden.Split(' ');
+            if(splitResult[0] == "")
+                return new char[0];
             char[] characters = new char[splitResult.Length];
             for (int i = 0; i < splitResult.Length; i++)
             {
@@ -37,6 +36,8 @@ public class LevelData : ILevelData
         get
         {
             string[] splitResult = _Hidden.Split(' ');
+            if (splitResult[0] == "")
+                return new char[0];
             char[] characters = new char[splitResult.Length];
             for (int i = 0; i < splitResult.Length; i++)
             {

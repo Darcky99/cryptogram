@@ -217,4 +217,5 @@ public class Keyboard : MonoBehaviour
     }
 
     public void InitializeKeyboard() => initializeKeyboard();
+    public Key GetKey(char character) => getKey(character);
 }

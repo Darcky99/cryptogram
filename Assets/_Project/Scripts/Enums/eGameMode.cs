@@ -1,4 +1,4 @@
 public enum eGameMode
 {
-    None, HC, DC, TH
+    None, HC, DC, TH, Tutorial
 }
