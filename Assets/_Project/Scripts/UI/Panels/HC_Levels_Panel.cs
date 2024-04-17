@@ -30,7 +30,7 @@ public class HC_Levels_Panel : MonoBehaviour
     }
     private void levelText()
     {
-        _LevelText.text = $"LEVEL {_GameManager.HC_Index + 1}";
+        _LevelText.text = $"LEVEL {_GameManager.HC_Index + 2}";
     }
 
     public void PlayHCLevels()

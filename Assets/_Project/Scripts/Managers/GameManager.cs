@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-
 using System.IO;
 
 public class GameManager : Singleton<GameManager>
@@ -282,7 +281,7 @@ public class GameManager : Singleton<GameManager>
                 file = File.ReadAllText(path);
                 break;
             case SystemLanguage.Spanish:
-                path = filePath(_HC_PATH, _HC_PREFIX, _ENGLISH);
+                path = filePath(_HC_PATH, _HC_PREFIX, _SPANISH);
                 file = File.ReadAllText(path);
                 break;
         }

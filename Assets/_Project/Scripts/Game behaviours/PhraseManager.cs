@@ -72,6 +72,7 @@ public class PhraseManager : Singleton<PhraseManager>
 
     public static event Action<GameLetter> OnSelection;
     public static event Action<char> OnLetterCompleted;
+    public static event Action OnLevelGenerated;
 
     public bool IsGeneratingLevelFlag => _IsGeneratingLevelFlag;
     public bool IsLevelCompleted
@@ -208,6 +209,7 @@ public class PhraseManager : Singleton<PhraseManager>
         fixHeight();
         tryLoadLevelProgress();
         _IsGeneratingLevelFlag = false;
+        OnLevelGenerated?.Invoke();
     }
 
     public GameLetter[] GetGameLetters(char character)

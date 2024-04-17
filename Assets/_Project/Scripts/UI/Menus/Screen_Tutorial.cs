@@ -1,12 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Screen_Tutorial : MonoBehaviour
 {
+    private void Awake()
+    {
+        _TextOne = _TutorialMessages[0].transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+    }
+
     public bool IsButtonMessage => _TutorialMessages[0].gameObject.activeInHierarchy || _TutorialMessages[3].gameObject.activeInHierarchy;
     public bool IsMessage_5 => _TutorialMessages[4].gameObject.activeInHierarchy;
 
+    private TextMeshProUGUI _TextOne;
 
     [SerializeField] private RectTransform _Mask;
     [SerializeField] private RectTransform _Hand;
@@ -16,6 +21,10 @@ public class Screen_Tutorial : MonoBehaviour
     {
         foreach (RectTransform message in _TutorialMessages)
             message.gameObject.SetActive(false);
+
+        (TutorialMaskPool.s_Instance as TutorialMaskPool).ResetAll();
+        _Hand.gameObject.SetActive(false);
+        _Mask.gameObject.SetActive(false);
     }
 
     private void enableMessage(int index)
@@ -23,6 +32,7 @@ public class Screen_Tutorial : MonoBehaviour
         if (_TutorialMessages[index].gameObject.activeInHierarchy)
             return;
 
+        (TutorialMaskPool.s_Instance as TutorialMaskPool).ResetAll();
         _Hand.gameObject.SetActive(false);
         _Mask.gameObject.SetActive(false);
         for (int i = 0; i < _TutorialMessages.Length; i++)
@@ -37,4 +47,5 @@ public class Screen_Tutorial : MonoBehaviour
     }
     public void EnableMessage(int index) => enableMessage(index);
     public void SetMask(bool enable) => _Mask.gameObject.SetActive(enable);
+    public void SetCustomText(string text) => _TextOne.text = text;
 }
